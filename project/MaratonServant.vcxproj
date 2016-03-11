@@ -84,9 +84,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\3rd;$(ProjectDir)..\include;$(ProjectDir)..\include\message;$(ProjectDir)..\include\framework;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>MaratonFramework.lib;libuv.lib;advapi32.lib;iphlpapi.lib;psapi.lib;shell32.lib;userenv.lib;ws2_32.lib;libprotobuf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -119,6 +124,50 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="..\LICENSE" />
+    <None Include="..\proto\MessageGreeting.proto" />
+    <None Include="..\proto\MessageHeartBeat.proto" />
+    <None Include="..\proto\MessageRegist.proto" />
+    <None Include="..\proto\MessageTaskDeliver.proto" />
+    <None Include="..\proto\MessageTaskDeliverReply.proto" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\DockerHelper.h" />
+    <ClInclude Include="..\include\ExitCodeHandlerSet.h" />
+    <ClInclude Include="..\include\GeneralSession.h" />
+    <ClInclude Include="..\include\handler\MessageGreetingHandler.h" />
+    <ClInclude Include="..\include\handler\MessageRegistHandler.h" />
+    <ClInclude Include="..\include\handler\MessageTaskDeliverHandler.h" />
+    <ClInclude Include="..\include\handler\MessageTaskDeliverReplyHandler.h" />
+    <ClInclude Include="..\include\MessageHandler.h" />
+    <ClInclude Include="..\include\MessageHub.h" />
+    <ClInclude Include="..\include\message\MessageGreeting.pb.h" />
+    <ClInclude Include="..\include\message\MessageHeartBeat.pb.h" />
+    <ClInclude Include="..\include\message\MessageRegist.pb.h" />
+    <ClInclude Include="..\include\message\MessageTaskDeliver.pb.h" />
+    <ClInclude Include="..\include\message\MessageTaskDeliverReply.pb.h" />
+    <ClInclude Include="..\include\Pipe.h" />
+    <ClInclude Include="..\include\Pipeline.h" />
+    <ClInclude Include="..\include\MasterSession.h" />
+    <ClInclude Include="..\include\MasterConnector.h" />
+    <ClInclude Include="..\include\PipeParamterPattern.h" />
+    <ClInclude Include="..\include\ServantGloable.h" />
+    <ClInclude Include="..\include\WorkManager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\include\message\MessageGreeting.pb.cc" />
+    <ClCompile Include="..\include\message\MessageHeartBeat.pb.cc" />
+    <ClCompile Include="..\include\message\MessageRegist.pb.cc" />
+    <ClCompile Include="..\include\message\MessageTaskDeliver.pb.cc" />
+    <ClCompile Include="..\include\message\MessageTaskDeliverReply.pb.cc" />
+    <ClCompile Include="..\include\Pipe.cpp" />
+    <ClCompile Include="..\include\Pipeline.cpp" />
+    <ClCompile Include="..\include\ServantConnector.cpp" />
+    <ClCompile Include="..\source\AddAllHandler.cpp" />
+    <ClCompile Include="..\source\DockerHelper.cpp" />
+    <ClCompile Include="..\source\ExecutorConnector.cpp" />
+    <ClCompile Include="..\source\GeneralSession.cpp" />
+    <ClCompile Include="..\source\Pipe.cpp" />
+    <ClCompile Include="..\source\ServantMain.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

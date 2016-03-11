@@ -13,8 +13,141 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="proto">
+      <UniqueIdentifier>{3ff579b2-f9b7-43e6-8110-966aa18f8e46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="proto\defines">
+      <UniqueIdentifier>{5c5033b9-2d22-49b8-9651-09d7afd55515}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MessageHandlers">
+      <UniqueIdentifier>{4df1a412-a29a-48dd-a9ce-a515b7008cfa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\LICENSE" />
+    <None Include="..\proto\MessageGreeting.proto">
+      <Filter>proto\defines</Filter>
+    </None>
+    <None Include="..\proto\MessageRegist.proto">
+      <Filter>proto\defines</Filter>
+    </None>
+    <None Include="..\proto\MessageTaskDeliver.proto">
+      <Filter>proto\defines</Filter>
+    </None>
+    <None Include="..\proto\MessageTaskDeliverReply.proto">
+      <Filter>proto\defines</Filter>
+    </None>
+    <None Include="..\proto\MessageHeartBeat.proto">
+      <Filter>proto\defines</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\DockerHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ServantGloable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Pipe.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ExitCodeHandlerSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Pipeline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\MessageHub.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\MessageHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\GeneralSession.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\message\MessageGreeting.pb.h">
+      <Filter>proto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\message\MessageRegist.pb.h">
+      <Filter>proto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\message\MessageTaskDeliver.pb.h">
+      <Filter>proto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\message\MessageTaskDeliverReply.pb.h">
+      <Filter>proto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\MasterSession.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\MasterConnector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\handler\MessageGreetingHandler.h">
+      <Filter>MessageHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\handler\MessageRegistHandler.h">
+      <Filter>MessageHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\handler\MessageTaskDeliverHandler.h">
+      <Filter>MessageHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\handler\MessageTaskDeliverReplyHandler.h">
+      <Filter>MessageHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\message\MessageHeartBeat.pb.h">
+      <Filter>proto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\WorkManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\PipeParamterPattern.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\source\DockerHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\ServantMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Pipeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\AddAllHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\message\MessageGreeting.pb.cc">
+      <Filter>proto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\message\MessageRegist.pb.cc">
+      <Filter>proto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\message\MessageTaskDeliver.pb.cc">
+      <Filter>proto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\message\MessageTaskDeliverReply.pb.cc">
+      <Filter>proto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\GeneralSession.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\ExecutorConnector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ServantConnector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\message\MessageHeartBeat.pb.cc">
+      <Filter>proto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Pipe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\Pipe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
