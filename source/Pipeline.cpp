@@ -19,7 +19,7 @@ void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
     for ( auto item : orignalMessage->pipeline().pipes() )
     {
         auto pipe = make_uptr( Pipe );
-        pipe->DockerDaemon( "http://10.0.0.11:4243" );
+        pipe->DockerDaemon( "http://10.0.0.70:4243" );
         pipe->DockerImage( item.executor() );
         //pipe->AddEnvironment( "t" , "2" );
         //pipe->AddEnvironment( "refgen" , "hg19.fa" );
@@ -51,8 +51,12 @@ void Pipeline::OnFinish()
         while ( !fin.eof() )
         {
             std::string oneLine;
-            std::cout << oneLine << std::endl;
             fin >> oneLine;
+            if(   oneLine != ""
+               && oneLine != "\r"
+               && oneLine != "\n"
+               && oneLine != "\r\n"
+               && oneLine != "\n\r" )
             msg->add_output( oneLine );
         }
         fin.close();
