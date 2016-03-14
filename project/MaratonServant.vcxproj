@@ -165,14 +165,12 @@
     <ClCompile Include="..\include\message\MessageTaskDeliver.pb.cc" />
     <ClCompile Include="..\include\message\MessageTaskDeliverReply.pb.cc" />
     <ClCompile Include="..\include\message\MessageTaskUpdate.pb.cc" />
-    <ClCompile Include="..\include\Pipe.cpp" />
-    <ClCompile Include="..\include\Pipeline.cpp" />
-    <ClCompile Include="..\include\ServantConnector.cpp" />
     <ClCompile Include="..\source\AddAllHandler.cpp" />
     <ClCompile Include="..\source\DockerHelper.cpp" />
-    <ClCompile Include="..\source\ExecutorConnector.cpp" />
     <ClCompile Include="..\source\GeneralSession.cpp" />
     <ClCompile Include="..\source\Pipe.cpp" />
+    <ClCompile Include="..\source\Pipeline.cpp" />
+    <ClCompile Include="..\source\ServantConnector.cpp" />
     <ClCompile Include="..\source\ServantMain.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

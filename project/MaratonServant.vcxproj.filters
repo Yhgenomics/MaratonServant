@@ -125,9 +125,6 @@
     <ClCompile Include="..\source\ServantMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\Pipeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\source\AddAllHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -146,17 +143,8 @@
     <ClCompile Include="..\source\GeneralSession.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\ExecutorConnector.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\ServantConnector.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\include\message\MessageHeartBeat.pb.cc">
       <Filter>proto</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\Pipe.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\source\Pipe.cpp">
       <Filter>Source Files</Filter>
@@ -166,6 +154,12 @@
     </ClCompile>
     <ClCompile Include="..\include\message\MessageTaskUpdate.pb.cc">
       <Filter>proto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\Pipeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\ServantConnector.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
