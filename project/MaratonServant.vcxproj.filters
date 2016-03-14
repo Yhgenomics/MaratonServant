@@ -40,6 +40,12 @@
     <None Include="..\proto\MessageHeartBeat.proto">
       <Filter>proto\defines</Filter>
     </None>
+    <None Include="..\proto\MessageServantUpdate.proto">
+      <Filter>proto\defines</Filter>
+    </None>
+    <None Include="..\proto\MessageTaskUpdate.proto">
+      <Filter>proto\defines</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\DockerHelper.h">
@@ -105,6 +111,12 @@
     <ClInclude Include="..\include\PipeParamterPattern.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\message\MessageServantUpdate.pb.h">
+      <Filter>proto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\message\MessageTaskUpdate.pb.h">
+      <Filter>proto</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\DockerHelper.cpp">
@@ -148,6 +160,12 @@
     </ClCompile>
     <ClCompile Include="..\source\Pipe.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\message\MessageServantUpdate.pb.cc">
+      <Filter>proto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\message\MessageTaskUpdate.pb.cc">
+      <Filter>proto</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

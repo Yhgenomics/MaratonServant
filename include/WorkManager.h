@@ -26,6 +26,7 @@ limitations under the License.
 
 #include "ServantGloable.h"
 #include "MessageTaskDeliver.pb.h"
+#include "MessageServantUpdate.pb.h"
 #include "Pipeline.h"
 #include <string>
 
@@ -36,29 +37,25 @@ using std::string;
 class WorkManager :public MRT::Singleton<WorkManager>
 {
 public:
+    //Task Status.
     enum TaskStatus
     {
-        kUnknow = 0 ,
+        kTaskUnknow = 0 ,
         kPending,
         kRunning,
-        kMerging,
         kFinished,
         kStopped,
-        kError
+        kTaskError
     };
 
     enum ServantStatus
     {
-        kUnknow2              = 0 ,
+        kUnknow              = 0 ,
         kBooting             = 1 ,
         kSelfTesting         = 2 ,
         kStandby             = 3 ,
-        kError2              = 4 ,
-        kResourceDownloading = 10 ,
-        kTaskDataPreparing   = 11 ,
-        kComputing           = 12 ,
-        kUploading           = 13 ,
-        kTaskFinished        = 14 ,
+        kError               = 4 ,
+        kWorking             = 5 ,
         kException           = 20
     };
     
@@ -81,7 +78,20 @@ public:
     void StartWork()
     {
         cout << "Task ID " << task_id_ << " start "<< endl;
+
+        auto master = Protocal::MessageHub::Instance()->Master();
+        auto msg    = make_uptr( MessageServantUpdate );
+        msg->set_status( ServantStatus::kWorking );
+        master->SendOut( move_ptr( msg ) );
         Pipeline::Instance()->Run();
+    }
+
+    void FinishWork()
+    {
+        auto master = Protocal::MessageHub::Instance()->Master();
+        auto msg    = make_uptr( MessageServantUpdate );
+        msg->set_status( ServantStatus::kStandby );
+        master->SendOut( move_ptr( msg ) );
     }
 
     string TaskID()     { return task_id_;     }
@@ -90,8 +100,8 @@ public:
     string Memory()     { return memory_;      }
 
 private:
-    ServantStatus self_status_ = ServantStatus::kUnknow2;
-    TaskStatus    work_status_ = TaskStatus::kUnknow;
+    ServantStatus self_status_ = ServantStatus::kUnknow;
+    TaskStatus    work_status_ = TaskStatus::kTaskUnknow;
     string        task_id_;
     string        pipeline_id_;
     string        core_;

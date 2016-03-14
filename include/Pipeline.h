@@ -30,6 +30,9 @@ limitations under the License.
 #include "ServantGloable.h"
 #include "Pipe.h"
 #include "MessageTaskDeliver.pb.h"
+#include "MessageTaskUpdate.pb.h"
+#include "MessageServantUpdate.pb.h"
+#include "MessageHub.h"
 #include <vector>
 #include <string>
 #include <memory>
@@ -39,6 +42,17 @@ NS_SERVANT_BEGIN
 class Pipeline:public Singleton<Pipeline>
 {
 public:
+
+    //Task Status.
+    enum TaskStatus
+    {
+        kUnknow = 0 ,
+        kPending,
+        kRunning,
+        kFinished,
+        kStopped,
+        kError
+    };
 
     void  AddPipe( uptr<Pipe> pipe )
     {
@@ -78,11 +92,25 @@ public:
 
     void OnFinish()
     {
+        auto master = Protocal::MessageHub::Instance()->Master();
+        auto msg    = make_uptr( MessageTaskUpdate );
+        msg->set_status( scast<int> (TaskStatus::kFinished) );
+        master->SendOut( move_ptr( msg ) );
         std::cout << "pipeline finished" << endl;
+
+        auto msg2    = make_uptr( MessageServantUpdate );
+        msg2->set_status( 3 );
+        master->SendOut( move_ptr( msg2 ) );
+        std::cout << "stand by" << endl;
+
     }
 
     void OnException(const int& lastExitCode)
     {
+        auto master = Protocal::MessageHub::Instance()->Master();
+        auto msg    = make_uptr( MessageTaskUpdate );
+        msg->set_status( TaskStatus::kError );
+        master->SendOut( move_ptr( msg ) );
         std::cout << "Exception happended code "<< lastExitCode << endl;
     }
 

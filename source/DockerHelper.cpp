@@ -31,6 +31,7 @@ size_t DockerHelper::Pull( const string &dest ,
     return 0;
 }
 
+
 size_t DockerHelper::Create( const string &dest ,
                              const string &image ,
                              const vector< string > &binds ,
@@ -143,7 +144,21 @@ size_t DockerHelper::Run( const string &dest ,
                           const vector< string >  &environment )
 {
     is_run_mode_ = true;
-    Create( dest , image , binds , environment );
+
+    WebClient myWebClient;
+    myWebClient.Post( dest
+                      + kCreateImage
+                      + kParamsToken
+                      + kFromImage
+                      + image ,
+                      "" ,
+                      [ dest , image , binds , environment , this ] ( uptr<HTTPResponse> response )
+                      {
+                          cout << "image pulled" << endl;
+                          Create( dest , image , binds , environment );
+                      }
+    );
+    
     return 0;
 }
 NS_SERVANT_END

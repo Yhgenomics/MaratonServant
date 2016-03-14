@@ -127,8 +127,10 @@
     <None Include="..\proto\MessageGreeting.proto" />
     <None Include="..\proto\MessageHeartBeat.proto" />
     <None Include="..\proto\MessageRegist.proto" />
+    <None Include="..\proto\MessageServantUpdate.proto" />
     <None Include="..\proto\MessageTaskDeliver.proto" />
     <None Include="..\proto\MessageTaskDeliverReply.proto" />
+    <None Include="..\proto\MessageTaskUpdate.proto" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\DockerHelper.h" />
@@ -143,8 +145,10 @@
     <ClInclude Include="..\include\message\MessageGreeting.pb.h" />
     <ClInclude Include="..\include\message\MessageHeartBeat.pb.h" />
     <ClInclude Include="..\include\message\MessageRegist.pb.h" />
+    <ClInclude Include="..\include\message\MessageServantUpdate.pb.h" />
     <ClInclude Include="..\include\message\MessageTaskDeliver.pb.h" />
     <ClInclude Include="..\include\message\MessageTaskDeliverReply.pb.h" />
+    <ClInclude Include="..\include\message\MessageTaskUpdate.pb.h" />
     <ClInclude Include="..\include\Pipe.h" />
     <ClInclude Include="..\include\Pipeline.h" />
     <ClInclude Include="..\include\MasterSession.h" />
@@ -157,8 +161,10 @@
     <ClCompile Include="..\include\message\MessageGreeting.pb.cc" />
     <ClCompile Include="..\include\message\MessageHeartBeat.pb.cc" />
     <ClCompile Include="..\include\message\MessageRegist.pb.cc" />
+    <ClCompile Include="..\include\message\MessageServantUpdate.pb.cc" />
     <ClCompile Include="..\include\message\MessageTaskDeliver.pb.cc" />
     <ClCompile Include="..\include\message\MessageTaskDeliverReply.pb.cc" />
+    <ClCompile Include="..\include\message\MessageTaskUpdate.pb.cc" />
     <ClCompile Include="..\include\Pipe.cpp" />
     <ClCompile Include="..\include\Pipeline.cpp" />
     <ClCompile Include="..\include\ServantConnector.cpp" />
