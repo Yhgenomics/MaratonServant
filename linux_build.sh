@@ -4,3 +4,4 @@ CMaker project:maraton-servant compiler:clang++ head:*.h src:*.cpp,*.c,*.cc,*.hp
 cd cmakebuild
 cmake ./
 make -j 5
+cp maraton-servant ../

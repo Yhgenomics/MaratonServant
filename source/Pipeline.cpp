@@ -1,10 +1,21 @@
 #include "Pipeline.h"
 #include "ExitCodeHandlerSet.h"
+#include <fstream>
+#include <iostream>
 
 NS_SERVANT_BEGIN
 
 void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
 {
+    std::ofstream fout("/data/input/allfiletest/input.mrt");
+
+    for ( auto file : orignalMessage->input() )
+    {
+        std::cout << file << std::endl;
+        fout << file << std::endl;
+    }
+    fout.close();
+
     for ( auto item : orignalMessage->pipeline().pipes() )
     {
         auto pipe = make_uptr( Pipe );

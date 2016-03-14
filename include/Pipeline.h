@@ -58,11 +58,6 @@ public:
     {
         pipe_list_.push_back( std::move( pipe ) );
     }
-    
-    void AddPipe()
-    {
-
-    }
 
     void ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage );
 
@@ -80,9 +75,9 @@ public:
             OnFinish();
         else
             {
-            auto currentPipe = std::move(pipe_list_[0]);
-            pipe_list_.erase(pipe_list_.begin());
-            currentPipe->Run();
+                auto currentPipe = std::move(pipe_list_[0]);
+                pipe_list_.erase(pipe_list_.begin());
+                currentPipe->Run();
             }
     }
 
