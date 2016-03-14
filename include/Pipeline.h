@@ -81,20 +81,7 @@ public:
             }
     }
 
-    void OnFinish()
-    {
-        auto master = Protocal::MessageHub::Instance()->Master();
-        auto msg    = make_uptr( MessageTaskUpdate );
-        msg->set_status( scast<int> (TaskStatus::kFinished) );
-        master->SendOut( move_ptr( msg ) );
-        std::cout << "pipeline finished" << endl;
-
-        auto msg2    = make_uptr( MessageServantUpdate );
-        msg2->set_status( 3 );
-        master->SendOut( move_ptr( msg2 ) );
-        std::cout << "stand by" << endl;
-
-    }
+    void OnFinish();
 
     void OnException(const int& lastExitCode)
     {

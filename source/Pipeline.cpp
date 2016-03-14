@@ -38,5 +38,35 @@ void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
     //pipe_list_[0]->AddEnvironment()
 }
 
+void Pipeline::OnFinish()
+{ 
+    auto msg    = make_uptr( MessageTaskUpdate );
+    msg->set_status( scast<int>( TaskStatus::kFinished ) );
+    std::ifstream fin;
+    fin.open( "/data/input/allfiletest/output.mrt" );
+
+    std::cout << "[DEBUG ONLY]print output.mrt" << std::endl;
+    if ( fin )
+    {
+        while ( !fin.eof() )
+        {
+            std::string oneLine;
+            std::cout << oneLine << std::endl;
+            fin >> oneLine;
+            msg->add_output( oneLine );
+        }
+        fin.close();
+    }
+
+    auto master = Protocal::MessageHub::Instance()->Master();
+    master->SendOut( move_ptr( msg ) );
+    std::cout << "pipeline finished" << endl;
+
+    auto msg2    = make_uptr( MessageServantUpdate );
+    msg2->set_status( 3 );
+    master->SendOut( move_ptr( msg2 ) );
+    std::cout << "stand by" << endl;
+}
+
 
 NS_SERVANT_END
