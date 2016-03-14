@@ -1,4 +1,3 @@
-#include "..\include\Pipe.h"
 /***********************************************************************************
 This file is part of Project for MaratonServant
 For the latest info, see  https://github.com/Yhgenomics/MaratonServant.git

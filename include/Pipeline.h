@@ -76,8 +76,6 @@ public:
         if(lastExitCode != 0)
             OnException(lastExitCode);
 
-        GetNextPipe();
-
         if( pipe_list_.size() == 0 )
             OnFinish();
         else
@@ -87,8 +85,6 @@ public:
             currentPipe->Run();
             }
     }
-
-    void GetNextPipe();
 
     void OnFinish()
     {
