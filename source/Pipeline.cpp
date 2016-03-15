@@ -10,7 +10,7 @@ NS_SERVANT_BEGIN
 
 void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
 {
-    task_id_ = orignalMessage->originalid();
+    task_id_ = orignalMessage->id();
 
     system( (mkdir_ + task_root_ + task_id_).c_str() );
     std::ofstream fout( task_root_ + task_id_+ "/" + input_file_ );
