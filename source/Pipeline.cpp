@@ -11,9 +11,10 @@ NS_SERVANT_BEGIN
 void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
 {
     task_id_ = orignalMessage->id();
+    task_path_ = task_root_ + task_id_ + "/";
 
-    system( (mkdir_ + task_root_ + task_id_).c_str() );
-    std::ofstream fout( task_root_ + task_id_+ "/" + input_file_ );
+    system( (mkdir_ + task_path_).c_str() );
+    std::ofstream fout( task_path_ + input_file_ );
 
     for ( auto file : orignalMessage->input() )
     {
@@ -27,21 +28,20 @@ void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
         auto pipe = make_uptr( Pipe );
         pipe->DockerDaemon( "http://10.0.0.70:4243" );
         pipe->DockerImage( item.executor() );
-        //pipe->AddEnvironment( "t" , "2" );
-        //pipe->AddEnvironment( "refgen" , "hg19.fa" );
+
         for(auto param : item.parameters())
         {
             pipe->AddEnvironment( param );
         }
-        pipe->AddPathBind( task_root_+task_id_+"/" , "/work/" );
-        //pipe->AddPathBind( "/data/output/" , "/output/" );
-        pipe->AddPathBind( data_root_ , "/data/" );
-        //pipe->AddPathBind( "/dev/shm/" , "/dev/shm/" );
+
+        pipe->AddPathBind( task_path_, "/work/" );
+
+        pipe->AddPathBind( data_path_ , "/data/" );
+
         pipe->SetPipeExit( NextPipe );
-        AddPipe(std::move(pipe));
+        AddPipe( std::move( pipe ) );
     }
-    //for( auto item: orignalMessage->)
-    //pipe_list_[0]->AddEnvironment()
+
 }
 
 void Pipeline::OnFinish()
@@ -49,9 +49,8 @@ void Pipeline::OnFinish()
     auto msg    = make_uptr( MessageTaskUpdate );
     msg->set_status( scast<int>( TaskStatus::kFinished ) );
     std::ifstream fin;
-    fin.open( task_root_ + task_id_ + "/" + output_file_ );
+    fin.open( task_path_ + output_file_ );
 
-    std::cout << "[DEBUG ONLY]print output.mrt" << std::endl;
     if ( fin )
     {
         while ( !fin.eof() )
