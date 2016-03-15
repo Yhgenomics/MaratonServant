@@ -2,12 +2,18 @@
 #include "ExitCodeHandlerSet.h"
 #include <fstream>
 #include <iostream>
+#include <string>
+
+using std::string;
 
 NS_SERVANT_BEGIN
 
 void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
 {
-    std::ofstream fout("/data/input/allfiletest/input.mrt");
+    task_id_ = orignalMessage->originalid();
+
+    system( (mkdir_ + task_root_ + task_id_).c_str() );
+    std::ofstream fout( task_root_ + task_id_ + input_file_ );
 
     for ( auto file : orignalMessage->input() )
     {
@@ -27,9 +33,9 @@ void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
         {
             pipe->AddEnvironment( param );
         }
-        pipe->AddPathBind( "/data/input/allfiletest/" , "/work/" );
+        pipe->AddPathBind( task_root_+task_id_+"/" , "/work/" );
         //pipe->AddPathBind( "/data/output/" , "/output/" );
-        pipe->AddPathBind( "/data/ref/" , "/data/" );
+        pipe->AddPathBind( data_root_ , "/data/" );
         //pipe->AddPathBind( "/dev/shm/" , "/dev/shm/" );
         pipe->SetPipeExit( NextPipe );
         AddPipe(std::move(pipe));
@@ -43,7 +49,7 @@ void Pipeline::OnFinish()
     auto msg    = make_uptr( MessageTaskUpdate );
     msg->set_status( scast<int>( TaskStatus::kFinished ) );
     std::ifstream fin;
-    fin.open( "/data/input/allfiletest/output.mrt" );
+    fin.open( task_root_ + task_id_ + output_file_ );
 
     std::cout << "[DEBUG ONLY]print output.mrt" << std::endl;
     if ( fin )

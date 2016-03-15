@@ -93,6 +93,12 @@ public:
     }
 
 private:
+    string mkdir_       = "mkdir ";
+    string task_root_   = "/data/mrttask/";
+    string data_root_   = "/data/ref/";
+    string task_id_     = "";
+    string input_file_  = "input.mrt";
+    string output_file_ = "output.mrt";
     vector<uptr<Pipe>>  pipe_list_;
     friend Singleton<Pipeline>;
 };
