@@ -13,7 +13,7 @@ void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
     task_id_ = orignalMessage->originalid();
 
     system( (mkdir_ + task_root_ + task_id_).c_str() );
-    std::ofstream fout( task_root_ + task_id_ + input_file_ );
+    std::ofstream fout( task_root_ + task_id_+ "/" + input_file_ );
 
     for ( auto file : orignalMessage->input() )
     {
@@ -49,7 +49,7 @@ void Pipeline::OnFinish()
     auto msg    = make_uptr( MessageTaskUpdate );
     msg->set_status( scast<int>( TaskStatus::kFinished ) );
     std::ifstream fin;
-    fin.open( task_root_ + task_id_ + output_file_ );
+    fin.open( task_root_ + task_id_ + "/" + output_file_ );
 
     std::cout << "[DEBUG ONLY]print output.mrt" << std::endl;
     if ( fin )
