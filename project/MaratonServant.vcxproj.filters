@@ -158,7 +158,13 @@
     <ClCompile Include="..\source\Pipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\ServantConnector.cpp">
+    <ClCompile Include="..\source\MasterConnector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\MessageHub.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\WorkManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

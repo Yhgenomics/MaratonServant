@@ -28,18 +28,44 @@ limitations under the License.
 #define MASTER_CONNECTOR_H_
 
 #include "MRT.h"
-using namespace MRT;
 
+using MRT::Connector;
+using MRT::Session;
+
+// @Description : Connector to a Master session given by IP addresss and port.         
+// @Example     : Set first, and work after the Maraton be un.
+//                while( true )
+//                {
+//                    ...
+//                    Maraton::Instance()->Regist( make_uptr( MasterConnector , ip , port ) );
+//                    ...
+//                    Maraton::Instance()->Run();
+//                }
+// @Note        : As a Connector, three interfaces must be override is the CreatSession
+//                OnSessionOpen and the OnSessionClose.
+//                Do not use a smart pointer on the session as a constrain from
+//                the Maraton framewrok. 
 class MasterConnector : public Connector
 {
 public:
-    MasterConnector( std::string addr , int port ) : Connector( addr , port ) {};
-    ~MasterConnector(){
-    //Maraton::Instance()->Regist( make_uptr( MasterConnector , "10.0.0.219" , 90 ) );
-    }
 
+    // Constructor
+    MasterConnector( std::string addr , int port ) : Connector( addr , port ) {};
+    
+    // Desctrucotr
+    ~MasterConnector(){}
+
+    // Callback when the business session is connected.
     virtual Session *   CreateSession  () override;
+    
+    // Callback when the business session opening.
+    // @param   : session is the pointer to the session and can be cast to 
+    //            the pointer to MasterSession by static cast.
     virtual void        OnSessionOpen  ( Session * session ) override;
+    
+    // Callback when the business session closing.
+    // @param   : session is the pointer to the session and can be cast to 
+    //            the pointer to MasterSession by static cast. 
     virtual void        OnSessionClose ( Session * session ) override;
 };
 

@@ -27,64 +27,96 @@ limitations under the License.
 #ifndef DOCKERHELPER_H_
 #define DOCKERHELPER_H_
 
-#include "MRT.h"
 #include "ServantGloable.h"
+#include "MRT.h"
 #include <string>
 
-using namespace std;
-using namespace MRT;
+using std::string;
+using std::vector;
+using std::map;
+using MRT::Singleton;
 
 NS_SERVANT_BEGIN
 
+// @Description : Use Docker via the REST API            
+// @Example     : A docker container can be searched, pulled, create, run and 
+//                waited for it's exit code.
+//                The REST API does not cantain the docker run command, so here with DockerHelper,
+//                just bind the exit code handler and use it's Run function.                   
+//                {
+//                    DockerHelper::Instance()->BindExitCodeHandler( someExitHandler );
+//                    DockerHelper::Instance()->Run( daemon , image , binds , environments );
+//                }                
+// @Note        : the ExitCode Handler should be bind before the docker start to run  
 class DockerHelper :public Singleton<DockerHelper>
 {
 public:
-    // Docker Controler 
-    virtual size_t    Search() { return 0; };
+    
+    // Pull one docker image from registry 
+    // @param   : dest is the docker daemon such as http://127.0.0.1:1234
+    // @param   : source is the docker image's name 
     virtual size_t    Pull  ( const string &dest , const string &source );
 
+    // Create one docker container
+    // @param   : dest is the docker daemon such as http://127.0.0.1:1234
+    // @param   : image is the docker image's name
+    // @param   : binds is the path binds from local path to docker path
+    // @param   : enviroment is the variables and their values in container
+    // @note    : The container's ID is in the response message. 
     virtual size_t    Create( const string           &dest  ,
                               const string           &image ,
                               const vector< string > &binds ,
                               const vector< string > &environment );
 
+    // Start a docker container
+    // @param   : dest is the docker daemon such as http://127.0.0.1:1234
+    // @param   : containerID is the ID of a container
+    // @note    : container ID is given at the response message for Creating
     virtual size_t    Start ( const string &dest , const string &containerID );
 
+    // Wait a docker container's exit code
+    // @param   : dest is the docker daemon such as http://127.0.0.1:1234
+    // @param   : containerID is the ID of a container
     virtual size_t    Wait  ( const string &dest , const string &containerID );
 
+    // Run equals to Pull => Create => Start => Wait
+    // @param   : dest is the docker daemon such as http://127.0.0.1:1234
+    // @param   : image is the docker image's name
+    // @param   : binds is the path binds from local path to docker path
+    // @param   : enviroment is the variables and their values in container
     virtual size_t    Run   ( const string &dest ,
                               const string &image ,
                               const vector< string > &binds ,
                               const vector< string >  &environment );
 
-    virtual size_t    Stop  () { return 0; };
-
-    virtual size_t    Watch ( const string &dest , const string &containerID );
-
-    // Handler Binder
+    // Bind handler for a docker's exit code 
     virtual void      BindExitCodeHandler( ExitCodeHandler  one_handler )
     {
         exit_code_delegate_ = one_handler;
     }
-
+    
+    // Bind handler for exceptions
     virtual void      BindExceptionHandler( ExceptionHandler one_handler )
     {
         exception_delegate_ = one_handler;
     }
 
+    // Bind handler from upper layer logger system .
     virtual void      BindLogHandler( LogHandler       one_handler )
     {
         log_delegate_       = one_handler;
     }
 
+    // true when need to trigger the next action
     bool              is_run_mode_          = false;
-    //pull_handler      pull_result          = nullptr;
+    
     ExitCodeHandler   exit_code_delegate_   = nullptr;
     ExceptionHandler  exception_delegate_   = nullptr;
     LogHandler        log_delegate_         = nullptr;
 
 private:
 
+    // const values for docker REST API
     const string      kDockerHeader        = "Content-Type: application/json";
     const string      kListContianers      = "/containers/json";
     const string      kCreateContianer     = "/containers/create";
@@ -94,7 +126,10 @@ private:
     const string      kFromSource          = "fromSrc=";
     const string      kFromImage           = "fromImage=";
 
-    map<string,string> contianer_list_;
+    // container ID and status record
+    // @note    : For latter usage of docker contianer management 
+    map<string , string> contianer_list_;
+    
     friend Singleton<DockerHelper>;
 };
 

@@ -11,6 +11,8 @@ using std::string;
 using json = nlohmann::json;
 using std::cout;
 using std::endl;
+using MRT::WebClient;
+using MRT::HTTPResponse;
 
 size_t DockerHelper::Pull( const string &dest ,
                            const string& source )
@@ -129,12 +131,6 @@ size_t DockerHelper::Wait( const string &dest ,
                           }
                       }
     );
-    return 0;
-}
-
-size_t DockerHelper::Watch( const string &dest , 
-                            const string &containerID )
-{
     return 0;
 }
 

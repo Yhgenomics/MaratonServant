@@ -18,32 +18,45 @@ limitations under the License.
 ***********************************************************************************/
 
 /***********************************************************************************
-* Description   : Kinds of predefine exit code handler. Just for convenience.
+* Description   : Manager the work on servant.
 * Creator       : Ke Yang(keyang@yhgenomics.com)
-* Date          : 2016/3/8
+* Date          : 2016/3/7
 * Modifed       : When      | Who       | What
 ***********************************************************************************/
 
-#ifndef EXIT_CODE_HANDLER_SET_H_
-#define EXIT_CODE_HANDLER_SET_H_
+#include "WorkManager.h"
 
-#include "Pipeline.h"
-#include <iostream>
-        
 NS_SERVANT_BEGIN
 
-// Show the exit code and do notheing
-void DefalutExit( const int& exitCode )
+// Add one pipeline from a message
+
+void WorkManager::AddPipeline( uptr<MessageTaskDeliver> message )
 {
-    std::cout << "upper level exit code handler received : " << exitCode << std::endl;
+    // for(auto onePipe : msg )
+    task_id_     = message->originalid();
+    pipeline_id_ = message->pipeline().id();
+    core_        = "8";
+    memory_      = "32000";
+    Pipeline::Instance()->ParseFromMessage( move_ptr( message ) );
 }
 
-// For pipeline to call next pipe
-void NextPipe( const int& exitCode )
+void WorkManager::StartWork()
 {
-    Pipeline::Instance()->RunNext( exitCode );
+    std::cout << "Task ID " << task_id_ << " start " << std::endl;
+
+    auto master = Protocal::MessageHub::Instance()->Master();
+    auto msg    = make_uptr( MessageServantUpdate );
+    msg->set_status( ServantStatus::kWorking );
+    master->SendOut( move_ptr( msg ) );
+    Pipeline::Instance()->Run();
+}
+
+void WorkManager::FinishWork()
+{
+    auto master = Protocal::MessageHub::Instance()->Master();
+    auto msg    = make_uptr( MessageServantUpdate );
+    msg->set_status( ServantStatus::kStandby );
+    master->SendOut( move_ptr( msg ) );
 }
 
 NS_SERVANT_END
-
-#endif

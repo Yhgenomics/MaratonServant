@@ -168,10 +168,12 @@
     <ClCompile Include="..\source\AddAllHandler.cpp" />
     <ClCompile Include="..\source\DockerHelper.cpp" />
     <ClCompile Include="..\source\GeneralSession.cpp" />
+    <ClCompile Include="..\source\MessageHub.cpp" />
     <ClCompile Include="..\source\Pipe.cpp" />
     <ClCompile Include="..\source\Pipeline.cpp" />
-    <ClCompile Include="..\source\ServantConnector.cpp" />
+    <ClCompile Include="..\source\MasterConnector.cpp" />
     <ClCompile Include="..\source\ServantMain.cpp" />
+    <ClCompile Include="..\source\WorkManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

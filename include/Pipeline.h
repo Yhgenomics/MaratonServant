@@ -39,11 +39,15 @@ limitations under the License.
 
 NS_SERVANT_BEGIN
 
-class Pipeline:public Singleton<Pipeline>
+// @Description : Pipeline is given by a subtask from master, it contains multi number of
+//                pipes. All pipes in one pipeline should be run one after another. 
+// @Example     : Use ParseFromMessage to create a pipeline.
+//                Use Run to start it. 
+class Pipeline :public Singleton<Pipeline>
 {
 public:
 
-    //Task Status.
+    // Task Status.
     enum TaskStatus
     {
         kUnknow = 0 ,
@@ -54,45 +58,31 @@ public:
         kError
     };
 
+    // Add one Pipe to pipeline
     void  AddPipe( uptr<Pipe> pipe )
     {
         pipe_list_.push_back( std::move( pipe ) );
     }
 
+    // Parse the pipeline informantions from a protobuf Message.
     void ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage );
 
-    void Run()
-    {
-        RunNext(0);
-    }
+    // Start the pipeline
+    void Run();
 
-    void RunNext(const int& lastExitCode)
-    {
-        if(lastExitCode != 0)
-            OnException(lastExitCode);
+    // Run Next based on the exit Code from last pipe
+    // @note    : exit code is 0 before the first pipe run.
+    void RunNext( const int& lastExitCode );
 
-        if( pipe_list_.size() == 0 )
-            OnFinish();
-        else
-            {
-                auto currentPipe = std::move(pipe_list_[0]);
-                pipe_list_.erase(pipe_list_.begin());
-                currentPipe->Run();
-            }
-    }
-
+    // Called when pipeline finish
     void OnFinish();
 
-    void OnException(const int& lastExitCode)
-    {
-        auto master = Protocal::MessageHub::Instance()->Master();
-        auto msg    = make_uptr( MessageTaskUpdate );
-        msg->set_status( TaskStatus::kError );
-        master->SendOut( move_ptr( msg ) );
-        std::cout << "Exception happended code "<< lastExitCode << endl;
-    }
+    // Called when exception happens
+    // @note    : any non-zero exit code is consider as exception
+    void OnException( const int& lastExitCode );
 
 private:
+
     string mkdir_       = "mkdir ";
     string task_root_   = "/data/mrttask/";   
     string data_path_   = "/data/ref/";

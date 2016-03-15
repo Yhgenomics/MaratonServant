@@ -41,90 +41,71 @@ limitations under the License.
 
 namespace Protocal
 {
+    // @Description : Basic Class for kinds of message handler used by MessageHub 
+    //                automaticly after be add to the MessageHub.Check MessageHub
+    //                for more details.
+    // @Example     : namespace Protocal
+    //                {
+    //                    class SomeMessageHandler : public MessageHandler
+    //                    {
+    //                    public:
+    //                        MessageGreetingHandler()
+    //                        {
+    //                            MessageType("SomeMessage");
+    //                            Method = []( GeneralSession* session , 
+    //                                         const void* pData , 
+    //                                         size_t length )     
+    //                            {
+    //                                //TODO add your codes here
+    //                                return true;
+    //                            };
+    //                        }
+    //                    };
+    //                }              
+    // @Note        : Add the derived class to MessageHub to handle message automaticly.
+    //                the message is in pData,it can be a protobuf message, or any
+    //                other type determined by the original sender.
     class MessageHub : public MRT::Singleton<MessageHub>
     {
     public:
+
+        // Constructor
         MessageHub()  {};
+
+        // Destructor
         ~MessageHub() {};
 
-        bool AddHandler( uptr<MessageHandler> oneHandler )
-        {
-            if ( oneHandler->Method == nullptr )
-            {
-                return false;
-            }
+        // Add one handler to the Hub
+        bool AddHandler( uptr<MessageHandler> oneHandler );        
 
-            bool result;
-            size_t messageID = HashName( oneHandler->MessageType() );
-
-            if ( handler_map_.find( messageID ) == handler_map_.end() )
-            {
-                handler_map_[ messageID ] = std::move( oneHandler );
-                result = true;
-            }
-
-            else
-            {
-                result = false;
-            }
-
-            return result;
-        };
-
+        // Gloable Message handlers management
+        // @note    : Implement in AddAllHandler.cpp seprately.
         bool AddAllHandlers();
 
-        int Handle( GeneralSession* session , const void* pData , size_t length )
-        {
-            size_t messageID = 0;
-            char* data = ( char* )pData;
-            messageID = *( ( size_t* )data );
-            handler_map_[ messageID ]->Method( session , pData , length );
-            return 0;
-        }
+        // Handle one message arcoding to the handler map
+        int Handle( GeneralSession* session , const void* pData , size_t length );
+       
 
-        uptr<MRT::Buffer> Build( uptr<::google::protobuf::Message> message )
-        {
-            size_t message_id = HashName( message->GetTypeName() );
-            std::string body = message->SerializeAsString();
-            uptr<MRT::Buffer> buffer = make_uptr( MRT::Buffer , body.size() + sizeof( size_t ) );
-
-            char* pbuf = buffer->Data();
-            *( ( size_t* )pbuf ) = message_id;
-            pbuf += sizeof( size_t );
-            memcpy( pbuf , body.c_str() , body.size() );
-            return move_ptr( buffer );
-        }
-        
+        // Build the protobuf message to buffer
+        uptr<MRT::Buffer> Build( uptr<::google::protobuf::Message> message );
+       
+        // Getter and Setter for Master seesion's pointer.
+        // @note    : Record the Master session
         MasterSession*  Master()            { return master_session_;  }
         void Master( MasterSession* value ) { master_session_ = value; }
 
-        bool SendHeartBeat()
-        {
-            if ( master_session_ )
-            {
-                auto msg = make_uptr( MessageHeartBeat );
-                msg->set_code( 161 );
-                master_session_->SendOut( move_ptr( msg ) );
-                return false;
-            }
-            else
-                return true;
-        }
+        // Heartbeat message will refresh Servant session at Master
+        // and avoiding be kicked off.
+        bool SendHeartBeat();
+
     private:
+        // Handler map keep the messageID and Handler in a 1:1 relationship
         std::map<size_t , uptr<MessageHandler> > handler_map_;
 
-        size_t HashName( std::string messageType )
-        {
-            size_t result = 0;
-            for ( int i = 0; i < messageType.length(); i++ )
-            {
-                char b = ( char )messageType[ i ];
-                size_t v = ( ( ( size_t )b << ( ( i % ( char )8 ) * ( char )8 ) ) | i );
-                result |= ( size_t )( v );
-            }
-            return result;
-        }
+        // Hash the name of a message
+        size_t HashName( std::string messageType );        
         
+        // the only Master session for this Servant
         MasterSession * master_session_ = nullptr;
 
         friend MRT::Singleton<MessageHub>;

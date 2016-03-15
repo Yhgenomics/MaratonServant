@@ -44,6 +44,32 @@ void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
 
 }
 
+// Start the pipeline
+
+void Pipeline::Run()
+{
+    RunNext( 0 );
+}
+
+
+// Run Next based on the exit Code from last pipe
+// @note    : exit code is 0 before the first pipe run.
+
+void Pipeline::RunNext( const int & lastExitCode )
+{
+    if ( lastExitCode != 0 )
+        OnException( lastExitCode );
+
+    if ( pipe_list_.size() == 0 )
+        OnFinish();
+    else
+    {
+        auto currentPipe = std::move( pipe_list_[ 0 ] );
+        pipe_list_.erase( pipe_list_.begin() );
+        currentPipe->Run();
+    }
+}
+
 void Pipeline::OnFinish()
 { 
     auto msg    = make_uptr( MessageTaskUpdate );
@@ -69,12 +95,21 @@ void Pipeline::OnFinish()
 
     auto master = Protocal::MessageHub::Instance()->Master();
     master->SendOut( move_ptr( msg ) );
-    std::cout << "pipeline finished" << endl;
+    std::cout << "pipeline finished" << std::endl;
 
     auto msg2    = make_uptr( MessageServantUpdate );
     msg2->set_status( 3 );
     master->SendOut( move_ptr( msg2 ) );
-    std::cout << "stand by" << endl;
+    std::cout << "stand by" << std::endl;
+}
+
+void Pipeline::OnException( const int & lastExitCode )
+{
+    auto master = Protocal::MessageHub::Instance()->Master();
+    auto msg    = make_uptr( MessageTaskUpdate );
+    msg->set_status( TaskStatus::kError );
+    master->SendOut( move_ptr( msg ) );
+    std::cout << "Exception happended code " << lastExitCode << std::endl;
 }
 
 

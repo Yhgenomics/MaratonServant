@@ -3,6 +3,8 @@
 #include "MessageHub.h"
 #include <iostream>
 
+using MRT::SyncWorker;
+
 Session * MasterConnector::CreateSession()
 {
     return new MasterSession();

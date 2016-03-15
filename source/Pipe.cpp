@@ -54,4 +54,12 @@ void Pipe::AddEnvironment( string pattern )
 
 
 }
+
+// Run the Pipe
+
+void Pipe::Run()
+{
+    DockerHelper::Instance()->BindExitCodeHandler( PipeExit );
+    DockerHelper::Instance()->Run( docker_daemon_ , docker_image_ , binds_ , environments_ );
+}
 NS_SERVANT_END

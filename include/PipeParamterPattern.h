@@ -38,10 +38,18 @@ using std::vector;
 using std::string;
 using std::tuple;
 
+// @Description : Pipe's parameter may contains some pattern from upper layer
+//                for description local environments or values. Such Marcos
+//                must be translated to the right string that a docker 
+//                container can use.
 class ParameterPattern :public MRT::Singleton<ParameterPattern>
 {
+    
+    // delegate to replace a string pattern to the right value
     typedef std::function<string()> ReplaceDelegate;
+
 public:
+
     ParameterPattern()
     {
         /*code_book_.push_back( tuple<string , ReplaceDelegate>
@@ -65,6 +73,7 @@ public:
                               WorkManager::Instance()->Memory ) );*/
     }
 
+    // Replace any patterns in a string by the rules in code_book_
     bool Replace( string& str )
     {
         for ( auto item : code_book_ )
@@ -82,8 +91,11 @@ public:
         return true;
     }
 
+    // Rules on pattern string and the delegate for it
     vector<tuple<string , ReplaceDelegate >> code_book_;
+
 private:
     friend MRT::Singleton<ParameterPattern>;
+
 };
 NS_SERVANT_END

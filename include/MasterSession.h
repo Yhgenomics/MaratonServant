@@ -33,6 +33,9 @@ limitations under the License.
 #include "GeneralSession.h"
 #include "MRT.h"
 
+// @Description : Servant session is the session responseable to a Servant node.
+// @Example     : Be created and use in Servant listener. See ServantListener for
+//                more deatails   
 class MasterSession :
     public GeneralSession
 {
@@ -40,10 +43,6 @@ public:
 
     MasterSession(){};
     virtual ~MasterSession() override{};
-
-protected: 
-
-private: 
 
 };
 

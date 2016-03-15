@@ -34,34 +34,40 @@ limitations under the License.
 
 NS_SERVANT_BEGIN
 
+// @Description : One Pipe will call one docker container, is one step in a pipeline.
 class Pipe
 {
 public:
 
+    // Add the enviroment by key and value
     void  AddEnvironment( string key , string value );
 
+    // Add the enviroment by patterns
     void  AddEnvironment( string pattern );
 
-
+    // Add one local-to-docker Path bind
     void AddPathBind( string localPath , string dockerPath )
     {
         binds_.push_back( localPath + ":" + dockerPath );
     }
 
+    // Getter and Setter for Docker Daemon
+    // @note    : A docker daemon is like http://127.0.0.1:1234
     string  DockerDaemon()                { return docker_daemon_;   }
     void    DockerDaemon( string daemon ) { docker_daemon_ = daemon; }
+    
+    // Getter and Setter for Docker Image Name
     string  DockerImage()                 { return docker_image_;    }
     void    DockerImage( string image )   { docker_image_ = image;   }
+
+    // Set the exit handler to pipe's docker exit code handler
     void    SetPipeExit( ExitCodeHandler onExit ) { PipeExit = onExit; }
 
-    void Run()
-    {
-        //DockerHelper::Instance()->Pull(docker_daemon_, docker_image_ );
-        DockerHelper::Instance()->BindExitCodeHandler( PipeExit );
-        DockerHelper::Instance()->Run(  docker_daemon_ , docker_image_ , binds_ , environments_ );
-    }
+    // Run the Pipe
+    void Run();
 
 private: 
+
     string          docker_image_;
     string          docker_contianer_id_;
     string          docker_daemon_;

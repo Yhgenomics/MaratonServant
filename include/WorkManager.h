@@ -34,10 +34,17 @@ NS_SERVANT_BEGIN
 
 using std::string;
 
+// @Description : Manage the work status on a servant.            
+// @Example     : Used in message handler for task delivering.               
+//                {
+//                    NS_SERVANT::WorkManager::Instance()->AddPipeline( move_ptr( msg ) );
+//                    NS_SERVANT::WorkManager::Instance()->StartWork();
+//                }                
 class WorkManager :public MRT::Singleton<WorkManager>
 {
 public:
-    //Task Status.
+
+    // Task status
     enum TaskStatus
     {
         kTaskUnknow = 0 ,
@@ -48,6 +55,7 @@ public:
         kTaskError
     };
 
+    // Servant status
     enum ServantStatus
     {
         kUnknow              = 0 ,
@@ -59,47 +67,37 @@ public:
         kException           = 20
     };
     
+    // Getter and Setter of Servant status
     ServantStatus SelfStatus()             { return self_status_ ; }
     void SelfStatus( ServantStatus value ) { self_status_ = value; }
 
+    // Getter and Setter of Task status
     TaskStatus WorkSataus()                { return work_status_;  }
     void WorkStatue( TaskStatus value )    { work_status_ = value; }
 
-    void AddPipeline(uptr<MessageTaskDeliver> message)
-    {
-       // for(auto onePipe : msg )
-        task_id_     = message->originalid();
-        pipeline_id_ = message->pipeline().id();
-        core_        = "8";
-        memory_      = "32000";
-        Pipeline::Instance()->ParseFromMessage( move_ptr( message ) );
-    }
+    // Add one pipeline from a message
+    void AddPipeline( uptr<MessageTaskDeliver> message );
 
-    void StartWork()
-    {
-        cout << "Task ID " << task_id_ << " start "<< endl;
+    // Start the task
+    void StartWork();
 
-        auto master = Protocal::MessageHub::Instance()->Master();
-        auto msg    = make_uptr( MessageServantUpdate );
-        msg->set_status( ServantStatus::kWorking );
-        master->SendOut( move_ptr( msg ) );
-        Pipeline::Instance()->Run();
-    }
+    // Finish the task
+    void FinishWork();
 
-    void FinishWork()
-    {
-        auto master = Protocal::MessageHub::Instance()->Master();
-        auto msg    = make_uptr( MessageServantUpdate );
-        msg->set_status( ServantStatus::kStandby );
-        master->SendOut( move_ptr( msg ) );
-    }
-
+    // Return Current Task ID
     string TaskID()     { return task_id_;     }
+
+    // Return PipelineID
     string PipelineID() { return pipeline_id_; }
+
+    // Return the Core number of CPUs
     string Core()       { return core_;        }
+
+    // Return the memory Size
     string Memory()     { return memory_;      }
 
 private:
+
     ServantStatus self_status_ = ServantStatus::kUnknow;
     TaskStatus    work_status_ = TaskStatus::kTaskUnknow;
     string        task_id_;
