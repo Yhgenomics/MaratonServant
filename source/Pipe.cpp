@@ -38,20 +38,19 @@ void Pipe::AddEnvironment( string& pattern )
 {
    /* ParameterPattern::Instance()->Replace( pattern );*/
 
-   string temp="$taskid$";
+   string temp = "$taskid$";
    if ( pattern.find( temp ) != string::npos )
        pattern.replace( pattern.find( temp ) ,
                         temp.size() ,
                         WorkManager::Instance()->SubtaskID() );
 
-   temp="$core$";
+   temp = "$core$";
    if ( pattern.find( temp ) != string::npos )
        pattern.replace( pattern.find( temp ) ,
                         temp.size() ,
                         WorkManager::Instance()->Core() );
 
    environments_.push_back( pattern );
-
 
 }
 

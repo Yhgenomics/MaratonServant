@@ -76,7 +76,7 @@ public:
     // Replace any patterns in a string by the rules in code_book_
     bool Replace( string& str )
     {
-        for ( auto item : code_book_ )
+        for ( const auto& item : code_book_ )
         {
             while ( str.find( std::get<0>( item ) ) != string::npos )
             {
