@@ -66,7 +66,7 @@ namespace Protocal
                                     size_t          length )> HandlerMethod;
 
         std::string MessageType()                    { return message_type_;  }
-        void        MessageType( std::string value ) { message_type_ = value; }
+        void MessageType( const std::string& value ) { message_type_ = value; }
 
         HandlerMethod   Method = nullptr;
         std::string     message_type_;

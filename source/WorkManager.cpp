@@ -32,31 +32,31 @@ NS_SERVANT_BEGIN
 
 void WorkManager::AddPipeline( uptr<MessageTaskDeliver> message )
 {
-    // for(auto onePipe : msg )
-    task_id_     = message->originalid();
-    pipeline_id_ = message->pipeline().id();
-    core_        = "8";
-    memory_      = "32000";
+    main_task_id_ = message->originalid();
+    subtask_id_   = message->id();
+    pipeline_id_  = message->pipeline().id();
+    core_         = "8";
+    memory_       = "32000";
     Pipeline::Instance()->ParseFromMessage( move_ptr( message ) );
 }
 
 void WorkManager::StartWork()
 {
-    std::cout << "Task ID " << task_id_ << " start " << std::endl;
+    std::cout << "Task ID "    << main_task_id_ << std::endl
+              << "Subtask ID " << subtask_id_   << std::endl
+              << " start "     << std::endl;
 
-    auto master = Protocal::MessageHub::Instance()->Master();
-    auto msg    = make_uptr( MessageServantUpdate );
-    msg->set_status( ServantStatus::kWorking );
-    master->SendOut( move_ptr( msg ) );
+    Protocal::MessageHub::Instance()->SendServantUpdate( ServantStatus::kWorking );
+
     Pipeline::Instance()->Run();
 }
 
 void WorkManager::FinishWork()
 {
-    auto master = Protocal::MessageHub::Instance()->Master();
-    auto msg    = make_uptr( MessageServantUpdate );
-    msg->set_status( ServantStatus::kStandby );
-    master->SendOut( move_ptr( msg ) );
+    Protocal::MessageHub::Instance()->SendServantUpdate( ServantStatus::kStandby );
+    std::cout << "Task ID "    << main_task_id_ << std::endl
+              << "Subtask ID " << subtask_id_   << std::endl
+              << " finish "    << std::endl;
 }
 
 NS_SERVANT_END

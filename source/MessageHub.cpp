@@ -105,8 +105,43 @@ namespace Protocal
             return true;
     }
 
+    // Send update message only contains task status
+    // @note    : Used any status except the successful finishing
+    bool MessageHub::SendTaskUpdate( const TaskStatus & status )
+    {
+        auto msg    = make_uptr( MessageTaskUpdate );
+        msg->set_status( status );
+        master_session_->SendOut( move_ptr( msg ) );
+        return true;
+    }
+
+    // Send update message contains task status and output information
+    // @note    : Used when a task/pipeline finishing without any error
+    bool MessageHub::SendTaskUpdate( const TaskStatus & status , const vector<string>& outputs )
+    {
+        auto msg    = make_uptr( MessageTaskUpdate );
+        msg->set_status( status );
+
+        for ( auto const& item : outputs )
+        {
+            msg->add_output( item );
+        }
+
+        master_session_->SendOut( move_ptr( msg ) );
+        return true;
+    }
+
+    // Send update message contains Servant status
+    bool MessageHub::SendServantUpdate( const ServantStatus & status )
+    {
+        auto msg    = make_uptr( MessageServantUpdate );
+        msg->set_status( status );
+        master_session_->SendOut( move_ptr( msg ) );
+        return true;
+    }
+
     // Hash the name of a message
-    size_t MessageHub::HashName( std::string messageType )
+    size_t MessageHub::HashName( const std::string& messageType )
     {
         size_t result = 0;
         for ( int i = 0; i < messageType.length(); i++ )

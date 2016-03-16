@@ -1,4 +1,5 @@
 #include "Pipeline.h"
+#include "WorkManager.h"
 #include "ExitCodeHandlerSet.h"
 #include <fstream>
 #include <iostream>
@@ -10,7 +11,7 @@ NS_SERVANT_BEGIN
 
 void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
 {
-    task_id_ = orignalMessage->id();
+    task_id_   = orignalMessage->id();
     task_path_ = task_root_ + task_id_ + "/";
 
     system( (mkdir_ + task_path_).c_str() );
@@ -26,7 +27,7 @@ void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
     for ( auto item : orignalMessage->pipeline().pipes() )
     {
         auto pipe = make_uptr( Pipe );
-        pipe->DockerDaemon( "http://10.0.0.70:4243" );
+        pipe->DockerDaemon( docker_daemon );
         pipe->DockerImage( item.executor() );
 
         for(auto param : item.parameters())
@@ -34,9 +35,9 @@ void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
             pipe->AddEnvironment( param );
         }
 
-        pipe->AddPathBind( task_path_, "/work/" );
+        pipe->AddPathBind( task_path_ , docker_work_ );
 
-        pipe->AddPathBind( data_path_ , "/data/" );
+        pipe->AddPathBind( data_path_ , docker_data_ );
 
         pipe->SetPipeExit( NextPipe );
         AddPipe( std::move( pipe ) );
@@ -45,7 +46,6 @@ void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
 }
 
 // Start the pipeline
-
 void Pipeline::Run()
 {
     RunNext( 0 );
@@ -54,7 +54,6 @@ void Pipeline::Run()
 
 // Run Next based on the exit Code from last pipe
 // @note    : exit code is 0 before the first pipe run.
-
 void Pipeline::RunNext( const int & lastExitCode )
 {
     if ( lastExitCode != 0 )
@@ -72,8 +71,35 @@ void Pipeline::RunNext( const int & lastExitCode )
 
 void Pipeline::OnFinish()
 { 
-    auto msg    = make_uptr( MessageTaskUpdate );
-    msg->set_status( scast<int>( TaskStatus::kFinished ) );
+    vector<string> outputs; 
+    GatherOutputInformation( outputs );
+    Protocal::MessageHub::Instance()->SendTaskUpdate( TaskStatus::kFinished , outputs );
+    std::cout << "pipeline finished" << std::endl;
+
+    WorkManager::Instance()->FinishWork();
+}
+
+void Pipeline::OnException( const int & lastExitCode )
+{
+    Protocal::MessageHub::Instance()->SendTaskUpdate( TaskStatus::kTaskError );
+    std::cout << "Exception happended code " << lastExitCode << std::endl;
+}
+
+// Check if a string contains valid content
+inline bool Pipeline::IsOutputLineValid( const string & oneLine )
+{
+    return (    oneLine != ""
+             && oneLine != "\r"
+             && oneLine != "\n"
+             && oneLine != "\r\n"
+             && oneLine != "\n\r" );
+}
+
+// Gathering all outputs informantion
+// @param   : outputs is the contianer gathering outputs informations.
+bool Pipeline::GatherOutputInformation( vector<string>& outputs )
+{
+    bool result = false;
     std::ifstream fin;
     fin.open( task_path_ + output_file_ );
 
@@ -83,34 +109,19 @@ void Pipeline::OnFinish()
         {
             std::string oneLine;
             fin >> oneLine;
-            if(   oneLine != ""
-               && oneLine != "\r"
-               && oneLine != "\n"
-               && oneLine != "\r\n"
-               && oneLine != "\n\r" )
-            msg->add_output( oneLine );
+            if ( IsOutputLineValid( oneLine ) )
+            {
+                outputs.push_back( oneLine );
+            }
         }
         fin.close();
+        result = true;
     }
-
-    auto master = Protocal::MessageHub::Instance()->Master();
-    master->SendOut( move_ptr( msg ) );
-    std::cout << "pipeline finished" << std::endl;
-
-    auto msg2    = make_uptr( MessageServantUpdate );
-    msg2->set_status( 3 );
-    master->SendOut( move_ptr( msg2 ) );
-    std::cout << "stand by" << std::endl;
+    else
+    {
+        result = false;
+    }
+    return result;
 }
-
-void Pipeline::OnException( const int & lastExitCode )
-{
-    auto master = Protocal::MessageHub::Instance()->Master();
-    auto msg    = make_uptr( MessageTaskUpdate );
-    msg->set_status( TaskStatus::kError );
-    master->SendOut( move_ptr( msg ) );
-    std::cout << "Exception happended code " << lastExitCode << std::endl;
-}
-
 
 NS_SERVANT_END

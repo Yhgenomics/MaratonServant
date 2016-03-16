@@ -31,13 +31,21 @@ limitations under the License.
 #include "GeneralSession.h"
 #include "MasterSession.h"
 #include "MessageHeartBeat.pb.h"
+#include "MessageServantUpdate.pb.h"
+#include "MessageTaskUpdate.pb.h"
+#include "ServantGloable.h"
 #include "MRT.h"
 #include <string>
 #include <map>
 #include <iostream>
 #include <functional>
+#include <vector>
 #include <google/protobuf/message.h>
 
+using std::vector;
+using std::string;
+using NS_SERVANT::TaskStatus;
+using NS_SERVANT::ServantStatus;
 
 namespace Protocal
 {
@@ -98,12 +106,24 @@ namespace Protocal
         // and avoiding be kicked off.
         bool SendHeartBeat();
 
+        // Send update message only contains task status
+        // @note    : Used any status except the successful finishing
+        bool SendTaskUpdate( const TaskStatus&  status );
+
+        // Send update message contains task status and output information
+        // @note    : Used when a task/pipeline finishing without any error
+        bool SendTaskUpdate( const TaskStatus&  status , 
+                             const vector<string>& outputs );
+
+        // Send update message contains Servant status
+        bool SendServantUpdate( const ServantStatus& status );
+
     private:
         // Handler map keep the messageID and Handler in a 1:1 relationship
         std::map<size_t , uptr<MessageHandler> > handler_map_;
 
         // Hash the name of a message
-        size_t HashName( std::string messageType );        
+        size_t HashName( const std::string& messageType );        
         
         // the only Master session for this Servant
         MasterSession * master_session_ = nullptr;

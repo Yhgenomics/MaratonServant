@@ -55,7 +55,7 @@ public:
     // Pull one docker image from registry 
     // @param   : dest is the docker daemon such as http://127.0.0.1:1234
     // @param   : source is the docker image's name 
-    virtual size_t    Pull  ( const string &dest , const string &source );
+    virtual size_t    Pull  ( const string &dest , const string &image );
 
     // Create one docker container
     // @param   : dest is the docker daemon such as http://127.0.0.1:1234
@@ -116,15 +116,61 @@ public:
 
 private:
 
+    // Get string for post a pull command
+    // @param   : dest is the docker daemon such as http://127.0.0.1:1234
+    // @param   : image is the docker image's name
+    string GetPullString( const string& dest , const string& image )
+    {
+        return dest + kCreateImage + kParamsToken + kFromImage + image;
+    }
+
+    // Get string for post a create command
+    string GetCreateString( const string& dest )
+    {
+        return dest + kCreateContainer;
+    }
+
+    // Get string for post a start command
+    // @param   : dest is the docker daemon such as http://127.0.0.1:1234
+    // @param   : containerID is the ID of a container
+    string GetStartString( const string &dest , const string &containerID )
+    {
+        return dest + KContainers + containerID + kStartContainer;
+    }
+    
+    // Get string for post a wait command
+    // @param   : dest is the docker daemon such as http://127.0.0.1:1234
+    // @param   : containerID is the ID of a container
+    string GetWaitString( const string &dest , const string &containerID )
+    {
+        return dest + KContainers + containerID + kWaitContainer;
+    }
+
     // const values for docker REST API
-    const string      kDockerHeader        = "Content-Type: application/json";
-    const string      kListContianers      = "/containers/json";
-    const string      kCreateContianer     = "/containers/create";
-    const string      kStartContianer      = "/containers/(id)/start";
-    const string      kCreateImage         = "/images/create";
-    const string      kParamsToken         = "?";
-    const string      kFromSource          = "fromSrc=";
-    const string      kFromImage           = "fromImage=";
+    const string      kDockerHeaderKey   = "Content-Type";
+    const string      kDockerHeaderValue = "application/json";  
+    const string      kCreateContainer   = "/containers/create";
+    const string      KContainers        = "/containers/";
+    const string      kStartContainer    = "/start";
+    const string      kWaitContainer     = "/wait";
+    const string      kCreateImage       = "/images/create";
+    const string      kParamsToken       = "?";   
+    const string      kFromImage         = "fromImage=";
+
+    // values not used for latter use
+    //const string      kListContianers    = "/containers/json";
+    //const string      kFromSource        = "fromSrc=";
+
+    // const values for docker Create JSON keys
+    const string      kImageKey          = "Image";
+    const string      kEvironmentKey     = "Env";
+    const string      kBindsKey          = "Binds";
+    const string      kHostKey           = "HostConfig";
+
+    // const valudes for HTTPResponse under docker REST API
+    const string      kContainerIDKey    = "Id";
+    const string      kExitCodeKey       = "StatusCode";
+    const string      kEmptyString       = "";
 
     // container ID and status record
     // @note    : For latter usage of docker contianer management 

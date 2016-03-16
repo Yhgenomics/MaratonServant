@@ -1,6 +1,7 @@
 #include "MasterConnector.h"
 #include "MasterSession.h"
 #include "MessageHub.h"
+#include "ServantGloable.h"
 #include <iostream>
 
 using MRT::SyncWorker;
@@ -14,7 +15,7 @@ void MasterConnector::OnSessionOpen( Session * session )
 {
     std::cout << "MasterSession Open" << std::endl;
     Protocal::MessageHub::Instance()->Master( scast<MasterSession*>( session ) );
-        SyncWorker::Create( 3000,
+        SyncWorker::Create( HERATBEAT_PERIOD ,
                             [](SyncWorker* te)
                             {
                                 return Protocal::MessageHub::Instance()->SendHeartBeat();

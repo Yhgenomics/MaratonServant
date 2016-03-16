@@ -43,37 +43,14 @@ using std::string;
 class WorkManager :public MRT::Singleton<WorkManager>
 {
 public:
-
-    // Task status
-    enum TaskStatus
-    {
-        kTaskUnknow = 0 ,
-        kPending,
-        kRunning,
-        kFinished,
-        kStopped,
-        kTaskError
-    };
-
-    // Servant status
-    enum ServantStatus
-    {
-        kUnknow              = 0 ,
-        kBooting             = 1 ,
-        kSelfTesting         = 2 ,
-        kStandby             = 3 ,
-        kError               = 4 ,
-        kWorking             = 5 ,
-        kException           = 20
-    };
     
     // Getter and Setter of Servant status
-    ServantStatus SelfStatus()             { return self_status_ ; }
-    void SelfStatus( ServantStatus value ) { self_status_ = value; }
+    ServantStatus SelfStatus()                    { return self_status_ ; }
+    void SelfStatus( const ServantStatus& value ) { self_status_ = value; }
 
     // Getter and Setter of Task status
-    TaskStatus WorkSataus()                { return work_status_;  }
-    void WorkStatue( TaskStatus value )    { work_status_ = value; }
+    TaskStatus WorkSataus()                       { return work_status_;  }
+    void WorkStatue( const TaskStatus& value )    { work_status_ = value; }
 
     // Add one pipeline from a message
     void AddPipeline( uptr<MessageTaskDeliver> message );
@@ -85,22 +62,26 @@ public:
     void FinishWork();
 
     // Return Current Task ID
-    string TaskID()     { return task_id_;     }
+    string MainTaskID() { return main_task_id_; }
 
-    // Return PipelineID
-    string PipelineID() { return pipeline_id_; }
-
-    // Return the Core number of CPUs
-    string Core()       { return core_;        }
-
-    // Return the memory Size
-    string Memory()     { return memory_;      }
+    // Return Subtask ID
+    string SubtaskID()  { return subtask_id_;   }
+                                                
+    // Return PipelineID                        
+    string PipelineID() { return pipeline_id_;  }
+                                                
+    // Return the Core number of CPUs           
+    string Core()       { return core_;         }
+                                                
+    // Return the memory Size                   
+    string Memory()     { return memory_;       }
 
 private:
 
     ServantStatus self_status_ = ServantStatus::kUnknow;
     TaskStatus    work_status_ = TaskStatus::kTaskUnknow;
-    string        task_id_;
+    string        main_task_id_;
+    string        subtask_id_;
     string        pipeline_id_;
     string        core_;
     string        memory_;

@@ -47,17 +47,6 @@ class Pipeline :public Singleton<Pipeline>
 {
 public:
 
-    // Task Status.
-    enum TaskStatus
-    {
-        kUnknow = 0 ,
-        kPending,
-        kRunning,
-        kFinished,
-        kStopped,
-        kError
-    };
-
     // Add one Pipe to pipeline
     void  AddPipe( uptr<Pipe> pipe )
     {
@@ -83,13 +72,23 @@ public:
 
 private:
 
-    string mkdir_       = "mkdir ";
-    string task_root_   = "/data/mrttask/";   
-    string data_path_   = "/data/ref/";
-    string task_id_     = "";
-    string task_path_   = "";
-    string input_file_  = "input.mrt";
-    string output_file_ = "output.mrt";
+    // Check if a string contains valid content
+    bool IsOutputLineValid( const string& oneLine );
+
+    // Gathering all outputs informantion
+    // @param   : outputs is the contianer gathering outputs informations.
+    bool GatherOutputInformation( vector<string>& outputs );
+
+    string mkdir_        = "mkdir ";
+    string task_root_    = "/data/mrttask/";   
+    string data_path_    = "/data/ref/";
+    string task_id_      = "";
+    string task_path_    = "";
+    string input_file_   = "input.mrt";
+    string output_file_  = "output.mrt";
+    string docker_work_  = "/work/";
+    string docker_data_  = "/data/";
+    string docker_daemon = "http://10.0.0.70:4243";
     vector<uptr<Pipe>>  pipe_list_;
     friend Singleton<Pipeline>;
 };

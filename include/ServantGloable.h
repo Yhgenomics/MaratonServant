@@ -29,6 +29,10 @@ limitations under the License.
 #include <functional>
 #include <string>
 
+// unit in ms
+// 1s = 1000 ms
+#define HERATBEAT_PERIOD 3000
+
 #define NS_SERVANT       MaratonServant
 #define NS_SERVANT_BEGIN namespace NS_SERVANT {
 #define NS_SERVANT_END }
@@ -38,9 +42,32 @@ using std::function;
 using std::string;
 
 typedef function<void( const int& )>                     ExitCodeHandler;
-
 typedef function<void( const string& )>                  ExceptionHandler;
 typedef function<void( const string& , const string& )>  LogHandler;
+
+// Task status
+enum TaskStatus
+{
+    kTaskUnknow = 0 ,
+    kPending ,
+    kRunning ,
+    kFinished ,
+    kStopped ,
+    kTaskError
+};
+
+// Servant status
+enum ServantStatus
+{
+    kUnknow              = 0 ,
+    kBooting             = 1 ,
+    kSelfTesting         = 2 ,
+    kStandby             = 3 ,
+    kError               = 4 ,
+    kWorking             = 5 ,
+    kException           = 20
+};
+
 NS_SERVANT_END
 
 #endif // !SERVANT_GLOABLE_H_

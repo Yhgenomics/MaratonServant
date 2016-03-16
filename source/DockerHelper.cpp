@@ -14,16 +14,12 @@ using std::endl;
 using MRT::WebClient;
 using MRT::HTTPResponse;
 
-size_t DockerHelper::Pull( const string &dest ,
-                           const string& source )
+size_t DockerHelper::Pull( const string& dest ,
+                           const string& image )
 {
     WebClient myWebClient;
-    myWebClient.Post( dest
-                      + kCreateImage
-                      + kParamsToken
-                      + kFromImage
-                      + source ,
-                      "" ,
+    myWebClient.Post( GetPullString( dest , image ) ,
+                      kEmptyString ,
                       [] ( uptr<HTTPResponse> response )
                       {
                           cout << "image pulled" << endl;
@@ -42,17 +38,16 @@ size_t DockerHelper::Create( const string &dest ,
     json postJson;
     json hostConfig;
 
-    postJson   [ "Image"      ] = image;
-    postJson   [ "Env"        ] = environment;
-    hostConfig [ "Binds"      ] = binds;
-    postJson   [ "HostConfig" ] = hostConfig;
+    postJson   [ kImageKey      ] = image;
+    postJson   [ kEvironmentKey ] = environment;
+    hostConfig [ kBindsKey      ] = binds;
+    postJson   [ kHostKey       ] = hostConfig;
 
-    bool nextMove               = is_run_mode_;
+    bool nextMove                 = is_run_mode_;
 
     WebClient myWebClient;
-    myWebClient.Header( "Content-Type" , "application/json" );
-    myWebClient.Post( dest
-                      + kCreateContianer ,
+    myWebClient.Header( kDockerHeaderKey , kDockerHeaderValue );
+    myWebClient.Post( GetCreateString(dest) ,
                       postJson.dump() ,
                       [ nextMove , dest , this ] ( uptr<HTTPResponse> response )
     {
@@ -62,9 +57,9 @@ size_t DockerHelper::Create( const string &dest ,
         auto    oneResponse = json::parse( rawJson );
         string  containerID;
 
-        if ( oneResponse.find( "Id" ) != oneResponse.end() )
+        if ( oneResponse.find( kContainerIDKey ) != oneResponse.end() )
         {
-            containerID                    = oneResponse[ "Id" ].get<string>();
+            containerID                    = oneResponse[ kContainerIDKey ].get<string>();
             contianer_list_[ containerID ] = "created";
         }
 
@@ -85,11 +80,8 @@ size_t DockerHelper::Start( const string &dest ,
     contianer_list_[ containerID ] = "started";
 
     WebClient myWebClient;
-    myWebClient.Post( dest
-                      + "/containers/"
-                      + containerID
-                      + "/start" ,
-                      "" ,
+    myWebClient.Post( GetStartString( dest , containerID ) ,
+                      kEmptyString ,
                       [ dest , containerID , nextMove , this ] ( uptr<MRT::HTTPResponse> response )
                       {
                           contianer_list_[ containerID ] = "start OK";
@@ -110,17 +102,14 @@ size_t DockerHelper::Wait( const string &dest ,
     contianer_list_[ containerID ] = "waiting";
 
     WebClient myWebClient;
-    myWebClient.Post( dest
-                      + "/containers/"
-                      + containerID
-                      + "/wait" ,
-                      "" ,
+    myWebClient.Post( GetWaitString( dest , containerID ) ,
+                      kEmptyString ,
                       [ dest , containerID , nextMove , this ] ( uptr<MRT::HTTPResponse> response )
                       {
                           string  rawJson                = string( response->Content()->Data() ,
                                                                    response->Content()->Size() );
                           auto    oneResult              = json::parse( rawJson );
-                          int     exit_code              = oneResult[ "StatusCode" ].get<int>();
+                          int     exit_code              = oneResult[ kExitCodeKey ].get<int>();
                           contianer_list_[ containerID ] = "exit";
                       
                           cout << rawJson << endl;
@@ -142,15 +131,10 @@ size_t DockerHelper::Run( const string &dest ,
     is_run_mode_ = true;
 
     WebClient myWebClient;
-    myWebClient.Post( dest
-                      + kCreateImage
-                      + kParamsToken
-                      + kFromImage
-                      + image ,
-                      "" ,
+    myWebClient.Post( GetPullString( dest , image ) ,
+                      kEmptyString ,
                       [ dest , image , binds , environment , this ] ( uptr<HTTPResponse> response )
                       {
-                          cout << "image pulled" << endl;
                           Create( dest , image , binds , environment );
                       }
     );

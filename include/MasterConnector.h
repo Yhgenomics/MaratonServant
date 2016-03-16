@@ -50,7 +50,7 @@ class MasterConnector : public Connector
 public:
 
     // Constructor
-    MasterConnector( std::string addr , int port ) : Connector( addr , port ) {};
+    MasterConnector( const std::string& addr , const int& port ) : Connector( addr , port ) {};
     
     // Desctrucotr
     ~MasterConnector(){}

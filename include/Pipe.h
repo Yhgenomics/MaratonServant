@@ -39,29 +39,27 @@ class Pipe
 {
 public:
 
-    // Add the enviroment by key and value
-    void  AddEnvironment( string key , string value );
+    // Add the enviroment by key and value    
+    void  AddEnvironment( const string& key , const string& value );
 
     // Add the enviroment by patterns
-    void  AddEnvironment( string pattern );
+    // @note    : not const as pattern always need to be translated
+    void  AddEnvironment( string& pattern );
 
     // Add one local-to-docker Path bind
-    void AddPathBind( string localPath , string dockerPath )
-    {
-        binds_.push_back( localPath + ":" + dockerPath );
-    }
+    void AddPathBind( const string& localPath , const string& dockerPath );
 
     // Getter and Setter for Docker Daemon
     // @note    : A docker daemon is like http://127.0.0.1:1234
-    string  DockerDaemon()                { return docker_daemon_;   }
-    void    DockerDaemon( string daemon ) { docker_daemon_ = daemon; }
-    
-    // Getter and Setter for Docker Image Name
-    string  DockerImage()                 { return docker_image_;    }
-    void    DockerImage( string image )   { docker_image_ = image;   }
+    string  DockerDaemon()                     { return docker_daemon_;   }
+    void DockerDaemon( const string& daemon )  { docker_daemon_ = daemon; }
+                                               
+    // Getter and Setter for Docker Image Name 
+    string  DockerImage()                      { return docker_image_;    }
+    void DockerImage( const string& image )    { docker_image_ = image;   }
 
     // Set the exit handler to pipe's docker exit code handler
-    void    SetPipeExit( ExitCodeHandler onExit ) { PipeExit = onExit; }
+    void SetPipeExit( ExitCodeHandler onExit ) { PipeExit = onExit;       }
 
     // Run the Pipe
     void Run();

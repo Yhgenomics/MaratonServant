@@ -29,12 +29,12 @@ limitations under the License.
 
 NS_SERVANT_BEGIN
 
-void Pipe::AddEnvironment( string key , string value )
+void Pipe::AddEnvironment( const string& key , const string& value )
 {
     environments_.push_back( key + "=" + value );
 }
 
-void Pipe::AddEnvironment( string pattern )
+void Pipe::AddEnvironment( string& pattern )
 {
    /* ParameterPattern::Instance()->Replace( pattern );*/
 
@@ -42,7 +42,7 @@ void Pipe::AddEnvironment( string pattern )
    if ( pattern.find( temp ) != string::npos )
        pattern.replace( pattern.find( temp ) ,
                         temp.size() ,
-                        WorkManager::Instance()->TaskID() );
+                        WorkManager::Instance()->SubtaskID() );
 
    temp="$core$";
    if ( pattern.find( temp ) != string::npos )
@@ -55,8 +55,14 @@ void Pipe::AddEnvironment( string pattern )
 
 }
 
-// Run the Pipe
+// Add one local-to-docker Path bind
 
+void Pipe::AddPathBind( const string& localPath , const string& dockerPath )
+{
+    binds_.push_back( localPath + ":" + dockerPath );
+}
+
+// Run the Pipe
 void Pipe::Run()
 {
     DockerHelper::Instance()->BindExitCodeHandler( PipeExit );
