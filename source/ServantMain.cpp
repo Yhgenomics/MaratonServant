@@ -6,8 +6,8 @@
 #include "Pipeline.h"
 #include <iostream>
 #include <string>
+#include <sstream>
 
-using namespace std;
 using namespace MRT;
 using namespace NS_SERVANT;
 
@@ -15,15 +15,21 @@ int main( int argc , char* argv[] )
 {
     Protocal::MessageHub::Instance()->AddAllHandlers();
 
-    //string ip   = string( argv[ 1 ] );
-    //string port = string( argv[ 2 ] );
-    
+    //std::string  ip   = string( argv[ 1 ] );
+    //std::sstream portStream;
+    //portStream << string( argv[2] );
+    //int prot;
+    //portStream >> prot;
+
+    // check input parameters here
+
     while(true)
-    {       
-        cout << "try connect" << endl;
+    {
+        std::cout << "try connect" << std::endl;
+
         //Maraton::Instance()->Regist( make_uptr( MasterConnector , ip , port ) );
         Maraton::Instance()->Regist( make_uptr( MasterConnector , "10.0.0.219" , 90 ) );
         Maraton::Instance()->Run();
     }
-    return 0;   
+    return 0;
 }
