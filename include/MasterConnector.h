@@ -50,7 +50,9 @@ class MasterConnector : public Connector
 public:
 
     // Constructor
-    MasterConnector( const std::string& addr , const int& port ) : Connector( addr , port ) {};
+    // @ip   : Master's IP Address
+    // @prot : port of Master's Servant Listener 
+    MasterConnector( const std::string& ip , const int& port ) : Connector( ip , port ) {};
     
     // Desctrucotr
     ~MasterConnector(){}
@@ -59,14 +61,15 @@ public:
     virtual Session *   CreateSession  () override;
     
     // Callback when the business session opening.
-    // @param   : session is the pointer to the session and can be cast to 
+    // @session : The pointer to the session and can be cast to 
     //            the pointer to MasterSession by static cast.
     virtual void        OnSessionOpen  ( Session * session ) override;
     
     // Callback when the business session closing.
-    // @param   : session is the pointer to the session and can be cast to 
+    // @session : The pointer to the session and can be cast to 
     //            the pointer to MasterSession by static cast. 
     virtual void        OnSessionClose ( Session * session ) override;
+
 };
 
 #endif //!MASTER_CONNECTOR_H_

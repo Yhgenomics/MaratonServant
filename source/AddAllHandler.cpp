@@ -25,12 +25,12 @@ limitations under the License.
 ***********************************************************************************/
 
 #include "MessageHub.h"
-#include <memory>
-#include "MRT.h"
 #include "handler/MessageGreetingHandler.h"
 #include "handler/MessageRegistHandler.h"
 #include "handler/MessageTaskDeliverHandler.h"
 #include "handler/MessageTaskDeliverReplyHandler.h"
+#include "MRT.h"
+#include <memory>
 
 namespace Protocal
 {
@@ -40,6 +40,7 @@ namespace Protocal
         AddHandler( std::move( make_uptr( Protocal::MessageRegistHandler           ) ) );
         AddHandler( std::move( make_uptr( Protocal::MessageTaskDeliverHandler      ) ) );
         AddHandler( std::move( make_uptr( Protocal::MessageTaskDeliverReplyHandler ) ) );
+
         return true;
     }
 }

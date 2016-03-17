@@ -48,35 +48,37 @@ class Pipeline :public Singleton<Pipeline>
 public:
 
     // Add one Pipe to pipeline
-    void  AddPipe( uptr<Pipe> pipe )
-    {
-        pipe_list_.push_back( std::move( pipe ) );
-    }
+    // @pipe    : one Pipe need to be added.
+    void  AddPipe( uptr<Pipe> pipe );
 
     // Parse the pipeline informantions from a protobuf Message.
+    // @orignalMessage : message from the Maraton Master
     void ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage );
 
     // Start the pipeline
     void Run();
 
     // Run Next based on the exit Code from last pipe
-    // @note    : exit code is 0 before the first pipe run.
+    // @lastExitCode : Exit code of the one pipe before current one.
+    // @note         : exit code is 0 before the first pipe run.
     void RunNext( const int& lastExitCode );
 
     // Called when pipeline finish
     void OnFinish();
 
     // Called when exception happens
-    // @note    : any non-zero exit code is consider as exception
+    // @lastExitCode : Exit code of the one pipe before current one.
+    // @note         : any non-zero exit code is consider as exception
     void OnException( const int& lastExitCode );
 
 private:
 
     // Check if a string contains valid content
+    // @oneLine : one line from the output file.
     bool IsOutputLineValid( const string& oneLine );
 
     // Gathering all outputs informantion
-    // @param   : outputs is the contianer gathering outputs informations.
+    // @outputs   : The contianer's outputs files informations.
     bool GatherOutputInformation( vector<string>& outputs );
 
     string mkdir_        = "mkdir ";
@@ -89,8 +91,11 @@ private:
     string docker_work_  = "/work/";
     string docker_data_  = "/data/";
     string docker_daemon = "http://10.0.0.70:4243";
+
     vector<uptr<Pipe>>  pipe_list_;
+
     friend Singleton<Pipeline>;
+
 };
 
 

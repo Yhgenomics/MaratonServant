@@ -28,10 +28,17 @@ limitations under the License.
 #include <MessageHub.h>
 #include <memory>
 
+// Callback when session connecting
 void GeneralSession::OnConnect( )
 {
 }
 
+// Send an porotobuf message out in Maraton's style
+// @message : protobuf message in unqiue pointer.
+// @note    : The Message should be send 3 parts
+//            1.the head
+//            2.the length
+//            3.the protobuff message buffer
 void GeneralSession::SendOut( uptr<::google::protobuf::Message> message )
 {
     uptr<MRT::Buffer> head      = make_uptr( MRT::Buffer , "YH" );
@@ -45,9 +52,13 @@ void GeneralSession::SendOut( uptr<::google::protobuf::Message> message )
     this->Send( move_ptr( body   ) );
 }
 
+// Callback when receiving data from net
+// @data    : Buffer in unique pointer
+// @note    : header, length and body is delivered separately
 void GeneralSession::OnRead( uptr<MRT::Buffer> data )
 {
     this->circle_buffer_.Push( move_ptr( data ) );
+
     while ( true )
     {
         switch ( this->parse_state_ )
@@ -63,7 +74,10 @@ void GeneralSession::OnRead( uptr<MRT::Buffer> data )
                 {
                     this->parse_state_ = MessageParseState::kLength;
                 }
-            }break;
+
+            } //end of case MessageParseState::kHeader
+            break;
+
             case MessageParseState::kLength:
             {
                 auto buf = circle_buffer_.Pop( 4 );
@@ -81,7 +95,9 @@ void GeneralSession::OnRead( uptr<MRT::Buffer> data )
                 body_length_        = len;
                 this->parse_state_  = MessageParseState::kBody;
 
-            }break;
+            } // end of case MessageParseState::kLength
+            break;
+
             case MessageParseState::kBody:
             {
                 auto buf = circle_buffer_.Pop( body_length_ );
@@ -100,17 +116,24 @@ void GeneralSession::OnRead( uptr<MRT::Buffer> data )
 
                 body_length_        = 0;
                 this->parse_state_  = MessageParseState::kHeader;
-            }break;
+
+            } // end of case MessageParseState::kBody
+            break;
+
             default:
                 break;
-        }
-    }
+
+        } // end of switch ( this->parse_state_ )
+    } // end of while ( true )
 }
 
+// Callback when write adata to net
+// @data    : Buffer in unique pointer
 void GeneralSession::OnWrite( uptr<MRT::Buffer> data )
 {
 }
 
+// Callback when session closing
 void GeneralSession::OnClose( )
 {
 }

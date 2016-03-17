@@ -53,37 +53,37 @@ class DockerHelper :public Singleton<DockerHelper>
 public:
     
     // Pull one docker image from registry 
-    // @param   : dest is the docker daemon such as http://127.0.0.1:1234
-    // @param   : source is the docker image's name 
+    // @dest    : The docker daemon such as http://127.0.0.1:1234
+    // @image   : The docker image's name 
     virtual size_t    Pull  ( const string &dest , const string &image );
 
     // Create one docker container
-    // @param   : dest is the docker daemon such as http://127.0.0.1:1234
-    // @param   : image is the docker image's name
-    // @param   : binds is the path binds from local path to docker path
-    // @param   : enviroment is the variables and their values in container
-    // @note    : The container's ID is in the response message. 
+    // @dest        : The docker daemon such as http://127.0.0.1:1234
+    // @image       : The docker image's name
+    // @binds       : The path binds from local path to docker path
+    // @environment : The variables and their values in container
+    // @note        : The container's ID is in the response message. 
     virtual size_t    Create( const string           &dest  ,
                               const string           &image ,
                               const vector< string > &binds ,
                               const vector< string > &environment );
 
     // Start a docker container
-    // @param   : dest is the docker daemon such as http://127.0.0.1:1234
-    // @param   : containerID is the ID of a container
-    // @note    : container ID is given at the response message for Creating
+    // @dest        : The docker daemon such as http://127.0.0.1:1234
+    // @containerID : The ID of a container
+    // @note        : container ID is given at the response message for Creating
     virtual size_t    Start ( const string &dest , const string &containerID );
 
     // Wait a docker container's exit code
-    // @param   : dest is the docker daemon such as http://127.0.0.1:1234
-    // @param   : containerID is the ID of a container
+    // @dest        : The docker daemon such as http://127.0.0.1:1234
+    // @containerID : The ID of a container
     virtual size_t    Wait  ( const string &dest , const string &containerID );
 
     // Run equals to Pull => Create => Start => Wait
-    // @param   : dest is the docker daemon such as http://127.0.0.1:1234
-    // @param   : image is the docker image's name
-    // @param   : binds is the path binds from local path to docker path
-    // @param   : enviroment is the variables and their values in container
+    // @dest        : The docker daemon such as http://127.0.0.1:1234
+    // @image       : The docker image's name
+    // @binds       : The path binds from local path to docker path
+    // @environment : The variables and their values in container
     virtual size_t    Run   ( const string &dest ,
                               const string &image ,
                               const vector< string > &binds ,
@@ -117,30 +117,31 @@ public:
 private:
 
     // Get string for post a pull command
-    // @param   : dest is the docker daemon such as http://127.0.0.1:1234
-    // @param   : image is the docker image's name
+    // @dest    : dest is the docker daemon such as http://127.0.0.1:1234
+    // @image   : image is the docker image's name
     string GetPullString( const string& dest , const string& image )
     {
         return dest + kCreateImage + kParamsToken + kFromImage + image;
     }
 
     // Get string for post a create command
+    // @dest    : dest is the docker daemon such as http://127.0.0.1:1234
     string GetCreateString( const string& dest )
     {
         return dest + kCreateContainer;
     }
 
     // Get string for post a start command
-    // @param   : dest is the docker daemon such as http://127.0.0.1:1234
-    // @param   : containerID is the ID of a container
+    // @dest        : dest is the docker daemon such as http://127.0.0.1:1234
+    // @containerID : containerID is the ID of a container
     string GetStartString( const string &dest , const string &containerID )
     {
         return dest + KContainers + containerID + kStartContainer;
     }
     
     // Get string for post a wait command
-    // @param   : dest is the docker daemon such as http://127.0.0.1:1234
-    // @param   : containerID is the ID of a container
+    // @dest        : dest is the docker daemon such as http://127.0.0.1:1234
+    // @containerID : containerID is the ID of a container
     string GetWaitString( const string &dest , const string &containerID )
     {
         return dest + KContainers + containerID + kWaitContainer;

@@ -61,15 +61,26 @@ namespace Protocal
     {
     public:
 
+        // The handler typedefine
+        // @session : The source of the message.
+        // @pData   : The content of the message.
+        // @length  : The size of message.
+        // @note    : Should translate from the pData to certain message first.
         typedef std::function<bool( GeneralSession* session ,
                                     const void*     pData   ,
                                     size_t          length )> HandlerMethod;
 
+        // Getter and Setter for message types
         std::string MessageType()                    { return message_type_;  }
         void MessageType( const std::string& value ) { message_type_ = value; }
 
+        // Handler method on the message type
+        // @note    : Be given in the constructor for each dervied class. 
         HandlerMethod   Method = nullptr;
+
+        // Name of the message
         std::string     message_type_;
+
     };
 }
 

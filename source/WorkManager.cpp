@@ -25,21 +25,24 @@ limitations under the License.
 ***********************************************************************************/
 
 #include "WorkManager.h"
+#include "MRT.h"
 
 NS_SERVANT_BEGIN
 
 // Add one pipeline from a message
-
+// @message : message from the Maraton Master
 void WorkManager::AddPipeline( uptr<MessageTaskDeliver> message )
 {
     main_task_id_ = message->originalid();
     subtask_id_   = message->id();
     pipeline_id_  = message->pipeline().id();
-    core_         = "8";
-    memory_       = "32000";
+    core_         = MRT::SystemInfo::CPUNum();
+    memory_       = MRT::SystemInfo::MemoryFreeSize();
+
     Pipeline::Instance()->ParseFromMessage( move_ptr( message ) );
 }
 
+// Start the task
 void WorkManager::StartWork()
 {
     std::cout << "Task ID "    << main_task_id_ << std::endl
@@ -51,6 +54,7 @@ void WorkManager::StartWork()
     Pipeline::Instance()->Run();
 }
 
+// Finish the task
 void WorkManager::FinishWork()
 {
     Protocal::MessageHub::Instance()->SendServantUpdate( ServantStatus::kStandby );

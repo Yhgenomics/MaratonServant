@@ -41,7 +41,10 @@ class MasterSession :
 {
 public:
 
+    // Constructor
     MasterSession(){};
+
+    // Destructor
     virtual ~MasterSession() override{};
 
 };

@@ -39,14 +39,21 @@ class Pipe
 {
 public:
 
-    // Add the enviroment by key and value    
+    // Add the enviroment by key and value
+    // @key   : Key string of an environment.
+    // @value : Value string of an enviroment.
+    // @note  : Under the constrains from Docker's REST API
+    //          the enviroment format is "key=value"   
     void  AddEnvironment( const string& key , const string& value );
 
     // Add the enviroment by patterns
-    // @note    : not const as pattern always need to be translated
+    // @patter  : String may contains a pattern
+    // @note    : this parameter is not const cause pattern always need to be translated
     void  AddEnvironment( string& pattern );
 
     // Add one local-to-docker Path bind
+    // @localPath  : Local path.
+    // @dockerPath : Logical path in docker.
     void AddPathBind( const string& localPath , const string& dockerPath );
 
     // Getter and Setter for Docker Daemon
@@ -59,6 +66,7 @@ public:
     void DockerImage( const string& image )    { docker_image_ = image;   }
 
     // Set the exit handler to pipe's docker exit code handler
+    // @onExit  : Exit code handler.
     void SetPipeExit( ExitCodeHandler onExit ) { PipeExit = onExit;       }
 
     // Run the Pipe

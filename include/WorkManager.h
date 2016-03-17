@@ -53,6 +53,7 @@ public:
     void WorkStatue( const TaskStatus& value )    { work_status_ = value; }
 
     // Add one pipeline from a message
+    // @message : message from the Maraton Master
     void AddPipeline( uptr<MessageTaskDeliver> message );
 
     // Start the task
@@ -85,6 +86,7 @@ private:
     string        pipeline_id_;
     string        core_;
     string        memory_;
+
     friend MRT::Singleton<WorkManager>;
 
 };

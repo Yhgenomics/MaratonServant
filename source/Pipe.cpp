@@ -29,11 +29,19 @@ limitations under the License.
 
 NS_SERVANT_BEGIN
 
+// Add the enviroment by key and value
+// @key   : Key string of an environment.
+// @value : Value string of an enviroment.
+// @note  : Under the constrains from Docker's REST API
+//          the enviroment format is "key=value"   
 void Pipe::AddEnvironment( const string& key , const string& value )
 {
     environments_.push_back( key + "=" + value );
 }
 
+// Add the enviroment by patterns
+// @patter  : String may contains a pattern
+// @note    : this parameter is not const cause pattern always need to be translated
 void Pipe::AddEnvironment( string& pattern )
 {
    /* ParameterPattern::Instance()->Replace( pattern );*/
@@ -51,11 +59,11 @@ void Pipe::AddEnvironment( string& pattern )
                         WorkManager::Instance()->Core() );
 
    environments_.push_back( pattern );
-
 }
 
 // Add one local-to-docker Path bind
-
+// @localPath  : Local path.
+// @dockerPath : Logical path in docker.
 void Pipe::AddPathBind( const string& localPath , const string& dockerPath )
 {
     binds_.push_back( localPath + ":" + dockerPath );

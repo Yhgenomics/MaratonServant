@@ -33,12 +33,14 @@ limitations under the License.
 NS_SERVANT_BEGIN
 
 // Show the exit code and do notheing
+// @exitCode   : The exit code get by the Wait command from a container
 void DefalutExit( const int& exitCode )
 {
     std::cout << "upper level exit code handler received : " << exitCode << std::endl;
 }
 
 // For pipeline to call next pipe
+// @exitCode   : The exit code get by the Wait command from a container
 void NextPipe( const int& exitCode )
 {
     Pipeline::Instance()->RunNext( exitCode );
