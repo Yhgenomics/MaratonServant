@@ -25,6 +25,9 @@ limitations under the License.
 * Modifed       : When      | Who       | What
 ***********************************************************************************/
 
+#ifndef PIPE_PARAMETER_PATTERN_H_
+#define PIPE_PARAMETER_PATTERN_H_
+
 #include "WorkManager.h"
 #include "ServantGloable.h"
 #include "MRT.h"
@@ -98,4 +101,7 @@ private:
     friend MRT::Singleton<ParameterPattern>;
 
 };
+
 NS_SERVANT_END
+
+#endif // !PIPE_PARAMETER_PATTERN_H_

@@ -122,6 +122,7 @@ size_t DockerHelper::Start( const string &dest ,
                       [ dest , containerID , nextMove , this ] ( uptr<MRT::HTTPResponse> response )
                       {
                           contianer_list_[ containerID ] = "start OK";
+
                           if ( nextMove )
                           {
                               Wait( dest , containerID );

@@ -51,6 +51,7 @@ public:
     virtual void SendOut     ( uptr<::google::protobuf::Message> message);
 
 protected:
+
     // Callback when session connecting
     virtual void OnConnect()                       override;
 

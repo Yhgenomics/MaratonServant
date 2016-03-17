@@ -24,6 +24,9 @@ limitations under the License.
 * Modifed       : When      | Who       | What
 ***********************************************************************************/
 
+#ifndef WORK_MANAGER_H_
+#define WORK_MANAGER_H_
+
 #include "ServantGloable.h"
 #include "MessageTaskDeliver.pb.h"
 #include "MessageServantUpdate.pb.h"
@@ -92,3 +95,5 @@ private:
 };
 
 NS_SERVANT_END
+
+#endif // !WORK_MANAGER_H_

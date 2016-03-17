@@ -58,6 +58,7 @@ void WorkManager::StartWork()
 void WorkManager::FinishWork()
 {
     Protocal::MessageHub::Instance()->SendServantUpdate( ServantStatus::kStandby );
+
     std::cout << "Task ID "    << main_task_id_ << std::endl
               << "Subtask ID " << subtask_id_   << std::endl
               << " finish "    << std::endl;

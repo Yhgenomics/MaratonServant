@@ -98,7 +98,6 @@ private:
 
 };
 
-
 NS_SERVANT_END
 
 #endif // £¡PIPELINE_H_

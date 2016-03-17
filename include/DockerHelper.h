@@ -178,8 +178,9 @@ private:
     map<string , string> contianer_list_;
     
     friend Singleton<DockerHelper>;
+
 };
 
 NS_SERVANT_END
 
-#endif // !I_DOCKERHELPER_H_
+#endif // !DOCKERHELPER_H_

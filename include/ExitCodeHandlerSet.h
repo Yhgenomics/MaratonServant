@@ -48,4 +48,4 @@ void NextPipe( const int& exitCode )
 
 NS_SERVANT_END
 
-#endif
+#endif // !EXIT_CODE_HANDLER_SET_H_

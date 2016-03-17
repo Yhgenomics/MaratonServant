@@ -23,6 +23,7 @@ limitations under the License.
 * Date          : 2016/2/27
 * Modifed       : When      | Who       | What
 ***********************************************************************************/
+
 #ifndef MASTER_SESSION_H_
 #define MASTER_SESSION_H_ 
 

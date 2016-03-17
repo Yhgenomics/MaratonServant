@@ -142,7 +142,8 @@ namespace Protocal
         MasterSession * master_session_ = nullptr;
 
         friend MRT::Singleton<MessageHub>;
-    };
 
-}
+    }; 
+} //  end of namespace Protocal
+
 #endif // !MESSAGE_HUB_H_

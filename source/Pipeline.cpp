@@ -152,11 +152,13 @@ bool Pipeline::GatherOutputInformation( vector<string>& outputs )
         {
             std::string oneLine;
             fin >> oneLine;
+
             if ( IsOutputLineValid( oneLine ) )
             {
                 outputs.push_back( oneLine );
             }
         }
+
         fin.close();
         result = true;
     } //  end of  if ( fin )

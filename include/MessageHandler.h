@@ -82,6 +82,6 @@ namespace Protocal
         std::string     message_type_;
 
     };
-}
+} //  end of namespace Protocal
 
 #endif //!MESSAGE_HANDLER_H_

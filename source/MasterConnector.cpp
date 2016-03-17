@@ -61,5 +61,4 @@ void MasterConnector::OnSessionClose( Session * session )
 {
     std::cout << "MasterSession Close" << std::endl;
     Protocal::MessageHub::Instance()->Master( nullptr );
-
 }

@@ -23,6 +23,7 @@ limitations under the License.
 * Date          : 2016/3/7
 * Modifed       : When      | Who       | What
 ***********************************************************************************/
+
 #ifndef SERVANT_GLOABLE_H_
 #define SERVANT_GLOABLE_H_
 
