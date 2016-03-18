@@ -51,7 +51,7 @@ public:
     // @pipe    : one Pipe need to be added.
     void  AddPipe( uptr<Pipe> pipe );
 
-    // Parse the pipeline informantions from a protobuf Message.
+    // Parse the pipeline informantion from a protobuf Message.
     // @orignalMessage : message from the Maraton Master
     void ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage );
 

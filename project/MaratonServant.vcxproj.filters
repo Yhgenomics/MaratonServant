@@ -117,6 +117,9 @@
     <ClInclude Include="..\include\message\MessageTaskUpdate.pb.h">
       <Filter>proto</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\StatusBook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\DockerHelper.cpp">

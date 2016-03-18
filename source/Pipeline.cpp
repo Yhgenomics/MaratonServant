@@ -35,7 +35,6 @@ using std::string;
 
 NS_SERVANT_BEGIN
 
-
 // Add one Pipe to pipeline
 // @pipe    : one Pipe need to be added.
 void Pipeline::AddPipe( uptr<Pipe> pipe )
@@ -43,7 +42,7 @@ void Pipeline::AddPipe( uptr<Pipe> pipe )
     pipe_list_.push_back( std::move( pipe ) );
 }
 
-// Parse the pipeline informantions from a protobuf Message.
+// Parse the pipeline informantion from a protobuf Message.
 // @orignalMessage : message from the Maraton Master
 void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
 {
@@ -123,7 +122,7 @@ void Pipeline::OnFinish()
 // @note         : any non-zero exit code is consider as exception
 void Pipeline::OnException( const int & lastExitCode )
 {
-    Protocal::MessageHub::Instance()->SendTaskUpdate( TaskStatus::kTaskError );
+    Protocal::MessageHub::Instance()->SendTaskUpdate( TaskStatus::kError );
     std::cout << "Exception happended code " << lastExitCode << std::endl;
 }
 

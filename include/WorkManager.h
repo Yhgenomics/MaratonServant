@@ -18,7 +18,7 @@ limitations under the License.
 ***********************************************************************************/
 
 /***********************************************************************************
-* Description   : Manager the work on servant.
+* Description   : Manage the work on servant.
 * Creator       : Ke Yang(keyang@yhgenomics.com)
 * Date          : 2016/3/7
 * Modifed       : When      | Who       | What
@@ -48,12 +48,12 @@ class WorkManager :public MRT::Singleton<WorkManager>
 public:
     
     // Getter and Setter of Servant status
-    ServantStatus SelfStatus()                    { return self_status_ ; }
-    void SelfStatus( const ServantStatus& value ) { self_status_ = value; }
+    ServantStatus::Code SelfStatus()                    { return self_status_ ; }
+    void SelfStatus( const ServantStatus::Code& value ) { self_status_ = value; }
 
     // Getter and Setter of Task status
-    TaskStatus WorkSataus()                       { return work_status_;  }
-    void WorkStatue( const TaskStatus& value )    { work_status_ = value; }
+    TaskStatus::Code WorkSataus()                       { return work_status_;  }
+    void WorkStatue( const TaskStatus::Code& value )    { work_status_ = value; }
 
     // Add one pipeline from a message
     // @message : message from the Maraton Master
@@ -82,13 +82,13 @@ public:
 
 private:
 
-    ServantStatus self_status_ = ServantStatus::kUnknow;
-    TaskStatus    work_status_ = TaskStatus::kTaskUnknow;
-    string        main_task_id_;
-    string        subtask_id_;
-    string        pipeline_id_;
-    string        core_;
-    string        memory_;
+    ServantStatus::Code self_status_ = ServantStatus::kUnknow;
+    TaskStatus::Code    work_status_ = TaskStatus::kUnknow;
+    string              main_task_id_;
+    string              subtask_id_;
+    string              pipeline_id_;
+    string              core_;
+    string              memory_;
 
     friend MRT::Singleton<WorkManager>;
 

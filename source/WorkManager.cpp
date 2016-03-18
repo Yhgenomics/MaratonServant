@@ -18,7 +18,7 @@ limitations under the License.
 ***********************************************************************************/
 
 /***********************************************************************************
-* Description   : Manager the work on servant.
+* Description   : Manage the work on servant.
 * Creator       : Ke Yang(keyang@yhgenomics.com)
 * Date          : 2016/3/7
 * Modifed       : When      | Who       | What
@@ -26,6 +26,8 @@ limitations under the License.
 
 #include "WorkManager.h"
 #include "MRT.h"
+#include <sstream>
+#include <string>
 
 NS_SERVANT_BEGIN
 
@@ -36,8 +38,15 @@ void WorkManager::AddPipeline( uptr<MessageTaskDeliver> message )
     main_task_id_ = message->originalid();
     subtask_id_   = message->id();
     pipeline_id_  = message->pipeline().id();
-    core_         = MRT::SystemInfo::CPUNum();
-    memory_       = MRT::SystemInfo::MemoryFreeSize();
+    
+    std::stringstream strStream;
+
+    strStream << MRT::SystemInfo::CPUNum();
+    strStream >> core_;
+    strStream.clear();
+
+    strStream << MRT::SystemInfo::MemoryFreeSize();
+    strStream >> memory_;
 
     Pipeline::Instance()->ParseFromMessage( move_ptr( message ) );
 }

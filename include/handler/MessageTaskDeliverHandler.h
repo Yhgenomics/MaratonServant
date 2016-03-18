@@ -1,6 +1,6 @@
 /***********************************************************************************
-This file is part of Project for MaratonMaster
-For the latest info, see  https://github.com/Yhgenomics/MaratonMaster.git
+This file is part of Project for MaratonServant
+For the latest info, see  https://github.com/Yhgenomics/MaratonServant.git
 
 Copyright 2016 Yhgenomics
 

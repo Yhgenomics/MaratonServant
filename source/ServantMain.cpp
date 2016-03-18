@@ -40,7 +40,7 @@ int main( int argc , char* argv[] )
     Protocal::MessageHub::Instance()->AddAllHandlers();
 
     //std::string  ip   = string( argv[ 1 ] );
-    //std::sstream portStream;
+    //std::stringstream portStream;
     //portStream << string( argv[2] );
     //int prot;
     //portStream >> prot;
