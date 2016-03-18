@@ -120,6 +120,9 @@
     <ClInclude Include="..\include\StatusBook.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\PipePatternHandlerSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\DockerHelper.cpp">

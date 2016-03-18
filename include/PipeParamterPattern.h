@@ -28,7 +28,7 @@ limitations under the License.
 #ifndef PIPE_PARAMETER_PATTERN_H_
 #define PIPE_PARAMETER_PATTERN_H_
 
-#include "WorkManager.h"
+#include "PipePatternHandlerSet.h"
 #include "ServantGloable.h"
 #include "MRT.h"
 #include <vector>
@@ -55,13 +55,13 @@ public:
 
     ParameterPattern()
     {
-        /*code_book_.push_back( tuple<string , ReplaceDelegate>
+        code_book_.push_back( tuple<string , ReplaceDelegate>
                               ( "$taskid$" ,
-                              WorkManager::Instance()->TaskID ) );
+                              PipeParameterHandler::TaskID ) );
 
         code_book_.push_back( tuple<string , ReplaceDelegate>
                               ( "$pipelineid$" ,
-                              WorkManager::Instance()->PipelineID ) );
+                              PipeParameterHandler::PipelineID ) );
 
         code_book_.push_back( tuple<string , ReplaceDelegate>
                               ( "$pipeid$" ,
@@ -69,11 +69,11 @@ public:
 
         code_book_.push_back( tuple<string , ReplaceDelegate>
                               ( "$core$" ,
-                              WorkManager::Instance()->Core ) );
+                              PipeParameterHandler::Core ) );
 
         code_book_.push_back( tuple<string , ReplaceDelegate>
                               ( "$memory$" ,
-                              WorkManager::Instance()->Memory ) );*/
+                              PipeParameterHandler::Memory ) );
     }
 
     // Replace any patterns in a string by the rules in code_book_

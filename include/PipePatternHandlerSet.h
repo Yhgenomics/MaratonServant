@@ -18,41 +18,48 @@ limitations under the License.
 ***********************************************************************************/
 
 /***********************************************************************************
-* Description   : Maraton Servant main logic.
+* Description   : Kinds of predefine exit code handler. Just for convenience.
 * Creator       : Ke Yang(keyang@yhgenomics.com)
 * Date          : 2016/3/8
 * Modifed       : When      | Who       | What
 ***********************************************************************************/
 
-#include "ServantGloable.h"
-#include "MasterConnector.h"
-#include "MessageHub.h"
+#ifndef PIPE_PARAMETER_HANDLER_SET_H_
+#define PIPE_PARAMETER_HANDLER_SET_H_
+
+#include "WorkManager.h"
 #include "MRT.h"
 #include <iostream>
-#include <string>
-#include <sstream>
 
-using namespace MRT;
-using namespace NS_SERVANT;
+NS_SERVANT_BEGIN
 
-int main( int argc , char* argv[] )
+namespace PipeParameterHandler
 {
-    Protocal::MessageHub::Instance()->AddAllHandlers();
 
-    std::string  ip   = string( argv[ 1 ] );
-    
-    int port;
-    std::stringstream portStream;
-    portStream << string( argv[2] ); 
-    portStream >> port;
-
-    while(true)
+    // return the original task ID of current task
+    std::string TaskID()
     {
-        std::cout << "try connect" << std::endl;
-
-        Maraton::Instance()->Regist( make_uptr( MasterConnector , ip , port ) );
-        Maraton::Instance()->Run();
+        return WorkManager::Instance()->MainTaskID();
     }
 
-    return 0;
+    // return the pipeline ID of current task
+    std::string PipelineID()
+    {
+        return WorkManager::Instance()->PipelineID();
+    }
+
+    // return the core number of servant's cpu
+    std::string Core()
+    {
+        return WorkManager::Instance()->Core();
+    }
+
+    // return the servant's free memory size.
+    std::string Memory()
+    {
+        return WorkManager::Instance()->Memory();
+    }
 }
+NS_SERVANT_END
+
+#endif // !PIPE_PARAMETER_HANDLER_SET_H_

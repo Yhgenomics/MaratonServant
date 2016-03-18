@@ -31,14 +31,11 @@ limitations under the License.
 
 NS_SERVANT_BEGIN
 
-// Add one pipeline from a message
-// @message : message from the Maraton Master
-void WorkManager::AddPipeline( uptr<MessageTaskDeliver> message )
+// Constructor
+WorkManager::WorkManager()
 {
-    main_task_id_ = message->originalid();
-    subtask_id_   = message->id();
-    pipeline_id_  = message->pipeline().id();
-    
+    self_status_ = ServantStatus::kStandby;
+
     std::stringstream strStream;
 
     strStream << MRT::SystemInfo::CPUNum();
@@ -47,6 +44,15 @@ void WorkManager::AddPipeline( uptr<MessageTaskDeliver> message )
 
     strStream << MRT::SystemInfo::MemoryFreeSize();
     strStream >> memory_;
+}
+
+// Add one pipeline from a message
+// @message : message from the Maraton Master
+void WorkManager::AddPipeline( uptr<MessageTaskDeliver> message )
+{
+    main_task_id_ = message->originalid();
+    subtask_id_   = message->id();
+    pipeline_id_  = message->pipeline().id();
 
     Pipeline::Instance()->ParseFromMessage( move_ptr( message ) );
 }
@@ -57,8 +63,9 @@ void WorkManager::StartWork()
     std::cout << "Task ID "    << main_task_id_ << std::endl
               << "Subtask ID " << subtask_id_   << std::endl
               << " start "     << std::endl;
-
-    Protocal::MessageHub::Instance()->SendServantUpdate( ServantStatus::kWorking );
+    self_status_ = ServantStatus::kWorking;
+    
+    ReportSelfStatus();
 
     Pipeline::Instance()->Run();
 }
@@ -66,11 +73,19 @@ void WorkManager::StartWork()
 // Finish the task
 void WorkManager::FinishWork()
 {
-    Protocal::MessageHub::Instance()->SendServantUpdate( ServantStatus::kStandby );
+    self_status_ = ServantStatus::kStandby;
+
+    ReportSelfStatus();
 
     std::cout << "Task ID "    << main_task_id_ << std::endl
               << "Subtask ID " << subtask_id_   << std::endl
               << " finish "    << std::endl;
+}
+
+// Report self status to master
+inline void WorkManager::ReportSelfStatus()
+{
+    Protocal::MessageHub::Instance()->SendServantUpdate( self_status_ );
 }
 
 NS_SERVANT_END

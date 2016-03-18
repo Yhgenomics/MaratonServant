@@ -46,7 +46,10 @@ using std::string;
 class WorkManager :public MRT::Singleton<WorkManager>
 {
 public:
-    
+
+    // Constructor
+    WorkManager();
+
     // Getter and Setter of Servant status
     ServantStatus::Code SelfStatus()                    { return self_status_ ; }
     void SelfStatus( const ServantStatus::Code& value ) { self_status_ = value; }
@@ -79,6 +82,9 @@ public:
                                                 
     // Return the memory Size                   
     string Memory()     { return memory_;       }
+
+    // Report self status to master
+    void ReportSelfStatus();
 
 private:
 

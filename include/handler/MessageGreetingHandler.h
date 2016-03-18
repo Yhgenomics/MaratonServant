@@ -27,6 +27,7 @@ limitations under the License.
 #ifndef MESSAGEGREETING_HANDLER_H_
 #define MESSAGEGREETING_HANDLER_H_
 
+#include "WorkManager.h"
 #include "MessageGreeting.pb.h"
 #include "MessageRegist.pb.h"
 #include "MessageHandler.h"
@@ -49,10 +50,10 @@ namespace Protocal
                 std::cout<<"Greeting from master"<<std::endl;
                 auto msg = make_uptr( MessageRegist );
                 msg->set_id( MRT::UUID::Create() );
-                msg->set_state(3);
-                msg->set_cpu(8);
-                msg->set_memory(32000);
-                msg->set_type(0);
+                msg->set_state( NS_SERVANT::WorkManager::Instance()->SelfStatus() );
+                msg->set_cpu( MRT::SystemInfo::CPUNum() );
+                msg->set_memory( ( int )MRT::SystemInfo::MemoryFreeSize() );
+                msg->set_type( ServantTypes::kSoftware );
                 session->SendOut( move_ptr( msg ) );
                 return true;
             };

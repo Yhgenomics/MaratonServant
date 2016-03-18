@@ -154,6 +154,7 @@
     <ClInclude Include="..\include\MasterSession.h" />
     <ClInclude Include="..\include\MasterConnector.h" />
     <ClInclude Include="..\include\PipeParamterPattern.h" />
+    <ClInclude Include="..\include\PipePatternHandlerSet.h" />
     <ClInclude Include="..\include\ServantGloable.h" />
     <ClInclude Include="..\include\StatusBook.h" />
     <ClInclude Include="..\include\WorkManager.h" />
