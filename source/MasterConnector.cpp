@@ -43,7 +43,7 @@ Session * MasterConnector::CreateSession()
 //            the pointer to MasterSession by static cast.
 void MasterConnector::OnSessionOpen( Session * session )
 {
-    std::cout << "MasterSession Open" << std::endl;
+    Logger::Log( "MasterSession Open" );
     Protocal::MessageHub::Instance()->Master( scast<MasterSession*>( session ) );
         SyncWorker::Create( HERATBEAT_PERIOD ,
                             [](SyncWorker* te)
@@ -59,6 +59,6 @@ void MasterConnector::OnSessionOpen( Session * session )
 //            the pointer to MasterSession by static cast. 
 void MasterConnector::OnSessionClose( Session * session )
 {
-    std::cout << "MasterSession Close" << std::endl;
+    Logger::Log( "MasterSession Close" );
     Protocal::MessageHub::Instance()->Master( nullptr );
 }

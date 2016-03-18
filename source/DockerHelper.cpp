@@ -50,7 +50,7 @@ size_t DockerHelper::Pull( const string& dest ,
                       kEmptyString ,
                       [] ( uptr<HTTPResponse> response )
                       {
-                          cout << "image pulled" << endl;
+                          Logger::Log("image pulled");
                       }
     );
 
@@ -153,7 +153,7 @@ size_t DockerHelper::Wait( const string &dest ,
                           int     exit_code              = oneResult[ kExitCodeKey ].get<int>();
                           contianer_list_[ containerID ] = "exit";
                       
-                          cout << rawJson << endl;
+                          Logger::Log("Wait exit : %", rawJson);
                       
                           if ( nullptr != exit_code_delegate_ )
                           {

@@ -54,7 +54,6 @@ void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
 
     for ( auto file : orignalMessage->input() )
     {
-        std::cout << file << std::endl;
         fout << file << std::endl;
     }
     fout.close();
@@ -112,8 +111,8 @@ void Pipeline::OnFinish()
     vector<string> outputs; 
     GatherOutputInformation( outputs );
     Protocal::MessageHub::Instance()->SendTaskUpdate( TaskStatus::kFinished , outputs );
-    std::cout << "pipeline finished" << std::endl;
-
+    Logger::Log( "Pipeline Finished " );
+    
     WorkManager::Instance()->FinishWork();
 }
 
@@ -123,7 +122,8 @@ void Pipeline::OnFinish()
 void Pipeline::OnException( const int & lastExitCode )
 {
     Protocal::MessageHub::Instance()->SendTaskUpdate( TaskStatus::kError );
-    std::cout << "Exception happended code " << lastExitCode << std::endl;
+
+    Logger::Error("Exception happended code : %",lastExitCode);
 }
 
 // Check if a string contains valid content

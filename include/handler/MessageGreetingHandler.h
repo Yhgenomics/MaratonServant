@@ -47,7 +47,8 @@ namespace Protocal
             MessageType("MessageGreeting");
             Method = []( GeneralSession* session , const void* pData , size_t length )
             {
-                std::cout<<"Greeting from master"<<std::endl;
+                Logger::Log( "Greeting from master" );
+
                 auto msg = make_uptr( MessageRegist );
                 msg->set_id( MRT::UUID::Create() );
                 msg->set_state( NS_SERVANT::WorkManager::Instance()->SelfStatus() );

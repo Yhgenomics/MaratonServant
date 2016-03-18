@@ -36,7 +36,7 @@ NS_SERVANT_BEGIN
 // @exitCode   : The exit code get by the Wait command from a container
 void DefalutExit( const int& exitCode )
 {
-    std::cout << "upper level exit code handler received : " << exitCode << std::endl;
+    Logger::Error( "upper level exit code handler received : %" , exitCode );
 }
 
 // For pipeline to call next pipe

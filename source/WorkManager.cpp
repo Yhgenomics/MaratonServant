@@ -60,9 +60,7 @@ void WorkManager::AddPipeline( uptr<MessageTaskDeliver> message )
 // Start the task
 void WorkManager::StartWork()
 {
-    std::cout << "Task ID "    << main_task_id_ << std::endl
-              << "Subtask ID " << subtask_id_   << std::endl
-              << " start "     << std::endl;
+    Logger::Log( "Task ID [ % ] Subtask ID [ % ] Start." , main_task_id_ , subtask_id_ );
     self_status_ = ServantStatus::kWorking;
     
     ReportSelfStatus();
@@ -77,9 +75,7 @@ void WorkManager::FinishWork()
 
     ReportSelfStatus();
 
-    std::cout << "Task ID "    << main_task_id_ << std::endl
-              << "Subtask ID " << subtask_id_   << std::endl
-              << " finish "    << std::endl;
+    Logger::Log( "Task ID [ % ] Subtask ID [ % ] Finished." , main_task_id_ , subtask_id_ );
 }
 
 // Report self status to master
