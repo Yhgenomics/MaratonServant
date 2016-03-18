@@ -31,6 +31,8 @@ limitations under the License.
 #include <functional>
 #include <string>
 
+#define MEM_SIZE_FACTOR_MB 1048576
+
 // unit in ms
 // 1s = 1000 ms
 #define HERATBEAT_PERIOD 3000

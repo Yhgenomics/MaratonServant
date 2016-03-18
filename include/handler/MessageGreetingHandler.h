@@ -52,7 +52,7 @@ namespace Protocal
                 msg->set_id( MRT::UUID::Create() );
                 msg->set_state( NS_SERVANT::WorkManager::Instance()->SelfStatus() );
                 msg->set_cpu( MRT::SystemInfo::CPUNum() );
-                msg->set_memory( ( int )MRT::SystemInfo::MemoryFreeSize() );
+                msg->set_memory( ( int )(MRT::SystemInfo::MemoryFreeSize() / MEM_SIZE_FACTOR_MB ) );
                 msg->set_type( ServantTypes::kSoftware );
                 session->SendOut( move_ptr( msg ) );
                 return true;

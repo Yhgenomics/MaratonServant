@@ -44,8 +44,8 @@ void Pipe::AddEnvironment( const string& key , const string& value )
 // @note    : this parameter is not const cause pattern always need to be translated
 void Pipe::AddEnvironment( string& pattern )
 {
-   /* ParameterPattern::Instance()->Replace( pattern );*/
-
+    ParameterPattern::Instance()->Replace( pattern );
+    /*  
    string temp = "$taskid$";
    if ( pattern.find( temp ) != string::npos )
        pattern.replace( pattern.find( temp ) ,
@@ -57,7 +57,7 @@ void Pipe::AddEnvironment( string& pattern )
        pattern.replace( pattern.find( temp ) ,
                         temp.size() ,
                         WorkManager::Instance()->Core() );
-
+*/
    environments_.push_back( pattern );
 }
 

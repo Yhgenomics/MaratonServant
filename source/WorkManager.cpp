@@ -42,7 +42,7 @@ WorkManager::WorkManager()
     strStream >> core_;
     strStream.clear();
 
-    strStream << MRT::SystemInfo::MemoryFreeSize();
+    strStream << (MRT::SystemInfo::MemoryFreeSize() / MEM_SIZE_FACTOR_MB );
     strStream >> memory_;
 }
 

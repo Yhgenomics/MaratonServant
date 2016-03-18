@@ -36,10 +36,10 @@ NS_SERVANT_BEGIN
 namespace PipeParameterHandler
 {
 
-    // return the original task ID of current task
+    // return the sub task ID of current task
     std::string TaskID()
     {
-        return WorkManager::Instance()->MainTaskID();
+        return WorkManager::Instance()->SubtaskID();
     }
 
     // return the pipeline ID of current task
