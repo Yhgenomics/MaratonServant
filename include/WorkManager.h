@@ -88,8 +88,8 @@ public:
 
 private:
 
-    ServantStatus::Code self_status_ = ServantStatus::kUnknow;
-    TaskStatus::Code    work_status_ = TaskStatus::kUnknow;
+    ServantStatus::Code self_status_ = ServantStatus::kUnknown;
+    TaskStatus::Code    work_status_ = TaskStatus::kUnknown;
     string              main_task_id_;
     string              subtask_id_;
     string              pipeline_id_;
