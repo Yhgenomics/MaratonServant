@@ -25,7 +25,7 @@ limitations under the License.
 ***********************************************************************************/
 
 #include "Pipe.h"
-#include "PipeParamterPattern.h"
+#include "PipeParameterPattern.h"
 
 NS_SERVANT_BEGIN
 

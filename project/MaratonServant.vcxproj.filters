@@ -108,9 +108,6 @@
     <ClInclude Include="..\include\WorkManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\PipeParamterPattern.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\message\MessageServantUpdate.pb.h">
       <Filter>proto</Filter>
     </ClInclude>
@@ -121,6 +118,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\PipePatternHandlerSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\PipeParameterPattern.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
