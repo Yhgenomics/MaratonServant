@@ -45,20 +45,7 @@ void Pipe::AddEnvironment( const string& key , const string& value )
 void Pipe::AddEnvironment( string& pattern )
 {
     ParameterPattern::Instance()->Replace( pattern );
-    /*  
-   string temp = "$taskid$";
-   if ( pattern.find( temp ) != string::npos )
-       pattern.replace( pattern.find( temp ) ,
-                        temp.size() ,
-                        WorkManager::Instance()->SubtaskID() );
-
-   temp = "$core$";
-   if ( pattern.find( temp ) != string::npos )
-       pattern.replace( pattern.find( temp ) ,
-                        temp.size() ,
-                        WorkManager::Instance()->Core() );
-*/
-   environments_.push_back( pattern );
+    environments_.push_back( pattern );
 }
 
 // Add one local-to-docker Path bind

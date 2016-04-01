@@ -50,7 +50,7 @@ int main( int argc , char* argv[] )
     {
         Logger::Log( "Try to connect to Master [ %:% ]" , ip , port );
         
-        Maraton::Instance()->Regist( make_uptr( MasterConnector , ip , port ) );
+        Maraton::Instance()->Regist( make_uptr( MasterConnector , ip , port  ) );
         Maraton::Instance()->Run();
     }
 
