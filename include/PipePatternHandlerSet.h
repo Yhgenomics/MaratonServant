@@ -37,9 +37,15 @@ namespace PipeParameterHandler
 {
 
     // return the sub task ID of current task
-    std::string TaskID()
+    std::string SubTaskID()
     {
         return WorkManager::Instance()->SubtaskID();
+    }
+
+    // return the main task ID of current task
+    std::string MainTaskID()
+    {
+        return WorkManager::Instance()->MainTaskID();
     }
 
     // return the pipeline ID of current task

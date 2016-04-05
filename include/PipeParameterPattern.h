@@ -57,7 +57,7 @@ public:
     {
         code_book_.push_back( tuple<string , ReplaceDelegate>
                               ( "$taskid$" ,
-                              PipeParameterHandler::TaskID ) );
+                              PipeParameterHandler::MainTaskID ) );
 
         code_book_.push_back( tuple<string , ReplaceDelegate>
                               ( "$pipelineid$" ,
