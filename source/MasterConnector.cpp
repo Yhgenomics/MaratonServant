@@ -35,6 +35,7 @@ using MRT::SyncWorker;
 // Callback when the business session is connected.
 Session * MasterConnector::CreateSession()
 {
+    Logger::Log( "MasterSession Create" );
     return new MasterSession();
 }
 
@@ -61,4 +62,5 @@ void MasterConnector::OnSessionClose( Session * session )
 {
     Logger::Log( "MasterSession Close" );
     Protocal::MessageHub::Instance()->Master( nullptr );
+    SAFE_DELETE( session );
 }
