@@ -27,6 +27,7 @@ limitations under the License.
 #include "ServantGloable.h"
 #include "MasterConnector.h"
 #include "MessageHub.h"
+#include "Pipeline.h"
 #include "MRT.h"
 #include <iostream>
 #include <string>
@@ -45,6 +46,8 @@ int main( int argc , char* argv[] )
     std::stringstream portStream;
     portStream << string( argv[2] ); 
     portStream >> port;
+
+    Pipeline::Instance()->DockerDaemon( string ( argv[ 3 ] ) );
 
     while(true)
     {

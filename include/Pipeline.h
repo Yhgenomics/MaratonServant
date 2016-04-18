@@ -71,6 +71,9 @@ public:
     // @note         : any non-zero exit code is consider as exception
     void OnException( const int& lastExitCode );
 
+    void DockerDaemon( const string& daemon )
+    { docker_daemon = daemon; }
+
 private:
 
     // Check if a string contains valid content
@@ -90,7 +93,7 @@ private:
     string output_file_  = "output.mrt";
     string docker_work_  = "/work/";
     string docker_data_  = "/data/";
-    string docker_daemon = "http://10.0.0.70:4243";
+    string docker_daemon = "http://127.0.0.1:4243";
 
     vector<uptr<Pipe>>  pipe_list_;
 
