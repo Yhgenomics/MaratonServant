@@ -148,30 +148,30 @@ private:
     }
 
     // const values for docker REST API
-    const string      kDockerHeaderKey   = "Content-Type";
-    const string      kDockerHeaderValue = "application/json";  
-    const string      kCreateContainer   = "/containers/create";
-    const string      KContainers        = "/containers/";
-    const string      kStartContainer    = "/start";
-    const string      kWaitContainer     = "/wait";
-    const string      kCreateImage       = "/images/create";
-    const string      kParamsToken       = "?";   
-    const string      kFromImage         = "fromImage=";
+    const string kDockerHeaderKey   = "Content-Type";
+    const string kDockerHeaderValue = "application/json";  
+    const string kCreateContainer   = "/containers/create";
+    const string KContainers        = "/containers/";
+    const string kStartContainer    = "/start";
+    const string kWaitContainer     = "/wait";
+    const string kCreateImage       = "/images/create";
+    const string kParamsToken       = "?";   
+    const string kFromImage         = "fromImage=";
 
     // values not used for latter use
     //const string      kListContianers    = "/containers/json";
     //const string      kFromSource        = "fromSrc=";
 
     // const values for docker Create JSON keys
-    const string      kImageKey          = "Image";
-    const string      kEvironmentKey     = "Env";
-    const string      kBindsKey          = "Binds";
-    const string      kHostKey           = "HostConfig";
+    const string kImageKey          = "Image";
+    const string kEvironmentKey     = "Env";
+    const string kBindsKey          = "Binds";
+    const string kHostKey           = "HostConfig";
 
     // const valudes for HTTPResponse under docker REST API
-    const string      kContainerIDKey    = "Id";
-    const string      kExitCodeKey       = "StatusCode";
-    const string      kEmptyString       = "";
+    const string kContainerIDKey    = "Id";
+    const string kExitCodeKey       = "StatusCode";
+    const string kEmptyString       = "";
 
     // container ID and status record
     // @note    : For latter usage of docker contianer management 

@@ -49,7 +49,7 @@ public:
 
     // Add one Pipe to pipeline
     // @pipe    : one Pipe need to be added.
-    void  AddPipe( uptr<Pipe> pipe );
+    void AddPipe( uptr<Pipe> pipe );
 
     // Parse the pipeline informantion from a protobuf Message.
     // @orignalMessage : message from the Maraton Master
@@ -71,6 +71,8 @@ public:
     // @note         : any non-zero exit code is consider as exception
     void OnException( const int& lastExitCode );
 
+    // Setter for docker daemon
+    // @daemon  : The docker daemon in form http://127.0.0.1:1234
     void DockerDaemon( const string& daemon )
     { docker_daemon = daemon; }
 

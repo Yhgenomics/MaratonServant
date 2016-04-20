@@ -50,7 +50,7 @@ namespace Protocal
                 Logger::Log( "Greeting from master" );
 
                 auto msg = make_uptr( MessageRegist );
-                msg->set_id( MRT::UUID::Create() );
+                msg->set_id( MRT::UUID::Instance()->Create() );
                 msg->set_state( NS_SERVANT::WorkManager::Instance()->SelfStatus() );
                 msg->set_cpu( MRT::SystemInfo::CPUNum() );
                 msg->set_memory( ( int )(MRT::SystemInfo::MemoryFreeSize() / MEM_SIZE_FACTOR_MB ) );
