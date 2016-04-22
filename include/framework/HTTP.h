@@ -199,18 +199,18 @@ public:
     sptr<Url>    Uri            ();
 
 private:
-
-    std::string                         ip_             = "";
-    int                                 port_           = 80;
-    std::string                         url_            = "";
-    std::string                         method_         = "";
-    std::string                         domain_         = "";
-    std::map<std::string , std::string> header_;
-    size_t                              content_length_ = 0;
-    uptr<Buffer>                        content_        = nullptr;
-    WriteCallbackType                   write_callback_ = nullptr;
-    void*                               data_           = nullptr;
-
+                                                         
+    std::string                         ip_               = "";
+    int                                 port_             = 80;
+    std::string                         url_              = "";
+    std::string                         method_           = "";
+    std::string                         domain_           = "";
+    std::map<std::string , std::string> header_;         
+    size_t                              content_length_   = 0;
+    uptr<Buffer>                        content_          = nullptr;
+    WriteCallbackType                   write_callback_   = nullptr;
+    void*                               data_             = nullptr;
+    size_t                              content_recv_len_ = 0;
     // Parsing used
     // ==================================================================
     enum ParseState
@@ -269,13 +269,14 @@ public:
 
 private:
 
-    size_t              status_         = 0;
-    std::string         status_str_     = "";
-    size_t              content_length_ = 0;
-    std::string         protocol_       = "";
-    RepReadCallbackType read_callback_  = nullptr;
-    void*               data_           = nullptr;
-    uptr<Buffer>        content_        = nullptr;
+    size_t              status_           = 0;
+    size_t              content_length_   = 0;
+    size_t              content_recv_len_ = 0;
+    std::string         status_str_       = "";
+    std::string         protocol_         = "";
+    RepReadCallbackType read_callback_    = nullptr;
+    void*               data_             = nullptr;
+    uptr<Buffer>        content_          = nullptr;
     std::map<
         std::string ,
         std::string>     header_;
