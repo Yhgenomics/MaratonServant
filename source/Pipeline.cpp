@@ -46,8 +46,15 @@ void Pipeline::AddPipe( uptr<Pipe> pipe )
 // @orignalMessage : message from the Maraton Master
 void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
 {
-    task_id_   = orignalMessage->id();
-    task_path_ = task_root_ + task_id_ + "/";
+    task_id_     = orignalMessage->id();
+    original_id_ = orignalMessage->originalid();
+
+    std::ofstream subtaskFout( task_root_ + original_id_ + "/" + subtask_list_,std::ios::app);
+
+    subtaskFout << task_id_ << "\r\n";
+    subtaskFout.close();
+
+    task_path_   = task_root_ + original_id_ + "/" + task_id_ + "/";
 
     system( (mkdir_ + task_path_).c_str() );
     std::ofstream fout( task_path_ + input_file_ );

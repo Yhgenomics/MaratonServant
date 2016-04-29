@@ -90,9 +90,11 @@ private:
     string task_root_    = "/data/mrttask/";   
     string data_path_    = "/data/ref/";
     string task_id_      = "";
+    string original_id_  = "";
     string task_path_    = "";
     string input_file_   = "input.mrt";
     string output_file_  = "output.mrt";
+    string subtask_list_ = "subtasklist.log";
     string docker_work_  = "/work/";
     string docker_data_  = "/data/";
     string docker_daemon = "http://127.0.0.1:4243";
