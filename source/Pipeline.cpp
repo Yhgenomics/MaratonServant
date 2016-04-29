@@ -49,6 +49,7 @@ void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
     task_id_     = orignalMessage->id();
     original_id_ = orignalMessage->originalid();
 
+    system( (mkdir_ + task_root_ + original_id_ + "/").c_str() );
     std::ofstream subtaskFout( task_root_ + original_id_ + "/" + subtask_list_,std::ios::app);
 
     subtaskFout << task_id_ << "\r\n";
