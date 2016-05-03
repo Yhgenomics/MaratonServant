@@ -73,18 +73,34 @@ public:
 
     // Return Subtask ID
     string SubtaskID()  { return subtask_id_;   }
-                                                
-    // Return PipelineID                        
+
+    // Return PipelineID
     string PipelineID() { return pipeline_id_;  }
-                                                
-    // Return the Core number of CPUs           
+
+    // Return the Core number of CPUs
     string Core()       { return core_;         }
-                                                
-    // Return the memory Size                   
+
+    // Return the memory Size
     string Memory()     { return memory_;       }
 
     // Report self status to master
     void ReportSelfStatus();
+
+    // Gather all exsit logs for a main(original) task.
+    // Return true and put all logs in JSON string
+    // Return false if the task is not running at this servant
+    // @maintaskID : ID of the main(original) task.
+    bool GatherTaskLog( const string& maintaskID,
+                        string& allLogContent );
+
+    // Get a copy of current log file's content
+    // Return true and put the content in the third's parameters
+    // Return false when the log file doesn't exsit.
+    // @maintaskID : ID of the main(original) task
+    // @subtaskID  : ID of a subtask
+    bool GetSubtaskLog( const string& maintaskID,
+                        const string& subtaskID,
+                        string& logContent)
 
 private:
 

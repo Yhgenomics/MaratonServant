@@ -105,6 +105,7 @@ void Pipeline::RunNext( const int & lastExitCode )
 
     if ( pipe_list_.size() == 0 )
         OnFinish();
+    
     else
     {
         auto currentPipe = std::move( pipe_list_[ 0 ] );
