@@ -123,6 +123,12 @@
     <ClInclude Include="..\include\PipeParameterPattern.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\message\MessageTaskLogsQuery.pb.h">
+      <Filter>proto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\message\MessageTaskLogsUpdate.pb.h">
+      <Filter>proto</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\DockerHelper.cpp">
@@ -172,6 +178,12 @@
     </ClCompile>
     <ClCompile Include="..\source\WorkManager.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\message\MessageTaskLogsQuery.pb.cc">
+      <Filter>proto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\message\MessageTaskLogsUpdate.pb.cc">
+      <Filter>proto</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

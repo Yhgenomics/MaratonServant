@@ -32,9 +32,12 @@ limitations under the License.
 #include <iostream>
 #include <string>
 #include <sstream>
+#include "WorkManager.h"
+#include "json.hpp"
 
 using namespace MRT;
 using namespace NS_SERVANT;
+using nlohmann::json;
 
 int main( int argc , char* argv[] )
 {

@@ -26,9 +26,12 @@ limitations under the License.
 
 #include "WorkManager.h"
 #include "MRT.h"
+#include "json.hpp"
 #include <sstream>
 #include <string>
+#include <fstream>
 
+using nlohmann::json;
 NS_SERVANT_BEGIN
 
 // Constructor
@@ -82,6 +85,100 @@ void WorkManager::FinishWork()
 inline void WorkManager::ReportSelfStatus()
 {
     Protocal::MessageHub::Instance()->SendServantUpdate( self_status_ );
+}
+
+// Gather all exsit logs for a main(original) task.
+// Return true and put all logs in JSON string
+// Return false if the task is not running at this servant
+// @maintaskID : ID of the main(original) task.
+bool WorkManager::GatherTaskLog( const string & maintaskID , string & allLogContent )
+{
+    bool result = false;
+    //TODO set this strings to right place
+    //string taskRoot    = "/data/mrttask/";
+    string taskRoot       = "g:/logtest/";
+    string MainLogName    = "subtasklist.log";
+    string runtimeLogName = "runtime.log";
+    std::ifstream fin;
+    fin.open( taskRoot + maintaskID + "/" + MainLogName );
+
+    // task has run in this servant
+    if ( fin.is_open() )
+    {
+        result = true;
+        // gather each subtask's log creat a content
+        string logContent;
+        string subtaskID;
+        json   allLogs;
+        json   oneLog;
+        int    order = 0 ; // order of the subtasks start from 0
+        while ( getline( fin , subtaskID ) )
+        {
+            subtaskID.erase( subtaskID.find_last_not_of( "\r" ) + 1 );
+            oneLog.clear();
+            oneLog[ "subtaskID" ] = subtaskID;
+            oneLog[ "order" ] = order;
+            order++;
+
+            if ( GetSubtaskLog( maintaskID , subtaskID , logContent ) )
+            {
+                oneLog[ "content" ] = logContent;
+            }
+
+            else
+            {
+                oneLog[ "content" ] = "No Runtime LOGs yet!";
+            }
+            allLogs.push_back( oneLog );
+        }
+
+        std::cout << allLogs.dump( 4 ) << std::endl;
+        allLogContent = allLogs.dump();
+        fin.close();
+    }
+
+    // task not run in this servant
+    else
+    {
+        result = false;
+    }
+
+    return result;
+}
+
+// Get a copy of current log file's content
+// Return true and put the content in the third's parameters
+// Return false when the log file doesn't exsit.
+// @maintaskID : ID of the main(original) task
+// @subtaskID  : ID of a subtask
+bool WorkManager::GetSubtaskLog( const string & maintaskID , const string & subtaskID , string & logContent )//;
+{
+    bool result = false;
+    //TODO set this strings to right place
+    //string taskRoot    = "/data/mrttask/";
+    string taskRoot       = "g:/logtest/";
+    string MainLogName    = "subtasklist.log";
+    string runtimeLogName = "runtime.log";
+    std::ifstream fin;
+    fin.open( taskRoot + maintaskID + "/" + subtaskID + "/" + runtimeLogName );
+
+    // sub task has log file
+    if ( fin.is_open() )
+    {
+        result = true;
+        fin.seekg(0,std::ios::end);
+        logContent.resize( fin.tellg() );
+        fin.seekg( 0 , std::ios::beg );
+        fin.read( &logContent[ 0 ] , logContent.size() );
+        fin.close();
+    }
+
+    // sub task not have a log file yet
+    else
+    {
+        result = false;
+    }
+    return result;
 }
 
 NS_SERVANT_END

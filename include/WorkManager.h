@@ -58,6 +58,10 @@ public:
     TaskStatus::Code WorkSataus()                       { return work_status_;  }
     void WorkStatue( const TaskStatus::Code& value )    { work_status_ = value; }
 
+    // Getter and Setter of Servant ID
+    string ServantID()                                  { return servant_id_;   }
+    void ServantID( string id )                         { servant_id_ = id;     }
+
     // Add one pipeline from a message
     // @message : message from the Maraton Master
     void AddPipeline( uptr<MessageTaskDeliver> message );
@@ -100,12 +104,13 @@ public:
     // @subtaskID  : ID of a subtask
     bool GetSubtaskLog( const string& maintaskID,
                         const string& subtaskID,
-                        string& logContent)
+                        string& logContent );
 
 private:
 
     ServantStatus::Code self_status_ = ServantStatus::kUnknown;
     TaskStatus::Code    work_status_ = TaskStatus::kUnknown;
+    string              servant_id_;
     string              main_task_id_;
     string              subtask_id_;
     string              pipeline_id_;
