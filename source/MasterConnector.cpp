@@ -32,6 +32,14 @@ limitations under the License.
 
 using MRT::SyncWorker;
 
+// Constructor
+// @ip   : Master's IP Address
+// @prot : port of Master's Servant Listener 
+MasterConnector::MasterConnector( const std::string & ip , const int & port ) : Connector( ip , port )
+{
+    HeartbeatSender = nullptr;
+}
+
 // Callback when the business session is connected.
 Session * MasterConnector::CreateSession()
 {
@@ -46,13 +54,13 @@ void MasterConnector::OnSessionOpen( Session * session )
 {
     Logger::Log( "MasterSession Open" );
     Protocal::MessageHub::Instance()->Master( scast<MasterSession*>( session ) );
-        SyncWorker::Create( HERATBEAT_PERIOD ,
-                            [](SyncWorker* te)
-                            {
-                                return Protocal::MessageHub::Instance()->SendHeartBeat();
-                            } ,
-                            nullptr,
-                            nullptr );
+    HeartbeatSender = SyncWorker::Create( HERATBEAT_PERIOD ,
+                        [](SyncWorker* te)
+                        {
+                            return Protocal::MessageHub::Instance()->SendHeartBeat();
+                        } ,
+                        nullptr,
+                        nullptr );
 }
 
 // Callback when the business session closing.
@@ -61,6 +69,12 @@ void MasterConnector::OnSessionOpen( Session * session )
 void MasterConnector::OnSessionClose( Session * session )
 {
     Logger::Log( "MasterSession Close" );
+
+    if ( HeartbeatSender != nullptr )
+    {
+        SyncWorker::Stop( HeartbeatSender );
+    }
+
     Protocal::MessageHub::Instance()->Master( nullptr );
     SAFE_DELETE( session );
 }

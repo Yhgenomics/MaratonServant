@@ -71,10 +71,31 @@ public:
     // @note         : any non-zero exit code is consider as exception
     void OnException( const int& lastExitCode );
 
+    // Getter for task root
+    string TaskRoot()       { return task_root_;   }
+    
+    // Getter for Main log name
+    // Main log is the record for all subtasklist associated to a main task
+    string MainLogName()    { return main_log_;    }
+    
+    // Getter for runtime log
+    // runtime log is the log in one subtask
+    string RuntimeLogName() { return runtime_Log_; }
+
     // Setter for docker daemon
     // @daemon  : The docker daemon in form http://127.0.0.1:1234
     void DockerDaemon( const string& daemon )
     { docker_daemon = daemon; }
+
+protected:
+    // Constructor
+    Pipeline();;
+
+    // Desctrucotr
+    ~Pipeline() {};
+
+    // Initialization
+    void Init();
 
 private:
 
@@ -86,18 +107,20 @@ private:
     // @outputs   : The contianer's outputs files informations.
     bool GatherOutputInformation( vector<string>& outputs );
 
-    string mkdir_        = "mkdir ";
-    string task_root_    = "/data/mrttask/";   
-    string data_path_    = "/data/ref/";
-    string task_id_      = "";
-    string original_id_  = "";
-    string task_path_    = "";
-    string input_file_   = "input.mrt";
-    string output_file_  = "output.mrt";
-    string subtask_list_ = "subtasklist.log";
-    string docker_work_  = "/work/";
-    string docker_data_  = "/data/";
-    string docker_daemon = "http://127.0.0.1:4243";
+    string mkdir_        ;//= "mkdir ";
+    string task_root_    ;//= "/data/mrttask/";   
+    string data_path_    ;//= "/data/ref/";
+    string task_id_      ;//= "";
+    string original_id_  ;//= "";
+    string task_path_    ;//= "";
+    string input_file_   ;//= "input.mrt";
+    string output_file_  ;//= "output.mrt";
+    string subtask_list_ ;//= "subtasklist.log";
+    string docker_work_  ;//= "/work/";
+    string docker_data_  ;//= "/data/";
+    string docker_daemon ;//= "http://127.0.0.1:4243";
+    string main_log_     ;//= "subtasklist.log";
+    string runtime_Log_  ;//= "runtime.log";
 
     vector<uptr<Pipe>>  pipe_list_;
 

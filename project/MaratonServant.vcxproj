@@ -130,6 +130,8 @@
     <None Include="..\proto\MessageServantUpdate.proto" />
     <None Include="..\proto\MessageTaskDeliver.proto" />
     <None Include="..\proto\MessageTaskDeliverReply.proto" />
+    <None Include="..\proto\MessageTaskLogsQuery.proto" />
+    <None Include="..\proto\MessageTaskLogsUpdate.proto" />
     <None Include="..\proto\MessageTaskUpdate.proto" />
   </ItemGroup>
   <ItemGroup>

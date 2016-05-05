@@ -46,6 +46,12 @@
     <None Include="..\proto\MessageTaskUpdate.proto">
       <Filter>proto\defines</Filter>
     </None>
+    <None Include="..\proto\MessageTaskLogsUpdate.proto">
+      <Filter>proto\defines</Filter>
+    </None>
+    <None Include="..\proto\MessageTaskLogsQuery.proto">
+      <Filter>proto\defines</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\DockerHelper.h">

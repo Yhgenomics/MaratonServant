@@ -135,6 +135,32 @@ void Pipeline::OnException( const int & lastExitCode )
     Logger::Error("Exception happended code : %",lastExitCode);
 }
 
+
+// Constructor
+inline Pipeline::Pipeline()
+{
+    Init();
+}
+
+// Initialization
+void Pipeline::Init()
+{
+    mkdir_        = "mkdir ";
+    task_root_    = "/data/mrttask/";   
+    data_path_    = "/data/ref/";
+    task_id_      = "";
+    original_id_  = "";
+    task_path_    = "";
+    input_file_   = "input.mrt";
+    output_file_  = "output.mrt";
+    subtask_list_ = "subtasklist.log";
+    docker_work_  = "/work/";
+    docker_data_  = "/data/";
+    docker_daemon = "http://127.0.0.1:4243";
+    main_log_     = "subtasklist.log";
+    runtime_Log_  = "runtime.log";
+}
+
 // Check if a string contains valid content
 // @oneLine : one line from the output file.
 inline bool Pipeline::IsOutputLineValid( const string & oneLine )

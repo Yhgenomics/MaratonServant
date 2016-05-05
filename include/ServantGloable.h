@@ -37,6 +37,8 @@ limitations under the License.
 // 1s = 1000 ms
 #define HERATBEAT_PERIOD 3000
 
+#define LOG_PERIOD 3000
+
 #define NS_SERVANT       MaratonServant
 #define NS_SERVANT_BEGIN namespace NS_SERVANT {
 #define NS_SERVANT_END }

@@ -52,7 +52,8 @@ public:
     // Constructor
     // @ip   : Master's IP Address
     // @prot : port of Master's Servant Listener 
-    MasterConnector( const std::string& ip , const int& port ) : Connector( ip , port ) {};
+    MasterConnector( const std::string& ip , const int& port );
+
     
     // Desctrucotr
     ~MasterConnector(){}
@@ -69,6 +70,12 @@ public:
     // @session : The pointer to the session and can be cast to 
     //            the pointer to MasterSession by static cast. 
     virtual void        OnSessionClose ( Session * session ) override;
+
+private:
+    // Pointer to a SyncWorker should be created when the session is opening
+    // and be stopped when the seesion is closing.
+    // @note : No delete on this pointer is allowed after the constrains from the Maraton Framework.
+    MRT::SyncWorker*         HeartbeatSender;
 
 };
 

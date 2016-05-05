@@ -110,6 +110,14 @@ namespace Protocal
         // and avoiding be kicked off.
         bool SendHeartBeat();
 
+        // Send the log update for one ceratin subtask
+        // @mainTaskID : task ID for a main task(from the business layer).
+        // @subTaskID  : task ID for a subtask(from the master layer).
+        bool SendLogUpdate( const string& mainTaskID , const string& subTaskID );
+
+        // Send all logs asscoiated to a ceratin main task
+        bool SendLogs( const string& mainTaskID){ return true;}
+
         // Send update message only contains task status
         // @status  : Status for current task.
         // @note    : Used any status except the successful finishing
@@ -125,6 +133,22 @@ namespace Protocal
         // Send update message contains Servant status
         // @status  : Status for this servant.
         bool SendServantUpdate( const ServantStatus::Code& status );
+
+        // Gather all exsit logs for a main(original) task.
+        // Return true and put all logs in JSON string
+        // Return false if the task is not running at this servant
+        // @maintaskID : ID of the main(original) task.
+        bool GatherTaskLog( const string& maintaskID,
+                            string& allLogContent );
+
+        // Get a copy of current log file's content
+        // Return true and put the content in the third's parameters
+        // Return false when the log file doesn't exsit.
+        // @maintaskID : ID of the main(original) task
+        // @subtaskID  : ID of a subtask
+        bool GetSubtaskLog( const string& maintaskID,
+                            const string& subtaskID,
+                            string& logContent );
 
     private:
 

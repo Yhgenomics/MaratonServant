@@ -49,6 +49,7 @@ namespace Protocal
             {
                 Logger::Log( "Greeting from master" );
 
+                // parse the greeting message
                 char* dataContent = ( char* )pData;
                 dataContent += sizeof( size_t );
                 int msgLength = scast<int>( length - sizeof( size_t ) );
@@ -56,14 +57,20 @@ namespace Protocal
                 auto msgIn = make_uptr( MessageGreeting );
                 msgIn->ParseFromArray( dataContent , msgLength );
 
+                // make the regist message
                 auto msg = make_uptr( MessageRegist );
                 msg->set_id( msgIn->prefix() + MRT::UUID::Instance()->Create() );
+                
+                // restore the servant ID
                 NS_SERVANT::WorkManager::Instance()->ServantID( msg->id() );
+
                 msg->set_state( NS_SERVANT::WorkManager::Instance()->SelfStatus() );
                 msg->set_cpu( MRT::SystemInfo::CPUNum() );
                 msg->set_memory( ( int )(MRT::SystemInfo::MemoryFreeSize() / MEM_SIZE_FACTOR_MB ) );
                 msg->set_type( ServantTypes::kSoftware );
+                
                 session->SendOut( move_ptr( msg ) );
+
                 return true;
             };
         }

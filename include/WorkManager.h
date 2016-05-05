@@ -47,9 +47,6 @@ class WorkManager :public MRT::Singleton<WorkManager>
 {
 public:
 
-    // Constructor
-    WorkManager();
-
     // Getter and Setter of Servant status
     ServantStatus::Code SelfStatus()                    { return self_status_ ; }
     void SelfStatus( const ServantStatus::Code& value ) { self_status_ = value; }
@@ -90,21 +87,12 @@ public:
     // Report self status to master
     void ReportSelfStatus();
 
-    // Gather all exsit logs for a main(original) task.
-    // Return true and put all logs in JSON string
-    // Return false if the task is not running at this servant
-    // @maintaskID : ID of the main(original) task.
-    bool GatherTaskLog( const string& maintaskID,
-                        string& allLogContent );
+    // update the log of current running subtask
+    void SendLogUpdate();
 
-    // Get a copy of current log file's content
-    // Return true and put the content in the third's parameters
-    // Return false when the log file doesn't exsit.
-    // @maintaskID : ID of the main(original) task
-    // @subtaskID  : ID of a subtask
-    bool GetSubtaskLog( const string& maintaskID,
-                        const string& subtaskID,
-                        string& logContent );
+protected:
+    // Constructor
+    WorkManager();
 
 private:
 
@@ -116,6 +104,11 @@ private:
     string              pipeline_id_;
     string              core_;
     string              memory_;
+
+    // Pointer to a SyncWorker should be created when work is starting
+    // and be stopped when the work is finishing.
+    // @note : No delete on this pointer is allowed after the constrains from the Maraton Framework.
+    MRT::SyncWorker*    log_sender_;
 
     friend MRT::Singleton<WorkManager>;
 

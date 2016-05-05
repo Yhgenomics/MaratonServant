@@ -25,8 +25,15 @@ limitations under the License.
 ***********************************************************************************/
 
 #include "MessageHub.h"
+#include "WorkManager.h"
+#include "MessageTaskLogsUpdate.pb.h"
+#include "MRT.h"
+#include "json.hpp"
+#include <fstream>
+
 
 using std::string;
+using nlohmann::json;
 
 namespace Protocal
 {
@@ -117,6 +124,41 @@ namespace Protocal
             return true;
     }
 
+    // Send the log update for one ceratin subtask
+    // @mainTaskID : task ID for a main task(from the business layer).
+    // @subTaskID  : task ID for a subtask(from the master layer).
+    bool MessageHub::SendLogUpdate( const string & mainTaskID , const string & subTaskID )
+    {
+        string logContent;
+        bool   logExsit = GetSubtaskLog( mainTaskID , subTaskID , logContent );
+
+        //[TODO] find out the log content's increment
+
+        //make a update message.
+        auto msg = make_uptr( MessageTaskLogsUpdate );
+
+        if ( logExsit )
+        {
+            msg->set_errormark( ( int )ErrorCode::kNoError );
+        }
+
+        else
+        {
+            msg->set_errormark( ( int )ErrorCode::kLogNotFound );
+        }
+        
+        msg->set_taskid( mainTaskID );
+        msg->set_subtaskid( subTaskID );
+        msg->set_servantid( NS_SERVANT::WorkManager::Instance()->ServantID() );
+        msg->set_content( logContent );
+        if ( master_session_ != nullptr )
+        {
+            master_session_->SendOut( move_ptr( msg ) );
+        }
+
+        return true;
+    }
+
     // Send update message only contains task status
     // @status  : Status for current task.
     // @note    : Used any status except the successful finishing
@@ -176,4 +218,97 @@ namespace Protocal
 
         return result;
     }
+
+    // Gather all exsit logs for a main(original) task.
+    // Return true and put all logs in JSON string
+    // Return false if the task is not running at this servant
+    // @maintaskID : ID of the main(original) task.
+    bool MessageHub::GatherTaskLog( const string & maintaskID , string & allLogContent )
+    {
+        bool result = false;
+
+        string taskRoot       = NS_SERVANT::Pipeline::Instance()->TaskRoot();
+        string MainLogName    = NS_SERVANT::Pipeline::Instance()->MainLogName();
+
+        std::ifstream fin;
+        fin.open( taskRoot + maintaskID + "/" + MainLogName );
+
+        // task has run in this servant
+        if ( fin.is_open() )
+        {
+            result = true;
+            // gather each subtask's log creat a content
+            string logContent;
+            string subtaskID;
+            json   allLogs;
+            json   oneLog;
+            int    order = 0 ; // order of the subtasks start from 0
+            while ( getline( fin , subtaskID ) )
+            {
+                subtaskID.erase( subtaskID.find_last_not_of( "\r" ) + 1 );
+                oneLog.clear();
+                oneLog[ "subtaskID" ] = subtaskID;
+                oneLog[ "order" ] = order;
+                order++;
+
+                if ( GetSubtaskLog( maintaskID , subtaskID , logContent ) )
+                {
+                    oneLog[ "content" ] = logContent;
+                }
+
+                else
+                {
+                    oneLog[ "content" ] = "No Runtime LOGs yet!";
+                }
+                allLogs.push_back( oneLog );
+            }
+
+            std::cout << allLogs.dump( 4 ) << std::endl;
+            allLogContent = allLogs.dump();
+            fin.close();
+        }
+
+        // task not run in this servant
+        else
+        {
+            result = false;
+        }
+
+        return result;
+    }
+
+    // Get a copy of current log file's content
+    // Return true and put the content in the third's parameters
+    // Return false when the log file doesn't exsit.
+    // @maintaskID : ID of the main(original) task
+    // @subtaskID  : ID of a subtask
+    bool MessageHub::GetSubtaskLog( const string & maintaskID , const string & subtaskID , string & logContent )//;
+    {
+        bool result = false;
+
+        string taskRoot       = NS_SERVANT::Pipeline::Instance()->TaskRoot();
+        string runtimeLogName = NS_SERVANT::Pipeline::Instance()->RuntimeLogName();
+
+        std::ifstream fin;
+        fin.open( taskRoot + maintaskID + "/" + subtaskID + "/" + runtimeLogName );
+
+        // sub task has log file
+        if ( fin.is_open() )
+        {
+            result = true;
+            fin.seekg(0,std::ios::end);
+            logContent.resize( fin.tellg() );
+            fin.seekg( 0 , std::ios::beg );
+            fin.read( &logContent[ 0 ] , logContent.size() );
+            fin.close();
+        }
+
+        // sub task not have a log file yet
+        else
+        {
+            result = false;
+        }
+        return result;
+    }
+
 }
