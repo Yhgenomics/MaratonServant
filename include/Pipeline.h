@@ -89,7 +89,7 @@ public:
 
 protected:
     // Constructor
-    Pipeline();;
+    Pipeline();
 
     // Desctrucotr
     ~Pipeline() {};

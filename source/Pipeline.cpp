@@ -137,7 +137,7 @@ void Pipeline::OnException( const int & lastExitCode )
 
 
 // Constructor
-inline Pipeline::Pipeline()
+Pipeline::Pipeline()
 {
     Init();
 }
