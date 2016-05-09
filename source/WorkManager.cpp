@@ -52,6 +52,10 @@ WorkManager::WorkManager()
 // @message : message from the Maraton Master
 void WorkManager::AddPipeline( uptr<MessageTaskDeliver> message )
 {
+    main_task_id_.clear();
+    subtask_id_.clear();
+    pipeline_id_.clear();
+
     main_task_id_ = message->originalid();
     subtask_id_   = message->id();
     pipeline_id_  = message->pipeline().id();
@@ -65,7 +69,6 @@ void WorkManager::StartWork()
     Logger::Log( "Task ID [ % ] Subtask ID [ % ] Start." , main_task_id_ , subtask_id_ );
     self_status_ = ServantStatus::kWorking;
 
-   
     log_sender_ = MRT::SyncWorker::Create( LOG_PERIOD ,
                              [] ( MRT::SyncWorker* te )
                              {
@@ -74,7 +77,7 @@ void WorkManager::StartWork()
                              } ,
                              nullptr ,
                              nullptr );
-    
+
     ReportSelfStatus();
 
     Pipeline::Instance()->Run();
@@ -95,13 +98,13 @@ void WorkManager::FinishWork()
 }
 
 // Report self status to master
-inline void WorkManager::ReportSelfStatus()
+void WorkManager::ReportSelfStatus()
 {
     Protocal::MessageHub::Instance()->SendServantUpdate( self_status_ );
 }
 
 // update the log of current running subtask
-inline void WorkManager::SendLogUpdate()
+void WorkManager::SendLogUpdate()
 {
     Protocal::MessageHub::Instance()->SendLogUpdate( main_task_id_ , subtask_id_ );
 }

@@ -146,11 +146,12 @@ namespace Protocal
         {
             msg->set_errormark( ( int )ErrorCode::kLogNotFound );
         }
-        
+
         msg->set_taskid( mainTaskID );
         msg->set_subtaskid( subTaskID );
         msg->set_servantid( NS_SERVANT::WorkManager::Instance()->ServantID() );
         msg->set_content( logContent );
+
         if ( master_session_ != nullptr )
         {
             master_session_->SendOut( move_ptr( msg ) );

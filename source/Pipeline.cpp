@@ -46,6 +46,8 @@ void Pipeline::AddPipe( uptr<Pipe> pipe )
 // @orignalMessage : message from the Maraton Master
 void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
 {
+    task_id_.clear();
+    original_id_.clear();
     task_id_     = orignalMessage->id();
     original_id_ = orignalMessage->originalid();
 
