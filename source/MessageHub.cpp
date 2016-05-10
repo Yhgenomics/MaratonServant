@@ -226,7 +226,7 @@ namespace Protocal
     // @maintaskID : ID of the main(original) task.
     bool MessageHub::GatherTaskLog( const string & maintaskID , string & allLogContent )
     {
-        bool result = false;
+        bool   result         = false;
 
         string taskRoot       = NS_SERVANT::Pipeline::Instance()->TaskRoot();
         string MainLogName    = NS_SERVANT::Pipeline::Instance()->MainLogName();
@@ -285,7 +285,7 @@ namespace Protocal
     // @subtaskID  : ID of a subtask
     bool MessageHub::GetSubtaskLog( const string & maintaskID , const string & subtaskID , string & logContent )//;
     {
-        bool result = false;
+        bool   result         = false;
 
         string taskRoot       = NS_SERVANT::Pipeline::Instance()->TaskRoot();
         string runtimeLogName = NS_SERVANT::Pipeline::Instance()->RuntimeLogName();

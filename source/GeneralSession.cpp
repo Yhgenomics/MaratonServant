@@ -65,16 +65,6 @@ void GeneralSession::OnRead( uptr<MRT::Buffer> data )
         {
             case MessageParseState::kHeader:
             {
-                /*auto buf = circle_buffer_.Pop( 2 );
-
-                if ( buf == nullptr )return;
-
-                if ( buf->Data( )[0] == 'Y' &&
-                     buf->Data( )[1] == 'H' )
-                {
-                    this->parse_state_ = MessageParseState::kLength;
-                }*/
-
                 auto buf = circle_buffer_.Pop( 1 );
 
                 if ( buf == nullptr ) return;

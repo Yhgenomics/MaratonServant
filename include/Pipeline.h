@@ -121,6 +121,7 @@ private:
     string docker_daemon ;//= "http://127.0.0.1:4243";
     string main_log_     ;//= "subtasklist.log";
     string runtime_Log_  ;//= "runtime.log";
+    string main_path_    ;
 
     vector<uptr<Pipe>>  pipe_list_;
 

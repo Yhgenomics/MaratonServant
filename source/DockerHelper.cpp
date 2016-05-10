@@ -153,7 +153,7 @@ size_t DockerHelper::Wait( const string &dest ,
                           int     exit_code              = oneResult[ kExitCodeKey ].get<int>();
                           contianer_list_[ containerID ] = "exit";
                       
-                          Logger::Log("Wait exit : %", rawJson);
+                          Logger::Log("Pipe in [ % ] exit with : %", containerID , rawJson);
                       
                           if ( nullptr != exit_code_delegate_ )
                           {

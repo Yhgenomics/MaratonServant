@@ -46,28 +46,38 @@ void Pipeline::AddPipe( uptr<Pipe> pipe )
 // @orignalMessage : message from the Maraton Master
 void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
 {
+    // Refresh task info
     task_id_.clear();
     original_id_.clear();
+    main_path_.clear();
+    task_path_.clear();
+
     task_id_     = orignalMessage->id();
     original_id_ = orignalMessage->originalid();
-
-    system( (mkdir_ + task_root_ + original_id_ + "/").c_str() );
-    std::ofstream subtaskFout( task_root_ + original_id_ + "/" + subtask_list_,std::ios::app);
-
-    subtaskFout << task_id_ << "\r\n";
-    subtaskFout.close();
-
+    main_path_   = task_root_ + original_id_ + "/";
     task_path_   = task_root_ + original_id_ + "/" + task_id_ + "/";
 
-    system( (mkdir_ + task_path_).c_str() );
+    // Make the main task path and the subtask path
+    system( ( mkdir_ + main_path_ ).c_str() );
+    system( ( mkdir_ + task_path_ ).c_str() );
+
+    // Append to subtask list
+    std::ofstream subtaskFout( main_path_ + subtask_list_,std::ios::app);
+
+    subtaskFout << task_id_ <<  std::endl;
+    subtaskFout.close();
+
+    // Make Input File
     std::ofstream fout( task_path_ + input_file_ );
 
     for ( auto file : orignalMessage->input() )
     {
         fout << file << std::endl;
     }
+
     fout.close();
 
+    // Add others info to pipeline
     for ( auto item : orignalMessage->pipeline().pipes() )
     {
         auto pipe = make_uptr( Pipe );
@@ -161,6 +171,7 @@ void Pipeline::Init()
     docker_daemon = "http://127.0.0.1:4243";
     main_log_     = "subtasklist.log";
     runtime_Log_  = "runtime.log";
+    main_path_    = "";
 }
 
 // Check if a string contains valid content
