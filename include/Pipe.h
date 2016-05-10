@@ -72,6 +72,26 @@ public:
     // Run the Pipe
     void Run();
 
+    // Constructor
+    Pipe()
+    {
+        Init();
+    }
+    
+    // Destructor
+    ~Pipe()  {}
+
+    // Initialization
+    void Init()
+    {
+        docker_image_.clear();
+        docker_contianer_id_.clear();
+        docker_daemon_.clear();
+        environments_.clear();
+        binds_.clear();
+        PipeExit = nullptr;
+    }
+
 private: 
 
     string          docker_image_;

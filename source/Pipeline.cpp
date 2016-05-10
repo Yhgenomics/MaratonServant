@@ -173,6 +173,7 @@ void Pipeline::Init()
     main_log_     = "subtasklist.log";
     runtime_Log_  = "runtime.log";
     main_path_    = "";
+    pipe_list_.clear();
 }
 
 // Check if a string contains valid content
