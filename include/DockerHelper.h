@@ -51,33 +51,6 @@ NS_SERVANT_BEGIN
 class DockerHelper :public Singleton<DockerHelper>
 {
 public:
-    
-    // Pull one docker image from registry 
-    // @dest    : The docker daemon such as http://127.0.0.1:1234
-    // @image   : The docker image's name 
-    virtual size_t    Pull  ( const string &dest , const string &image );
-
-    // Create one docker container
-    // @dest        : The docker daemon such as http://127.0.0.1:1234
-    // @image       : The docker image's name
-    // @binds       : The path binds from local path to docker path
-    // @environment : The variables and their values in container
-    // @note        : The container's ID is in the response message. 
-    virtual size_t    Create( const string           &dest  ,
-                              const string           &image ,
-                              const vector< string > &binds ,
-                              const vector< string > &environment );
-
-    // Start a docker container
-    // @dest        : The docker daemon such as http://127.0.0.1:1234
-    // @containerID : The ID of a container
-    // @note        : container ID is given at the response message for Creating
-    virtual size_t    Start ( const string &dest , const string &containerID );
-
-    // Wait a docker container's exit code
-    // @dest        : The docker daemon such as http://127.0.0.1:1234
-    // @containerID : The ID of a container
-    virtual size_t    Wait  ( const string &dest , const string &containerID );
 
     // Run equals to Pull => Create => Start => Wait
     // @dest        : The docker daemon such as http://127.0.0.1:1234
@@ -108,13 +81,82 @@ public:
     }
 
     // true when need to trigger the next action
-    bool              is_run_mode_          = false;
-    
-    ExitCodeHandler   exit_code_delegate_   = nullptr;
-    ExceptionHandler  exception_delegate_   = nullptr;
-    LogHandler        log_delegate_         = nullptr;
+    bool              is_run_mode_       ; //= false;
+
+    ExitCodeHandler   exit_code_delegate_; //= nullptr;
+    ExceptionHandler  exception_delegate_; //= nullptr;
+    LogHandler        log_delegate_      ; //= nullptr;
+
+protected:
+    // Constructor
+    DockerHelper()
+    {
+        Init();
+    }
+
+    // Destructor
+    ~DockerHelper()
+    {
+
+    }
+
+    // Initialization
+    void Init()
+    {
+        is_run_mode_          = false;
+        exit_code_delegate_   = nullptr;
+        exception_delegate_   = nullptr;
+        log_delegate_         = nullptr;
+
+        current_dest_         = "";
+        current_image_        = "";
+        current_container_    = "";
+        
+        exit_code_ = ErrorCode::kDefaultExit;
+
+        current_binds_.clear();
+        current_environment_.clear();
+    }
 
 private:
+
+    // Pull one docker image from registry 
+    // @dest    : The docker daemon such as http://127.0.0.1:1234
+    // @image   : The docker image's name 
+    //virtual size_t    Pull  ( const string &dest , const string &image );
+
+    // Pull one docker image from registry 
+//    virtual size_t    Pull();
+
+    // Create one docker container
+    // @dest        : The docker daemon such as http://127.0.0.1:1234
+    // @image       : The docker image's name
+    // @binds       : The path binds from local path to docker path
+    // @environment : The variables and their values in container
+    // @note        : The container's ID is in the response message. 
+    /* virtual size_t    Create( const string           &dest  ,
+    const string           &image ,
+    const vector< string > &binds ,
+    const vector< string > &environment );*/
+
+    // Create one docker container
+    virtual size_t    Create();
+
+    // Start a docker container
+    // @dest        : The docker daemon such as http://127.0.0.1:1234
+    // @containerID : The ID of a container
+    // @note        : container ID is given at the response message for Creating
+    //virtual size_t    Start ( const string &dest , const string &containerID );
+
+    // Start a docker container
+    virtual size_t    Start();
+
+    // Wait a docker container's exit code
+    // @dest        : The docker daemon such as http://127.0.0.1:1234
+    // @containerID : The ID of a container
+    // virtual size_t    Wait( const string &dest , const string &containerID );
+    virtual size_t    Wait();
+
 
     // Get string for post a pull command
     // @dest    : dest is the docker daemon such as http://127.0.0.1:1234
@@ -176,7 +218,18 @@ private:
     // container ID and status record
     // @note    : For latter usage of docker contianer management 
     map<string , string> contianer_list_;
-    
+
+
+    // current parameters
+    // @note    : this design make one docker helper can only process 
+    //            one task at one time.
+    string           current_dest_;
+    string           current_image_;
+    string           current_container_;
+    vector< string > current_binds_;
+    vector< string > current_environment_;
+    int              exit_code_;
+
     friend Singleton<DockerHelper>;
 
 };

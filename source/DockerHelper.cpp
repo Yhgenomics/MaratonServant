@@ -42,20 +42,21 @@ using MRT::HTTPResponse;
 // Pull one docker image from registry 
 // @dest    : The docker daemon such as http://127.0.0.1:1234
 // @image   : The docker image's name 
-size_t DockerHelper::Pull( const string& dest ,
-                           const string& image )
-{
-    WebClient myWebClient;
-    myWebClient.Post( GetPullString( dest , image ) ,
-                      kEmptyString ,
-                      [] ( uptr<HTTPResponse> response )
-                      {
-                          Logger::Log("image pulled");
-                      }
-    );
-
-    return 0;
-}
+//size_t DockerHelper::Pull( const string& dest ,
+//                           const string& image )
+//size_t DockerHelper::Pull()
+//{
+//    WebClient myWebClient;
+//    myWebClient.Post( GetPullString( current_dest_ , current_image_ ) ,
+//                      kEmptyString ,
+//                      [] ( uptr<HTTPResponse> response )
+//                      {
+//                          Logger::Log( "image pulled" );
+//                      }
+//    );
+//
+//    return 0;
+//}
 
 // Create one docker container
 // @dest        : The docker daemon such as http://127.0.0.1:1234
@@ -63,42 +64,46 @@ size_t DockerHelper::Pull( const string& dest ,
 // @binds       : The path binds from local path to docker path
 // @environment : The variables and their values in container
 // @note        : The container's ID is in the response message. 
-size_t DockerHelper::Create( const string &dest ,
-                             const string &image ,
-                             const vector< string > &binds ,
-                             const vector< string > &environment )
+//size_t DockerHelper::Create( const string &dest ,
+//                             const string &image ,
+//                             const vector< string > &binds ,
+//                             const vector< string > &environment )
+size_t DockerHelper::Create()
 {
     json postJson;
     json hostConfig;
 
-    postJson   [ kImageKey      ] = image;
-    postJson   [ kEvironmentKey ] = environment;
-    hostConfig [ kBindsKey      ] = binds;
+    postJson   [ kImageKey      ] = current_image_;
+    postJson   [ kEvironmentKey ] = current_environment_;
+    hostConfig [ kBindsKey      ] = current_binds_;
     postJson   [ kHostKey       ] = hostConfig;
 
-    bool nextMove                 = is_run_mode_;
+    /*bool nextMove                 = is_run_mode_;*/
 
     WebClient myWebClient;
     myWebClient.Header( kDockerHeaderKey , kDockerHeaderValue );
-    myWebClient.Post( GetCreateString(dest) ,
+    myWebClient.Post( GetCreateString( current_dest_ ) ,
                       postJson.dump() ,
-                      [ nextMove , dest , this ] ( uptr<HTTPResponse> response )
+                      //[ nextMove , dest , this ] ( uptr<HTTPResponse> response )
+                      [ this ] ( uptr<HTTPResponse> response )
                       {
                           string  rawJson     = string( response->Content()->Data() ,
                                                         response->Content()->Size() );
                       
                           auto    oneResponse = json::parse( rawJson );
-                          string  containerID;
+                          //string  containerID;
                       
                           if ( oneResponse.find( kContainerIDKey ) != oneResponse.end() )
                           {
-                              containerID                    = oneResponse[ kContainerIDKey ].get<string>();
-                              contianer_list_[ containerID ] = "created";
+                             /* containerID                    = oneResponse[ kContainerIDKey ].get<string>();
+                              contianer_list_[ containerID ] = "created";*/
+                              current_container_                    = oneResponse[ kContainerIDKey ].get<string>();
+                              contianer_list_[ current_container_ ] = "created";
                           }
                       
-                          if ( nextMove )
+                          if ( is_run_mode_ )
                           {
-                             Start( dest , containerID );
+                             Start();
                           }
                       }
     );
@@ -110,22 +115,23 @@ size_t DockerHelper::Create( const string &dest ,
 // @dest        : The docker daemon such as http://127.0.0.1:1234
 // @containerID : The ID of a container
 // @note        : container ID is given at the response message for Creating
-size_t DockerHelper::Start( const string &dest , 
-                            const string &containerID )
+//size_t DockerHelper::Start( const string &dest , 
+//                            const string &containerID )
+size_t DockerHelper::Start()
 { 
-    bool nextMove                  = is_run_mode_;
-    contianer_list_[ containerID ] = "started";
+   /* bool nextMove                         = is_run_mode_;*/
+    contianer_list_[ current_container_ ] = "started";
 
     WebClient myWebClient;
-    myWebClient.Post( GetStartString( dest , containerID ) ,
+    myWebClient.Post( GetStartString( current_dest_ , current_container_ ) ,
                       kEmptyString ,
-                      [ dest , containerID , nextMove , this ] ( uptr<MRT::HTTPResponse> response )
+                      [  this ] ( uptr<MRT::HTTPResponse> response )
                       {
-                          contianer_list_[ containerID ] = "start OK";
+                          contianer_list_[ current_container_ ] = "start OK";
 
-                          if ( nextMove )
+                          if ( is_run_mode_ )
                           {
-                              Wait( dest , containerID );
+                              Wait();
                           }
                       }
     );
@@ -136,28 +142,32 @@ size_t DockerHelper::Start( const string &dest ,
 // Wait a docker container's exit code
 // @dest        : The docker daemon such as http://127.0.0.1:1234
 // @containerID : The ID of a container
-size_t DockerHelper::Wait( const string &dest , 
-                           const string &containerID )
+//size_t DockerHelper::Wait( const string &dest , 
+//                           const string &containerID )
+size_t DockerHelper::Wait()
 {
-    bool nextMove                  = is_run_mode_;
-    contianer_list_[ containerID ] = "waiting";
+    //bool nextMove                  = is_run_mode_;
+    contianer_list_[ current_container_ ] = "waiting";
 
     WebClient myWebClient;
-    myWebClient.Post( GetWaitString( dest , containerID ) ,
+    myWebClient.Post( GetWaitString( current_dest_ , current_container_ ) ,
                       kEmptyString ,
-                      [ dest , containerID , nextMove , this ] ( uptr<MRT::HTTPResponse> response )
+                      //[ dest , containerID , nextMove , this ] ( uptr<MRT::HTTPResponse> response )
+                      [ this ]( uptr<MRT::HTTPResponse> response )
                       {
                           string  rawJson                = string( response->Content()->Data() ,
                                                                    response->Content()->Size() );
                           auto    oneResult              = json::parse( rawJson );
-                          int     exit_code              = oneResult[ kExitCodeKey ].get<int>();
-                          contianer_list_[ containerID ] = "exit";
+                          //int     exit_code              = oneResult[ kExitCodeKey ].get<int>();
+                          exit_code_                     = oneResult[ kExitCodeKey ].get<int>();
+                          contianer_list_[ current_container_ ] = "exit";
                       
-                          Logger::Log("Pipe in [ % ] exit with : %", containerID , rawJson);
+                          Logger::Log("Pipe in [ % ] exit with : %", current_container_ , rawJson);
                       
                           if ( nullptr != exit_code_delegate_ )
                           {
-                              exit_code_delegate_( exit_code );
+                             //exit_code_delegate_( exit_code );
+                              exit_code_delegate_( exit_code_ );
                           }
                       }
     );
@@ -173,16 +183,23 @@ size_t DockerHelper::Wait( const string &dest ,
 size_t DockerHelper::Run( const string &dest ,
                           const string &image ,
                           const vector< string > &binds ,
-                          const vector< string >  &environment )
+                          const vector< string > &environment )
 {
-    is_run_mode_ = true;
+    is_run_mode_         = true;
+    current_dest_        = dest;
+    current_image_       = image;
+    current_binds_       = binds;
+    current_environment_ = environment;
+    current_container_   = "";
+    exit_code_           = ErrorCode::kDefaultExit;
 
     WebClient myWebClient;
-    myWebClient.Post( GetPullString( dest , image ) ,
+    myWebClient.Post( GetPullString( current_dest_ , current_image_ ) ,
                       kEmptyString ,
-                      [ dest , image , binds , environment , this ] ( uptr<HTTPResponse> response )
+                      [ /*dest , image , binds , environment , */this ] ( uptr<HTTPResponse> response )
                       {
-                          Create( dest , image , binds , environment );
+                          //Create( current_dest_ , current_image_ , current_binds_ , current_environment_ );
+                          Create();
                       }
     );
     
