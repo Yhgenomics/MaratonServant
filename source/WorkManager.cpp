@@ -35,7 +35,7 @@ NS_SERVANT_BEGIN
 // Constructor
 WorkManager::WorkManager()
 {
-    log_sender_ = nullptr;
+    log_sender_  = nullptr;
     self_status_ = ServantStatus::kStandby;
 
     std::stringstream strStream;
@@ -69,14 +69,16 @@ void WorkManager::StartWork()
     Logger::Log( "Task ID [ % ] Subtask ID [ % ] Start." , main_task_id_ , subtask_id_ );
     self_status_ = ServantStatus::kWorking;
 
-    log_sender_ = MRT::SyncWorker::Create( LOG_PERIOD ,
-                             [] ( MRT::SyncWorker* te )
+    Logger::Log("Create Log Sender! begin");
+    log_sender_  = MRT::SyncWorker::Create( LOG_PERIOD ,
+                             [ this ] ( MRT::SyncWorker* te )
                              {
-                                 WorkManager::Instance()->SendLogUpdate();
+                                 SendLogUpdate();
                                  return false;
                              } ,
                              nullptr ,
                              nullptr );
+    Logger::Log("Create Log Sender! end");
 
     ReportSelfStatus();
 
@@ -90,9 +92,9 @@ void WorkManager::FinishWork()
 
     ReportSelfStatus();
     MRT::SyncWorker::Stop( log_sender_ );
-    
+
     // one more round of sending can ensure the whole log has been send out
-    WorkManager::Instance()->SendLogUpdate();
+    SendLogUpdate();
 
     Logger::Log( "Task ID [ % ] Subtask ID [ % ] Finished." , main_task_id_ , subtask_id_ );
 }

@@ -84,8 +84,9 @@ void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
         auto pipe = make_uptr( Pipe );
 
         pipe->DockerDaemon( docker_daemon );
-
+        Logger::Log("Rececived image is [%]", item.executor() );
         pipe->DockerImage( item.executor() );
+        Logger::Log("Store image is [%]",pipe->DockerImage() );
 
         pipe->AddPathBind( task_path_ , docker_work_ );
         pipe->AddPathBind( data_path_ , docker_data_ );
@@ -113,6 +114,8 @@ void Pipeline::Run()
 // @note         : exit code is 0 before the first pipe run.
 void Pipeline::RunNext( const int & lastExitCode )
 {
+    Logger::Log("Try run Next Pipe");
+
     if ( lastExitCode != 0 )
         OnException( lastExitCode );
 
@@ -121,7 +124,9 @@ void Pipeline::RunNext( const int & lastExitCode )
     
     else
     {
+        Logger::Log("move the pipe");
         auto currentPipe = std::move( pipe_list_[ 0 ] );
+        Logger::Log("erase the begin");
         pipe_list_.erase( pipe_list_.begin() );
         currentPipe->Run();
     }

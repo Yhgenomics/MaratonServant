@@ -84,9 +84,9 @@ public:
     // Initialization
     void Init()
     {
-        docker_image_.clear();
-        docker_contianer_id_.clear();
-        docker_daemon_.clear();
+        docker_image_="";
+        docker_contianer_id_="";
+        docker_daemon_="";
         environments_.clear();
         binds_.clear();
         PipeExit = nullptr;

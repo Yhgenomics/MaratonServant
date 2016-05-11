@@ -129,8 +129,9 @@ namespace Protocal
     // @subTaskID  : task ID for a subtask(from the master layer).
     bool MessageHub::SendLogUpdate( const string & mainTaskID , const string & subTaskID )
     {
-        string logContent;
-        bool   logExsit = GetSubtaskLog( mainTaskID , subTaskID , logContent );
+        Logger::Log( "SendLogUpdate in " );
+        string logContent = "";
+        bool   logExsit   = GetSubtaskLog( mainTaskID , subTaskID , logContent );
 
         //[TODO] find out the log content's increment
 
@@ -145,6 +146,7 @@ namespace Protocal
         else
         {
             msg->set_errormark( ( int )ErrorCode::kLogNotFound );
+            Logger::Log("log not found!");
         }
 
         msg->set_taskid( mainTaskID );
@@ -156,6 +158,8 @@ namespace Protocal
         {
             master_session_->SendOut( move_ptr( msg ) );
         }
+
+        Logger::Log( "SendLogUpdate out " );
 
         return true;
     }
