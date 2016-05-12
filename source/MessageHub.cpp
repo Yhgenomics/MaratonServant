@@ -306,6 +306,7 @@ namespace Protocal
             fin.seekg( 0 , std::ios::beg );
             fin.read( &logContent[ 0 ] , logContent.size() );
             fin.close();
+            logContent.push_back('\0');
         }
 
         // sub task not have a log file yet
