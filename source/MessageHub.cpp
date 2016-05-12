@@ -201,7 +201,7 @@ namespace Protocal
     bool MessageHub::SendServantUpdate( const ServantStatus::Code& status )
     {
         auto msg    = make_uptr( MessageServantUpdate );
-        msg->set_status( status );
+        msg->set_status( (int)status );
         master_session_->SendOut( move_ptr( msg ) );
 
         return true;

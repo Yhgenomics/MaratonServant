@@ -53,8 +53,8 @@ void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
     main_path_.clear();
     task_path_.clear();
 
-    task_id_     = orignalMessage->id();
-    original_id_ = orignalMessage->originalid();
+    task_id_     = GetCopiedString(orignalMessage->id());
+    original_id_ = GetCopiedString(orignalMessage->originalid());
     main_path_   = task_root_ + original_id_ + "/";
     task_path_   = task_root_ + original_id_ + "/" + task_id_ + "/";
 
@@ -83,7 +83,7 @@ void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
     {
         auto pipe = make_uptr( Pipe );
 
-        pipe->DockerDaemon( docker_daemon );
+        pipe->DockerDaemon( GetCopiedString(docker_daemon) );
         Logger::Log("Rececived image is [%]", item.executor() );
         pipe->DockerImage( item.executor() );
         Logger::Log("Store image is [%]",pipe->DockerImage() );
@@ -95,7 +95,7 @@ void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
 
         for(auto param : item.parameters())
         {
-            pipe->AddEnvironment( param );
+            pipe->AddEnvironment( GetCopiedString(param) );
         }
 
         AddPipe( std::move( pipe ) );
@@ -105,9 +105,9 @@ void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
 // Start the pipeline
 void Pipeline::Run()
 {
+    Logger::Log("Pipeline Run start");
     RunNext( 0 );
 }
-
 
 // Run Next based on the exit Code from last pipe
 // @lastExitCode : Exit code of the one pipe before current one.

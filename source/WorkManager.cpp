@@ -56,9 +56,9 @@ void WorkManager::AddPipeline( uptr<MessageTaskDeliver> message )
     subtask_id_.clear();
     pipeline_id_.clear();
 
-    main_task_id_ = message->originalid();
-    subtask_id_   = message->id();
-    pipeline_id_  = message->pipeline().id();
+    main_task_id_ = GetCopiedString(message->originalid());
+    subtask_id_   = GetCopiedString(message->id());
+    pipeline_id_  = GetCopiedString(message->pipeline().id());
 
     Pipeline::Instance()->ParseFromMessage( move_ptr( message ) );
 }
@@ -73,14 +73,18 @@ void WorkManager::StartWork()
     log_sender_  = MRT::SyncWorker::Create( LOG_PERIOD ,
                              [ this ] ( MRT::SyncWorker* te )
                              {
+                                 Logger::Log( "Enter loop log sender" );
                                  SendLogUpdate();
                                  return false;
                              } ,
                              nullptr ,
                              nullptr );
-    Logger::Log("Create Log Sender! end");
 
+    Logger::Log( "Create Log Sender! end"    );
+
+    Logger::Log( "Report Self Status! begin" );
     ReportSelfStatus();
+    Logger::Log( "Report Self Status! end"   );
 
     Pipeline::Instance()->Run();
 }

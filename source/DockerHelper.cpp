@@ -137,11 +137,6 @@ size_t DockerHelper::Start()
                       [  this ] ( uptr<MRT::HTTPResponse> response )
                       {
                           Logger::Log("Docker start end");
-                          
-                          if( nullptr == response->Content() )
-                          {
-                              Logger::Log( "Response Content is NULL!Why!" );
-                          }    
                           contianer_list_[ current_container_ ] = "start OK";
 
                           if ( is_run_mode_ )
@@ -210,10 +205,24 @@ size_t DockerHelper::Run( const string &dest ,
 {
     Logger::Log("Docker Run begin");
     is_run_mode_         = true;
-    current_dest_        = dest;
-    current_image_       = image;
-    current_binds_       = binds;
-    current_environment_ = environment;
+    current_dest_.clear();
+    current_image_.clear();
+    current_binds_.clear();
+    current_environment_.clear();
+
+    current_dest_        = GetCopiedString(dest);
+    current_image_       = GetCopiedString(image);
+    for(auto item : binds)
+    {
+        current_binds_.push_back( GetCopiedString(item) );
+    }
+    //current_binds_       = binds;
+    for(auto item: environment)
+    {
+        current_environment_.push_back( GetCopiedString( item ) );
+    }
+    //current_environment_ = environment;
+    
     current_container_   = "";
     exit_code_           = ErrorCode::kDefaultExit;
 
