@@ -70,6 +70,7 @@ using MRT::HTTPResponse;
 //                             const vector< string > &environment )
 size_t DockerHelper::Create()
 {
+    Logger::Log("Docker creaste begin");
     json postJson;
     json hostConfig;
 
@@ -87,6 +88,13 @@ size_t DockerHelper::Create()
                       //[ nextMove , dest , this ] ( uptr<HTTPResponse> response )
                       [ this ] ( uptr<HTTPResponse> response )
                       {
+                          Logger::Log("Docker create end");
+                          if( nullptr == response->Content() )
+                          {
+                              Logger::Log( "Response Content is NULL!Why!" );
+                          }
+
+
                           string  rawJson     = string( response->Content()->Data() ,
                                                         response->Content()->Size() );
                       
@@ -119,6 +127,7 @@ size_t DockerHelper::Create()
 //                            const string &containerID )
 size_t DockerHelper::Start()
 { 
+    Logger::Log("Docker start begin");
    /* bool nextMove                         = is_run_mode_;*/
     contianer_list_[ current_container_ ] = "started";
 
@@ -127,6 +136,12 @@ size_t DockerHelper::Start()
                       kEmptyString ,
                       [  this ] ( uptr<MRT::HTTPResponse> response )
                       {
+                          Logger::Log("Docker start end");
+                          
+                          if( nullptr == response->Content() )
+                          {
+                              Logger::Log( "Response Content is NULL!Why!" );
+                          }    
                           contianer_list_[ current_container_ ] = "start OK";
 
                           if ( is_run_mode_ )
@@ -146,6 +161,7 @@ size_t DockerHelper::Start()
 //                           const string &containerID )
 size_t DockerHelper::Wait()
 {
+    Logger::Log("Docker wait begin");
     //bool nextMove                  = is_run_mode_;
     contianer_list_[ current_container_ ] = "waiting";
 
@@ -155,6 +171,13 @@ size_t DockerHelper::Wait()
                       //[ dest , containerID , nextMove , this ] ( uptr<MRT::HTTPResponse> response )
                       [ this ]( uptr<MRT::HTTPResponse> response )
                       {
+                          Logger::Log("Docker wait end");
+                          
+                          if( nullptr == response->Content() )
+                          {
+                              Logger::Log( "Response Content is NULL!Why!" );
+                          }
+
                           string  rawJson                = string( response->Content()->Data() ,
                                                                    response->Content()->Size() );
                           auto    oneResult              = json::parse( rawJson );
@@ -185,6 +208,7 @@ size_t DockerHelper::Run( const string &dest ,
                           const vector< string > &binds ,
                           const vector< string > &environment )
 {
+    Logger::Log("Docker Run begin");
     is_run_mode_         = true;
     current_dest_        = dest;
     current_image_       = image;
@@ -198,6 +222,7 @@ size_t DockerHelper::Run( const string &dest ,
                       kEmptyString ,
                       [ /*dest , image , binds , environment , */this ] ( uptr<HTTPResponse> response )
                       {
+                          Logger::Log("Docker pull end");
                           //Create( current_dest_ , current_image_ , current_binds_ , current_environment_ );
                           Create();
                       }

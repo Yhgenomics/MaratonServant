@@ -119,9 +119,9 @@ void Pipeline::RunNext( const int & lastExitCode )
     if ( lastExitCode != 0 )
         OnException( lastExitCode );
 
-    if ( pipe_list_.size() == 0 )
+    else if ( pipe_list_.size() == 0 )
         OnFinish();
-    
+
     else
     {
         Logger::Log("move the pipe");
@@ -134,12 +134,12 @@ void Pipeline::RunNext( const int & lastExitCode )
 
 // Called when pipeline finish
 void Pipeline::OnFinish()
-{ 
-    vector<string> outputs; 
+{
+    vector<string> outputs;
     GatherOutputInformation( outputs );
     Protocal::MessageHub::Instance()->SendTaskUpdate( TaskStatus::kFinished , outputs );
     Logger::Log( "Pipeline Finished " );
-    
+
     WorkManager::Instance()->FinishWork();
 }
 
@@ -164,7 +164,7 @@ Pipeline::Pipeline()
 void Pipeline::Init()
 {
     mkdir_        = "mkdir ";
-    task_root_    = "/data/mrttask/";   
+    task_root_    = "/data/mrttask/";
     data_path_    = "/data/ref/";
     task_id_      = "";
     original_id_  = "";
