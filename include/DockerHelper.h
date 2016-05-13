@@ -113,7 +113,7 @@ protected:
         current_image_        = "";
         current_container_    = "";
 
-        exit_code_ = ErrorCode::kDefaultExit;
+        exit_code_ = (int)ErrorCode::kDefaultExit;
 
         current_binds_.clear();
         current_environment_.clear();
