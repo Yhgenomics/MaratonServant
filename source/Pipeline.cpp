@@ -53,8 +53,8 @@ void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
     main_path_.clear();
     task_path_.clear();
 
-    task_id_     = GetCopiedString(orignalMessage->id());
-    original_id_ = GetCopiedString(orignalMessage->originalid());
+    task_id_     = orignalMessage->id();
+    original_id_ = orignalMessage->originalid();
     main_path_   = task_root_ + original_id_ + "/";
     task_path_   = task_root_ + original_id_ + "/" + task_id_ + "/";
 
@@ -83,21 +83,22 @@ void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
     {
         auto pipe = make_uptr( Pipe );
 
-        pipe->DockerDaemon( GetCopiedString(docker_daemon) );
+        pipe->DockerDaemon( docker_daemon );
         Logger::Log("Rececived image is [%]", item.executor() );
         pipe->DockerImage( item.executor() );
         Logger::Log("Store image is [%]",pipe->DockerImage() );
 
         pipe->AddPathBind( task_path_ , docker_work_ );
         pipe->AddPathBind( data_path_ , docker_data_ );
-        
+
         pipe->SetPipeExit( NextPipe );
 
         for(auto param : item.parameters())
         {
-            pipe->AddEnvironment( GetCopiedString(param) );
+            pipe->AddEnvironment( param );
         }
-
+        Logger::Log("one pipe parsing from the msg");
+        pipe->ShowAll();
         AddPipe( std::move( pipe ) );
     } // end of for ( auto item : orignalMessage->pipeline().pipes() )
 }
@@ -125,10 +126,12 @@ void Pipeline::RunNext( const int & lastExitCode )
     else
     {
         Logger::Log("move the pipe");
-        auto currentPipe = std::move( pipe_list_[ 0 ] );
+        // auto currentPipe = std::move( pipe_list_[ 0 ] );
+        current_pipe_ = std::move( pipe_list_[ 0 ] );
         Logger::Log("erase the begin");
         pipe_list_.erase( pipe_list_.begin() );
-        currentPipe->Run();
+        // currentPipe->Run();
+        current_pipe_->Run();
     }
 }
 
@@ -179,6 +182,7 @@ void Pipeline::Init()
     runtime_Log_  = "runtime.log";
     main_path_    = "";
     pipe_list_.clear();
+    current_pipe_ = nullptr;
 }
 
 // Check if a string contains valid content

@@ -91,6 +91,24 @@ public:
         binds_.clear();
         PipeExit = nullptr;
     }
+    void ShowAll()
+    {
+        Logger::Log("Pipe parameters snapshot");
+        Logger::Log("docker image is  [%]", docker_image_ );
+        Logger::Log("docker daemon is [%]", docker_daemon_);
+        Logger::Log("binds size       [%]", binds_.size());
+        Logger::Log("env   size is    [%]", environments_.size());
+        
+        for(auto item : binds_)
+        {
+            Logger::Log("one bind [%]",item);
+        }
+        for(auto item: environments_)
+        {
+            Logger::Log("one evn  [%]", item);
+        }
+        Logger::Log("snapshot end");
+    }
 
 private: 
 

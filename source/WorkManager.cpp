@@ -56,9 +56,9 @@ void WorkManager::AddPipeline( uptr<MessageTaskDeliver> message )
     subtask_id_.clear();
     pipeline_id_.clear();
 
-    main_task_id_ = GetCopiedString(message->originalid());
-    subtask_id_   = GetCopiedString(message->id());
-    pipeline_id_  = GetCopiedString(message->pipeline().id());
+    main_task_id_ = message->originalid();
+    subtask_id_   = message->id();
+    pipeline_id_  = message->pipeline().id();
 
     Pipeline::Instance()->ParseFromMessage( move_ptr( message ) );
 }

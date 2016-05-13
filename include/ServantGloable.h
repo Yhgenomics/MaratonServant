@@ -54,10 +54,10 @@ typedef function<void( const string& , const string& )>  LogHandler;
 
 // The clang++ and gcc don't ensure a hard copy for a string
 // when using the operator=( const string& )
-static string GetCopiedString( const string& source)
-{
-return string(source.c_str(),source.size());
-}
+//static string GetCopiedString( const string& source)
+//{
+//return string(source.c_str(),source.size());
+//}
 
 NS_SERVANT_END
 

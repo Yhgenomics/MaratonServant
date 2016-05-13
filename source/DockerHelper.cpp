@@ -70,7 +70,7 @@ using MRT::HTTPResponse;
 //                             const vector< string > &environment )
 size_t DockerHelper::Create()
 {
-    Logger::Log("Docker creaste begin");
+    Logger::Log("Docker create begin");
     json postJson;
     json hostConfig;
 
@@ -82,6 +82,7 @@ size_t DockerHelper::Create()
     /*bool nextMove                 = is_run_mode_;*/
 
     WebClient myWebClient;
+    Logger::Log("DockerCreat Content is %",postJson.dump(4));
     myWebClient.Header( kDockerHeaderKey , kDockerHeaderValue );
     myWebClient.Post( GetCreateString( current_dest_ ) ,
                       postJson.dump() ,
@@ -94,21 +95,24 @@ size_t DockerHelper::Create()
                               Logger::Log( "Response Content is NULL!Why!" );
                           }
 
-
+                          Logger::Log("to get raw Json");
                           string  rawJson     = string( response->Content()->Data() ,
                                                         response->Content()->Size() );
-                      
+                          Logger::Log("raw JSON str is[%]",rawJson);
+                          Logger::Log("to parse rawJson");
                           auto    oneResponse = json::parse( rawJson );
                           //string  containerID;
-                      
+
                           if ( oneResponse.find( kContainerIDKey ) != oneResponse.end() )
                           {
                              /* containerID                    = oneResponse[ kContainerIDKey ].get<string>();
                               contianer_list_[ containerID ] = "created";*/
                               current_container_                    = oneResponse[ kContainerIDKey ].get<string>();
+                              Logger::Log("conatainer ID is [%]", current_container_ );
+
                               contianer_list_[ current_container_ ] = "created";
                           }
-                      
+
                           if ( is_run_mode_ )
                           {
                              Start();
@@ -167,7 +171,7 @@ size_t DockerHelper::Wait()
                       [ this ]( uptr<MRT::HTTPResponse> response )
                       {
                           Logger::Log("Docker wait end");
-                          
+
                           if( nullptr == response->Content() )
                           {
                               Logger::Log( "Response Content is NULL!Why!" );
@@ -179,9 +183,9 @@ size_t DockerHelper::Wait()
                           //int     exit_code              = oneResult[ kExitCodeKey ].get<int>();
                           exit_code_                     = oneResult[ kExitCodeKey ].get<int>();
                           contianer_list_[ current_container_ ] = "exit";
-                      
+
                           Logger::Log("Pipe in [ % ] exit with : %", current_container_ , rawJson);
-                      
+
                           if ( nullptr != exit_code_delegate_ )
                           {
                              //exit_code_delegate_( exit_code );
@@ -205,27 +209,37 @@ size_t DockerHelper::Run( const string &dest ,
 {
     Logger::Log("Docker Run begin");
     is_run_mode_         = true;
+    Logger::Log("clear work");
     current_dest_.clear();
     current_image_.clear();
     current_binds_.clear();
     current_environment_.clear();
+    current_container_.clear();
 
-    current_dest_        = GetCopiedString(dest);
-    current_image_       = GetCopiedString(image);
-    for(auto item : binds)
-    {
-        current_binds_.push_back( GetCopiedString(item) );
-    }
-    //current_binds_       = binds;
-    for(auto item: environment)
-    {
-        current_environment_.push_back( GetCopiedString( item ) );
-    }
-    //current_environment_ = environment;
+    Logger::Log("set dest!");
+    current_dest_        = dest;
+
+    Logger::Log("set image!");
+    current_image_       = image;
     
+    Logger::Log("set binds");
+    //for(auto item : binds)
+    //{
+     //   current_binds_.push_back( GetCopiedString(item) );
+   // }
+    current_binds_       = binds;
+    
+    Logger::Log("set environment");
+    //for(auto item: environment)
+    //{
+    //    current_environment_.push_back( GetCopiedString( item ) );
+    //}
+    current_environment_ = environment;
+
     current_container_   = "";
     exit_code_           = ErrorCode::kDefaultExit;
 
+    Logger::Log("Docker input parsed OK");
     WebClient myWebClient;
     myWebClient.Post( GetPullString( current_dest_ , current_image_ ) ,
                       kEmptyString ,

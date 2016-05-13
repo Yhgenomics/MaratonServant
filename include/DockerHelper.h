@@ -103,6 +103,7 @@ protected:
     // Initialization
     void Init()
     {
+        contianer_list_.clear();
         is_run_mode_          = false;
         exit_code_delegate_   = nullptr;
         exception_delegate_   = nullptr;
@@ -111,7 +112,7 @@ protected:
         current_dest_         = "";
         current_image_        = "";
         current_container_    = "";
-        
+
         exit_code_ = ErrorCode::kDefaultExit;
 
         current_binds_.clear();
@@ -163,6 +164,7 @@ private:
     // @image   : image is the docker image's name
     string GetPullString( const string& dest , const string& image )
     {
+        Logger::Log("DockerPull post will use url %",dest + kCreateImage + kParamsToken + kFromImage + image );
         return dest + kCreateImage + kParamsToken + kFromImage + image;
     }
 
@@ -170,6 +172,7 @@ private:
     // @dest    : dest is the docker daemon such as http://127.0.0.1:1234
     string GetCreateString( const string& dest )
     {
+        Logger::Log("DockerCreate post will use url %",dest + kCreateContainer);
         return dest + kCreateContainer;
     }
 
@@ -178,6 +181,7 @@ private:
     // @containerID : containerID is the ID of a container
     string GetStartString( const string &dest , const string &containerID )
     {
+        Logger::Log("DockerStart post will use url %", dest + KContainers + containerID + kStartContainer);
         return dest + KContainers + containerID + kStartContainer;
     }
     
@@ -186,6 +190,7 @@ private:
     // @containerID : containerID is the ID of a container
     string GetWaitString( const string &dest , const string &containerID )
     {
+        Logger::Log("DcokerWait post will use url %", dest + KContainers + containerID + kWaitContainer );
         return dest + KContainers + containerID + kWaitContainer;
     }
 

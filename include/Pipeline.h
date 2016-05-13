@@ -73,11 +73,11 @@ public:
 
     // Getter for task root
     string TaskRoot()       { return task_root_;   }
-    
+
     // Getter for Main log name
     // Main log is the record for all subtasklist associated to a main task
     string MainLogName()    { return main_log_;    }
-    
+
     // Getter for runtime log
     // runtime log is the log in one subtask
     string RuntimeLogName() { return runtime_Log_; }
@@ -108,7 +108,7 @@ private:
     bool GatherOutputInformation( vector<string>& outputs );
 
     string mkdir_        ;//= "mkdir ";
-    string task_root_    ;//= "/data/mrttask/";   
+    string task_root_    ;//= "/data/mrttask/";
     string data_path_    ;//= "/data/ref/";
     string task_id_      ;//= "";
     string original_id_  ;//= "";
@@ -122,6 +122,7 @@ private:
     string main_log_     ;//= "subtasklist.log";
     string runtime_Log_  ;//= "runtime.log";
     string main_path_    ;
+    uptr<Pipe> current_pipe_;
 
     vector<uptr<Pipe>>  pipe_list_;
 
