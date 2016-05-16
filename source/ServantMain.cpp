@@ -41,6 +41,7 @@ using nlohmann::json;
 
 int main( int argc , char* argv[] )
 {
+    Logger::Sys("build % %" , __DATE__ , __TIME__);
     Protocal::MessageHub::Instance()->AddAllHandlers();
 
     std::string  ip   = string( argv[ 1 ] );

@@ -154,6 +154,7 @@ void Pipeline::OnException( const int & lastExitCode )
     Protocal::MessageHub::Instance()->SendTaskUpdate( TaskStatus::kError );
 
     Logger::Error("Exception happended code : %",lastExitCode);
+    WorkManager::Instance()->FinishWork();
 }
 
 
