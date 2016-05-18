@@ -72,16 +72,20 @@ public:
     void OnException( const int& lastExitCode );
 
     // Getter for task root
-    string TaskRoot()       { return task_root_;   }
+    string TaskRoot()                  { return task_root_;   }
 
     // Getter for Main log name
     // Main log is the record for all subtasklist associated to a main task
-    string MainLogName()    { return main_log_;    }
+    string MainLogName()               { return main_log_;    }
 
     // Getter for runtime log
     // runtime log is the log in one subtask
-    string RuntimeLogName() { return runtime_Log_; }
+    string RuntimeLogName()            { return runtime_Log_; }
 
+    // Getter and Setter for abort mark
+    bool NeedAbort()                   { return abort_mark_ ; }
+    void NeedAbort( const bool& value) { abort_mark_ = value; }
+ 
     // Setter for docker daemon
     // @daemon  : The docker daemon in form http://127.0.0.1:1234
     void DockerDaemon( const string& daemon )
@@ -97,6 +101,9 @@ protected:
     // Initialization
     void Init();
 
+    // Abort task
+    void Abort();
+
 private:
 
     // Check if a string contains valid content
@@ -107,21 +114,22 @@ private:
     // @outputs   : The contianer's outputs files informations.
     bool GatherOutputInformation( vector<string>& outputs );
 
-    string mkdir_        ;//= "mkdir ";
-    string task_root_    ;//= "/data/mrttask/";
-    string data_path_    ;//= "/data/ref/";
-    string task_id_      ;//= "";
-    string original_id_  ;//= "";
-    string task_path_    ;//= "";
-    string input_file_   ;//= "input.mrt";
-    string output_file_  ;//= "output.mrt";
-    string subtask_list_ ;//= "subtasklist.log";
-    string docker_work_  ;//= "/work/";
-    string docker_data_  ;//= "/data/";
-    string docker_daemon ;//= "http://127.0.0.1:4243";
-    string main_log_     ;//= "subtasklist.log";
-    string runtime_Log_  ;//= "runtime.log";
+    string mkdir_        ;
+    string task_root_    ;
+    string data_path_    ;
+    string task_id_      ;
+    string original_id_  ;
+    string task_path_    ;
+    string input_file_   ;
+    string output_file_  ;
+    string subtask_list_ ;
+    string docker_work_  ;
+    string docker_data_  ;
+    string docker_daemon ;
+    string main_log_     ;
+    string runtime_Log_  ;
     string main_path_    ;
+    bool   abort_mark_   ;
     uptr<Pipe> current_pipe_;
 
     vector<uptr<Pipe>>  pipe_list_;

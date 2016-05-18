@@ -188,13 +188,17 @@ size_t DockerHelper::Wait()
 
                           if ( nullptr != exit_code_delegate_ )
                           {
-                             //exit_code_delegate_( exit_code );
                               exit_code_delegate_( exit_code_ );
                           }
                       }
     );
 
     return 0;
+}
+
+size_t DockerHelper::Stop( const string & contianerID )
+{
+    return size_t();
 }
 
 // Run equals to Pull => Create => Start => Wait

@@ -128,6 +128,7 @@
     <None Include="..\proto\MessageHeartBeat.proto" />
     <None Include="..\proto\MessageRegist.proto" />
     <None Include="..\proto\MessageServantUpdate.proto" />
+    <None Include="..\proto\MessageTaskAbort.proto" />
     <None Include="..\proto\MessageTaskDeliver.proto" />
     <None Include="..\proto\MessageTaskDeliverReply.proto" />
     <None Include="..\proto\MessageTaskLogsQuery.proto" />
@@ -140,6 +141,7 @@
     <ClInclude Include="..\include\GeneralSession.h" />
     <ClInclude Include="..\include\handler\MessageGreetingHandler.h" />
     <ClInclude Include="..\include\handler\MessageRegistHandler.h" />
+    <ClInclude Include="..\include\handler\MessageTaskAbortHandler.h" />
     <ClInclude Include="..\include\handler\MessageTaskDeliverHandler.h" />
     <ClInclude Include="..\include\handler\MessageTaskDeliverReplyHandler.h" />
     <ClInclude Include="..\include\MessageHandler.h" />
@@ -148,6 +150,7 @@
     <ClInclude Include="..\include\message\MessageHeartBeat.pb.h" />
     <ClInclude Include="..\include\message\MessageRegist.pb.h" />
     <ClInclude Include="..\include\message\MessageServantUpdate.pb.h" />
+    <ClInclude Include="..\include\message\MessageTaskAbort.pb.h" />
     <ClInclude Include="..\include\message\MessageTaskDeliver.pb.h" />
     <ClInclude Include="..\include\message\MessageTaskDeliverReply.pb.h" />
     <ClInclude Include="..\include\message\MessageTaskLogsQuery.pb.h" />
@@ -168,6 +171,7 @@
     <ClCompile Include="..\include\message\MessageHeartBeat.pb.cc" />
     <ClCompile Include="..\include\message\MessageRegist.pb.cc" />
     <ClCompile Include="..\include\message\MessageServantUpdate.pb.cc" />
+    <ClCompile Include="..\include\message\MessageTaskAbort.pb.cc" />
     <ClCompile Include="..\include\message\MessageTaskDeliver.pb.cc" />
     <ClCompile Include="..\include\message\MessageTaskDeliverReply.pb.cc" />
     <ClCompile Include="..\include\message\MessageTaskLogsQuery.pb.cc" />

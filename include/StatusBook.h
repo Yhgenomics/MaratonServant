@@ -41,12 +41,14 @@ namespace ServantStatus
 {  
     enum Code
     {
-        kUnknown    = 100 ,
-        kStandby    = 101 ,
-        kWorking    = 102 ,
-        kRecovering = 103 ,
-        kException  = 104 ,  
-        kError      = 105     
+        kUnknown     = 100 ,
+        kStandby     = 101 ,
+        kWorking     = 102 ,
+        kRecovering  = 103 ,
+        kException   = 104 ,  
+        kError       = 105 ,
+        // PreOccupied only used in Master
+        kPreOccupied = 106       
     };
 }
 
@@ -61,9 +63,11 @@ namespace TaskStatus
         kRunning  = 302 ,
         kFinished = 303 ,
         kStopped  = 304 ,
-        kError    = 305
+        kError    = 305 ,
+        kAborting = 306 ,
     };
 }
+
 
 // Servants with differents may offer variances. 
 // @range : 500-699
@@ -88,6 +92,7 @@ namespace ErrorCode
         // 10100-10299 Servant Error
         kServantBusy  = 10100,
         kDefaultExit  = 10101,
+        kServantLost  = 10102,
         
         // 10300-10499 Task Error
         kTaskNotReady = 10300,

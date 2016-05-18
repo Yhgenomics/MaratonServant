@@ -75,7 +75,7 @@ private:
     // Pointer to a SyncWorker should be created when the session is opening
     // and be stopped when the seesion is closing.
     // @note : No delete on this pointer is allowed after the constrains from the Maraton Framework.
-    MRT::SyncWorker*         HeartbeatSender;
+    MRT::SyncWorker*    HeartbeatSender;
 
 };
 

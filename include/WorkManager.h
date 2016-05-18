@@ -69,6 +69,9 @@ public:
     // Finish the task
     void FinishWork();
 
+    // Abort the task
+    void AbortWork();
+
     // Return Current Task ID
     string MainTaskID() { return main_task_id_; }
 

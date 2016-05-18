@@ -52,6 +52,9 @@
     <None Include="..\proto\MessageTaskLogsQuery.proto">
       <Filter>proto\defines</Filter>
     </None>
+    <None Include="..\proto\MessageTaskAbort.proto">
+      <Filter>proto\defines</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\DockerHelper.h">
@@ -135,6 +138,12 @@
     <ClInclude Include="..\include\message\MessageTaskLogsUpdate.pb.h">
       <Filter>proto</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\message\MessageTaskAbort.pb.h">
+      <Filter>proto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\handler\MessageTaskAbortHandler.h">
+      <Filter>MessageHandlers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\DockerHelper.cpp">
@@ -189,6 +198,9 @@
       <Filter>proto</Filter>
     </ClCompile>
     <ClCompile Include="..\include\message\MessageTaskLogsUpdate.pb.cc">
+      <Filter>proto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\message\MessageTaskAbort.pb.cc">
       <Filter>proto</Filter>
     </ClCompile>
   </ItemGroup>

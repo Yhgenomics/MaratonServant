@@ -130,34 +130,16 @@ private:
 //    virtual size_t    Pull();
 
     // Create one docker container
-    // @dest        : The docker daemon such as http://127.0.0.1:1234
-    // @image       : The docker image's name
-    // @binds       : The path binds from local path to docker path
-    // @environment : The variables and their values in container
-    // @note        : The container's ID is in the response message. 
-    /* virtual size_t    Create( const string           &dest  ,
-    const string           &image ,
-    const vector< string > &binds ,
-    const vector< string > &environment );*/
-
-    // Create one docker container
     virtual size_t    Create();
-
-    // Start a docker container
-    // @dest        : The docker daemon such as http://127.0.0.1:1234
-    // @containerID : The ID of a container
-    // @note        : container ID is given at the response message for Creating
-    //virtual size_t    Start ( const string &dest , const string &containerID );
 
     // Start a docker container
     virtual size_t    Start();
 
     // Wait a docker container's exit code
-    // @dest        : The docker daemon such as http://127.0.0.1:1234
-    // @containerID : The ID of a container
-    // virtual size_t    Wait( const string &dest , const string &containerID );
     virtual size_t    Wait();
 
+    // Stop current docker container
+    virtual size_t    Stop( const string& contianerID );
 
     // Get string for post a pull command
     // @dest    : dest is the docker daemon such as http://127.0.0.1:1234

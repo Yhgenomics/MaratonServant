@@ -46,6 +46,7 @@ void Pipeline::AddPipe( uptr<Pipe> pipe )
 // @orignalMessage : message from the Maraton Master
 void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
 {
+    abort_mark_ = false;
     pipe_list_.clear();
     // Refresh task info
     task_id_.clear();
@@ -123,14 +124,12 @@ void Pipeline::RunNext( const int & lastExitCode )
     else if ( pipe_list_.size() == 0 )
         OnFinish();
 
+    else if ( abort_mark_ )
+        Abort();
     else
     {
-        Logger::Log("move the pipe");
-        // auto currentPipe = std::move( pipe_list_[ 0 ] );
         current_pipe_ = std::move( pipe_list_[ 0 ] );
-        Logger::Log("erase the begin");
         pipe_list_.erase( pipe_list_.begin() );
-        // currentPipe->Run();
         current_pipe_->Run();
     }
 }
@@ -157,6 +156,14 @@ void Pipeline::OnException( const int & lastExitCode )
     WorkManager::Instance()->FinishWork();
 }
 
+// Abort task
+void Pipeline::Abort()
+{
+    Protocal::MessageHub::Instance()->SendTaskUpdate( TaskStatus::kStopped );
+    Logger::Log( "Pipeline Aborted " );
+
+    WorkManager::Instance()->FinishWork();
+}
 
 // Constructor
 Pipeline::Pipeline()
@@ -182,6 +189,7 @@ void Pipeline::Init()
     main_log_     = "subtasklist.log";
     runtime_Log_  = "runtime.log";
     main_path_    = "";
+    abort_mark_   = false;
     pipe_list_.clear();
     current_pipe_ = nullptr;
 }
