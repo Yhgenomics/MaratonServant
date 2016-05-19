@@ -83,8 +83,9 @@ public:
     string RuntimeLogName()            { return runtime_Log_; }
 
     // Getter and Setter for abort mark
+    // @note : the abort mark in Docker Helper is independent and need to be set the same
     bool NeedAbort()                   { return abort_mark_ ; }
-    void NeedAbort( const bool& value) { abort_mark_ = value; }
+    void NeedAbort( const bool& value ) { abort_mark_ = value; DockerHelper::Instance()->NeedAbort( value ); }
  
     // Setter for docker daemon
     // @daemon  : The docker daemon in form http://127.0.0.1:1234
@@ -129,7 +130,7 @@ private:
     string main_log_     ;
     string runtime_Log_  ;
     string main_path_    ;
-    bool   abort_mark_   ;
+    bool   abort_mark_   ; // use the Setter to set, no direct set to this value.
     uptr<Pipe> current_pipe_;
 
     vector<uptr<Pipe>>  pipe_list_;

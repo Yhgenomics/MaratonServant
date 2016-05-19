@@ -30,6 +30,7 @@ limitations under the License.
 #include "MessageTaskAbort.pb.h"
 #include "MessageHandler.h"
 #include "GeneralSession.h"
+#include "WorkManager.h"
 #include <functional>
 #include <string>
 #include <memory>
@@ -45,6 +46,7 @@ namespace Protocal
             Method = []( GeneralSession* session , const void* pData , size_t length )
             {
                 //TODO add your codes here
+                NS_SERVANT::WorkManager::Instance()->AbortWork();
                 return true;
             };
         }

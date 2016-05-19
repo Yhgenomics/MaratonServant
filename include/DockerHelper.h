@@ -62,6 +62,9 @@ public:
                               const vector< string > &binds ,
                               const vector< string >  &environment );
 
+    // Stop current docker container
+    virtual size_t    Stop();
+
     // Bind handler for a docker's exit code 
     virtual void      BindExitCodeHandler( ExitCodeHandler  one_handler )
     {
@@ -79,6 +82,9 @@ public:
     {
         log_delegate_       = one_handler;
     }
+
+    // Setter for need_abort_
+    void NeedAbort( const bool& value ) { need_abort_ = value; }
 
     // true when need to trigger the next action
     bool              is_run_mode_       ; //= false;
@@ -101,23 +107,7 @@ protected:
     }
 
     // Initialization
-    void Init()
-    {
-        contianer_list_.clear();
-        is_run_mode_          = false;
-        exit_code_delegate_   = nullptr;
-        exception_delegate_   = nullptr;
-        log_delegate_         = nullptr;
-
-        current_dest_         = "";
-        current_image_        = "";
-        current_container_    = "";
-
-        exit_code_ = (int)ErrorCode::kDefaultExit;
-
-        current_binds_.clear();
-        current_environment_.clear();
-    }
+    void Init();
 
 private:
 
@@ -138,8 +128,8 @@ private:
     // Wait a docker container's exit code
     virtual size_t    Wait();
 
-    // Stop current docker container
-    virtual size_t    Stop( const string& contianerID );
+    // force exit
+    virtual size_t    ForcedExit( const int& exitCode );
 
     // Get string for post a pull command
     // @dest    : dest is the docker daemon such as http://127.0.0.1:1234
@@ -176,12 +166,27 @@ private:
         return dest + KContainers + containerID + kWaitContainer;
     }
 
+
+    // Get string for post a stop command
+    // @dest        : dest is the docker daemon such as http://127.0.0.1:1234
+    // @containerID : containerID is the ID of a container
+    string GetStopString( const string &dest , const string &containerID )
+    {
+        Logger::Log("DockerStart post will use url %", dest + KContainers + containerID + kStopContainer);
+        return dest + KContainers + containerID + kStopContainer;
+    }
+
+    // Exit code for abort a task
+    // It the same with the wait exit code for a running docker container killed by REST API 
+    const int    kAbortExit         = 137;
+
     // const values for docker REST API
     const string kDockerHeaderKey   = "Content-Type";
     const string kDockerHeaderValue = "application/json";  
     const string kCreateContainer   = "/containers/create";
     const string KContainers        = "/containers/";
     const string kStartContainer    = "/start";
+    const string kStopContainer     = "/stop";
     const string kWaitContainer     = "/wait";
     const string kCreateImage       = "/images/create";
     const string kParamsToken       = "?";   
@@ -206,7 +211,6 @@ private:
     // @note    : For latter usage of docker contianer management 
     map<string , string> contianer_list_;
 
-
     // current parameters
     // @note    : this design make one docker helper can only process 
     //            one task at one time.
@@ -216,6 +220,8 @@ private:
     vector< string > current_binds_;
     vector< string > current_environment_;
     int              exit_code_;
+    bool             need_abort_;
+    bool             at_work_;   // this is to ensure the docker manager take one task one time
 
     friend Singleton<DockerHelper>;
 

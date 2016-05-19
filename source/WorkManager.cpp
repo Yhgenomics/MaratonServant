@@ -103,6 +103,16 @@ void WorkManager::FinishWork()
     Logger::Log( "Task ID [ % ] Subtask ID [ % ] Finished." , main_task_id_ , subtask_id_ );
 }
 
+// AbortWork
+void WorkManager::AbortWork()
+{
+    if ( self_status_ == ServantStatus::kWorking )
+    {
+        Pipeline::Instance()->NeedAbort( true );
+        DockerHelper::Instance()->Stop();
+    }
+}
+
 // Report self status to master
 void WorkManager::ReportSelfStatus()
 {

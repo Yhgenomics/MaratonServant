@@ -58,6 +58,27 @@ using MRT::HTTPResponse;
 //    return 0;
 //}
 
+
+// Initialization
+void DockerHelper::Init()
+{
+    contianer_list_.clear();
+    is_run_mode_        = false;
+    at_work_            = false;
+    exit_code_delegate_ = nullptr;
+    exception_delegate_ = nullptr;
+    log_delegate_       = nullptr;
+
+    current_dest_       = "";
+    current_image_      = "";
+    current_container_  = "";
+
+    exit_code_ = ( int )ErrorCode::kDefaultExit;
+
+    current_binds_.clear();
+    current_environment_.clear();
+}
+
 // Create one docker container
 // @dest        : The docker daemon such as http://127.0.0.1:1234
 // @image       : The docker image's name
@@ -79,44 +100,49 @@ size_t DockerHelper::Create()
     hostConfig [ kBindsKey      ] = current_binds_;
     postJson   [ kHostKey       ] = hostConfig;
 
-    /*bool nextMove                 = is_run_mode_;*/
-
     WebClient myWebClient;
     Logger::Log("DockerCreat Content is %",postJson.dump(4));
     myWebClient.Header( kDockerHeaderKey , kDockerHeaderValue );
     myWebClient.Post( GetCreateString( current_dest_ ) ,
                       postJson.dump() ,
-                      //[ nextMove , dest , this ] ( uptr<HTTPResponse> response )
+                      
                       [ this ] ( uptr<HTTPResponse> response )
                       {
-                          Logger::Log("Docker create end");
-                          if( nullptr == response->Content() )
+                          if ( need_abort_ )
                           {
-                              Logger::Log( "Response Content is NULL!Why!" );
+                              ForcedExit( kAbortExit );
                           }
-
-                          Logger::Log("to get raw Json");
-                          string  rawJson     = string( response->Content()->Data() ,
-                                                        response->Content()->Size() );
-                          Logger::Log("raw JSON str is[%]",rawJson);
-                          Logger::Log("to parse rawJson");
-                          auto    oneResponse = json::parse( rawJson );
-                          //string  containerID;
-
-                          if ( oneResponse.find( kContainerIDKey ) != oneResponse.end() )
+                          else
                           {
-                             /* containerID                    = oneResponse[ kContainerIDKey ].get<string>();
-                              contianer_list_[ containerID ] = "created";*/
-                              current_container_                    = oneResponse[ kContainerIDKey ].get<string>();
-                              Logger::Log("conatainer ID is [%]", current_container_ );
+                              Logger::Log( "Docker create end" );
+                              if( nullptr == response->Content() )
+                              {
+                                  Logger::Log( "Response Content is NULL!Why!" );
+                              }
 
-                              contianer_list_[ current_container_ ] = "created";
-                          }
+                              Logger::Log( "to get raw Json" );
+                              string  rawJson     = string( response->Content()->Data() ,
+                                                            response->Content()->Size() );
+                              Logger::Log( "raw JSON str is[%]" , rawJson );
+                              Logger::Log( "to parse rawJson" );
+                              auto    oneResponse = json::parse( rawJson );
+                              //string  containerID;
 
-                          if ( is_run_mode_ )
-                          {
-                             Start();
-                          }
+                              if ( oneResponse.find( kContainerIDKey ) != oneResponse.end() )
+                              {
+                                  /* containerID                    = oneResponse[ kContainerIDKey ].get<string>();
+                                  contianer_list_[ containerID ] = "created";*/
+                                  current_container_                    = oneResponse[ kContainerIDKey ].get<string>();
+                                  Logger::Log("conatainer ID is [%]", current_container_ );
+
+                                  contianer_list_[ current_container_ ] = "created";
+                              }
+
+                              if ( is_run_mode_ )
+                              {
+                                  Start();
+                              }
+                          }                      
                       }
     );
 
@@ -143,7 +169,12 @@ size_t DockerHelper::Start()
                           Logger::Log("Docker start end");
                           contianer_list_[ current_container_ ] = "start OK";
 
-                          if ( is_run_mode_ )
+                          if ( need_abort_ )
+                          {
+                              ForcedExit( kAbortExit );
+                          }
+
+                          else if ( is_run_mode_ )
                           {
                               Wait();
                           }
@@ -167,38 +198,64 @@ size_t DockerHelper::Wait()
     WebClient myWebClient;
     myWebClient.Post( GetWaitString( current_dest_ , current_container_ ) ,
                       kEmptyString ,
-                      //[ dest , containerID , nextMove , this ] ( uptr<MRT::HTTPResponse> response )
                       [ this ]( uptr<MRT::HTTPResponse> response )
                       {
-                          Logger::Log("Docker wait end");
-
-                          if( nullptr == response->Content() )
+                          // though a stopped docker will return 137
+                          // here this scope just ensure when a stop failed
+                          // this task will still be aborted ,not other status.
+                          if ( need_abort_ ) 
                           {
-                              Logger::Log( "Response Content is NULL!Why!" );
+                              ForcedExit( kAbortExit );
                           }
 
-                          string  rawJson                = string( response->Content()->Data() ,
-                                                                   response->Content()->Size() );
-                          auto    oneResult              = json::parse( rawJson );
-                          //int     exit_code              = oneResult[ kExitCodeKey ].get<int>();
-                          exit_code_                     = oneResult[ kExitCodeKey ].get<int>();
-                          contianer_list_[ current_container_ ] = "exit";
-
-                          Logger::Log("Pipe in [ % ] exit with : %", current_container_ , rawJson);
-
-                          if ( nullptr != exit_code_delegate_ )
+                          else
                           {
-                              exit_code_delegate_( exit_code_ );
+                              Logger::Log("Docker wait end");
+
+                              if( nullptr == response->Content() )
+                              {
+                                  Logger::Log( "Response Content is NULL!Why!" );
+                              }
+
+                              string  rawJson                = string( response->Content()->Data() ,
+                                                                       response->Content()->Size() );
+                              auto    oneResult              = json::parse( rawJson );
+
+                              exit_code_                     = oneResult[ kExitCodeKey ].get<int>();
+                              contianer_list_[ current_container_ ] = "exit";
+
+                              Logger::Log("Pipe in [ % ] exit with : %", current_container_ , rawJson);
+
+                              ForcedExit( exit_code_ );
                           }
+                          
                       }
     );
 
     return 0;
 }
 
-size_t DockerHelper::Stop( const string & contianerID )
+// stop the docker contianer
+size_t DockerHelper::Stop()
 {
-    return size_t();
+    // no contianer to stop
+    if ( !at_work_ )
+        return 0;
+
+    if ( current_container_ != "" )
+    {
+        Logger::Log("Docker try stop current task");
+        WebClient myWebClient;
+        myWebClient.Post( GetStopString( current_dest_ , current_container_ ) ,
+                          kEmptyString ,
+                          [  this ] ( uptr<MRT::HTTPResponse> response )
+        {
+            Logger::Log( "Docker stop return Statu : %" , response->Status() );
+        }
+        );
+    }
+
+    return 0;
 }
 
 // Run equals to Pull => Create => Start => Wait
@@ -211,50 +268,74 @@ size_t DockerHelper::Run( const string &dest ,
                           const vector< string > &binds ,
                           const vector< string > &environment )
 {
-    Logger::Log("Docker Run begin");
-    is_run_mode_         = true;
-    Logger::Log("clear work");
-    current_dest_.clear();
-    current_image_.clear();
-    current_binds_.clear();
-    current_environment_.clear();
-    current_container_.clear();
+    if ( need_abort_ )
+    {
+        ForcedExit( kAbortExit );
+    }
+    else
+    {
+        //Logger::Log( "Docker Run begin" );
+        is_run_mode_         = true;
+        at_work_             = true;
+        //Logger::Log( "clear work" );
+        current_dest_.clear();
+        current_image_.clear();
+        current_binds_.clear();
+        current_environment_.clear();
+        current_container_.clear();
 
-    Logger::Log("set dest!");
-    current_dest_        = dest;
+        //Logger::Log( "set dest!" );
+        current_dest_        = dest;
 
-    Logger::Log("set image!");
-    current_image_       = image;
-    
-    Logger::Log("set binds");
-    //for(auto item : binds)
-    //{
-     //   current_binds_.push_back( GetCopiedString(item) );
-   // }
-    current_binds_       = binds;
-    
-    Logger::Log("set environment");
-    //for(auto item: environment)
-    //{
-    //    current_environment_.push_back( GetCopiedString( item ) );
-    //}
-    current_environment_ = environment;
+        //Logger::Log( "set image!" );
+        current_image_       = image;
 
-    current_container_   = "";
-    exit_code_           = ErrorCode::kDefaultExit;
+        //Logger::Log( "set binds" );
+        current_binds_       = binds;
 
-    Logger::Log("Docker input parsed OK");
-    WebClient myWebClient;
-    myWebClient.Post( GetPullString( current_dest_ , current_image_ ) ,
-                      kEmptyString ,
-                      [ /*dest , image , binds , environment , */this ] ( uptr<HTTPResponse> response )
-                      {
-                          Logger::Log("Docker pull end");
-                          //Create( current_dest_ , current_image_ , current_binds_ , current_environment_ );
-                          Create();
-                      }
-    );
-    
+        //Logger::Log( "set environment" );
+        current_environment_ = environment;
+
+        current_container_   = "";
+        exit_code_           = ErrorCode::kDefaultExit;
+
+        //Logger::Log( "Docker input parsed OK" );
+        WebClient myWebClient;
+        myWebClient.Post( GetPullString( current_dest_ , current_image_ ) ,
+                          kEmptyString ,
+                          [ this ] ( uptr<HTTPResponse> response )
+        {
+            Logger::Log( "Docker pull end" );
+           
+            if ( need_abort_ )
+            {
+                ForcedExit( kAbortExit );
+            }
+
+            else
+            {
+                Create();
+            }
+        }
+        );
+    }
+
     return 0;
 }
+
+// force exit
+size_t DockerHelper::ForcedExit( const int& exitCode )
+{   
+   
+    Stop(); //ensure no ghost docker task
+
+    at_work_ = false;
+
+    if ( nullptr != exit_code_delegate_ )
+    {
+        exit_code_delegate_( exitCode );
+    }
+    return 0;
+}
+
 NS_SERVANT_END

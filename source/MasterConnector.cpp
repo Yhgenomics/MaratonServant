@@ -28,6 +28,7 @@ limitations under the License.
 #include "MasterSession.h"
 #include "MessageHub.h"
 #include "ServantGloable.h"
+#include "WorkManager.h"
 #include <iostream>
 
 using MRT::SyncWorker;
@@ -69,6 +70,8 @@ void MasterConnector::OnSessionOpen( Session * session )
 void MasterConnector::OnSessionClose( Session * session )
 {
     Logger::Log( "MasterSession Close" );
+    
+    NS_SERVANT::WorkManager::Instance()->AbortWork();
 
     if ( HeartbeatSender != nullptr )
     {

@@ -112,7 +112,7 @@ namespace Protocal
     // and avoiding be kicked off.
     bool MessageHub::SendHeartBeat()
     {
-        if ( master_session_ )
+        if ( nullptr != master_session_ )
         {
             auto msg = make_uptr( MessageHeartBeat );
             msg->set_code( 161 );
@@ -154,7 +154,7 @@ namespace Protocal
         msg->set_servantid( NS_SERVANT::WorkManager::Instance()->ServantID() );
         msg->set_content( logContent );
 
-        if ( master_session_ != nullptr )
+        if ( nullptr != master_session_ )
         {
             master_session_->SendOut( move_ptr( msg ) );
         }
@@ -171,7 +171,10 @@ namespace Protocal
     {
         auto msg    = make_uptr( MessageTaskUpdate );
         msg->set_status( status );
-        master_session_->SendOut( move_ptr( msg ) );
+        if ( nullptr != master_session_ )
+        {
+            master_session_->SendOut( move_ptr( msg ) );
+        }
 
         return true;
     }
@@ -191,8 +194,11 @@ namespace Protocal
             msg->add_output( item );
         }
 
-        master_session_->SendOut( move_ptr( msg ) );
-
+        if ( nullptr != master_session_ )
+        {
+            master_session_->SendOut( move_ptr( msg ) );
+        }
+        
         return true;
     }
 
@@ -202,8 +208,11 @@ namespace Protocal
     {
         auto msg    = make_uptr( MessageServantUpdate );
         msg->set_status( (int)status );
-        master_session_->SendOut( move_ptr( msg ) );
 
+        if ( nullptr != master_session_ )
+        {
+            master_session_->SendOut( move_ptr( msg ) );
+        }
         return true;
     }
 

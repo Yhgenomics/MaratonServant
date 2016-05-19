@@ -46,7 +46,7 @@ void Pipeline::AddPipe( uptr<Pipe> pipe )
 // @orignalMessage : message from the Maraton Master
 void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
 {
-    abort_mark_ = false;
+    NeedAbort( false );// this will set the DockerHelper's abort mark
     pipe_list_.clear();
     // Refresh task info
     task_id_.clear();
@@ -85,9 +85,9 @@ void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
         auto pipe = make_uptr( Pipe );
 
         pipe->DockerDaemon( docker_daemon );
-        Logger::Log("Rececived image is [%]", item.executor() );
+        /*Logger::Log( "Rececived image is [%]" , item.executor() );*/
         pipe->DockerImage( item.executor() );
-        Logger::Log("Store image is [%]",pipe->DockerImage() );
+        /*Logger::Log( "Store image is [%]" , pipe->DockerImage() );*/
 
         pipe->AddPathBind( task_path_ , docker_work_ );
         pipe->AddPathBind( data_path_ , docker_data_ );
@@ -98,8 +98,8 @@ void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
         {
             pipe->AddEnvironment( param );
         }
-        Logger::Log("one pipe parsing from the msg");
-        pipe->ShowAll();
+       /* Logger::Log("one pipe parsing from the msg");
+        pipe->ShowAll();*/
         AddPipe( std::move( pipe ) );
     } // end of for ( auto item : orignalMessage->pipeline().pipes() )
 }
@@ -118,14 +118,17 @@ void Pipeline::RunNext( const int & lastExitCode )
 {
     Logger::Log("Try run Next Pipe");
 
-    if ( lastExitCode != 0 )
+    // Abort is prior than any exception
+    // abort will cause exit 137
+    if ( abort_mark_ )
+        Abort();
+
+    else  if ( lastExitCode != 0 )
         OnException( lastExitCode );
 
     else if ( pipe_list_.size() == 0 )
         OnFinish();
 
-    else if ( abort_mark_ )
-        Abort();
     else
     {
         current_pipe_ = std::move( pipe_list_[ 0 ] );
