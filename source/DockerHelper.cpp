@@ -235,6 +235,24 @@ size_t DockerHelper::Wait()
     return 0;
 }
 
+size_t DockerHelper::Remove()
+{
+    if ( current_container_ != "" )
+    {
+        Logger::Log( "Docker Remove current task's" );
+        WebClient myWebClient;
+        myWebClient.Req( "DELETE", GetRemoveString( current_dest_ , current_container_ ) ,
+                         kEmptyString,
+                          [ this ] ( uptr<MRT::HTTPResponse> response )
+        {
+            Logger::Log( "Docker delete return" );
+        }
+        );
+    }
+
+    return 0;
+}
+
 // stop the docker contianer
 size_t DockerHelper::Stop()
 {
@@ -328,6 +346,7 @@ size_t DockerHelper::ForcedExit( const int& exitCode )
 {   
    
     Stop(); //ensure no ghost docker task
+    Remove(); //keep clean of the docker
 
     at_work_ = false;
 

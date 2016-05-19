@@ -128,6 +128,9 @@ private:
     // Wait a docker container's exit code
     virtual size_t    Wait();
 
+    // Remove current using docker
+    virtual size_t    Remove();
+
     // force exit
     virtual size_t    ForcedExit( const int& exitCode );
 
@@ -172,8 +175,17 @@ private:
     // @containerID : containerID is the ID of a container
     string GetStopString( const string &dest , const string &containerID )
     {
-        Logger::Log("DockerStart post will use url %", dest + KContainers + containerID + kStopContainer);
+        Logger::Log("DockerStop post will use url %", dest + KContainers + containerID + kStopContainer);
         return dest + KContainers + containerID + kStopContainer;
+    }
+
+    // Get string for a delete command
+    // @dest        : dest is the docker daemon such as http://127.0.0.1:1234
+    // @containerID : containerID is the ID of a container
+    string GetRemoveString(const string& dest , const string& containerID )
+    {
+        Logger::Log("DockerRemove delete will use url %", dest + KContainers + containerID );
+        return dest + KContainers + containerID;
     }
 
     // Exit code for abort a task
