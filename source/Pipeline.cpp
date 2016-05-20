@@ -37,15 +37,17 @@ NS_SERVANT_BEGIN
 
 // Add one Pipe to pipeline
 // @pipe    : one Pipe need to be added.
-void Pipeline::AddPipe( uptr<Pipe> pipe )
+//void Pipeline::AddPipe( uptr<Pipe> pipe )
+void Pipeline::AddPipe( sptr<Pipe> pipe )
 {
-    pipe_list_.push_back( std::move( pipe ) );
+    pipe_list_.push_back( move_ptr( pipe ) );
 }
 
 // Parse the pipeline informantion from a protobuf Message.
 // @orignalMessage : message from the Maraton Master
 void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
 {
+    current_pipe_ = nullptr;
     NeedAbort( false );// this will set the DockerHelper's abort mark
     pipe_list_.clear();
 
@@ -83,7 +85,8 @@ void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
     // Add others info to pipeline
     for ( auto item : orignalMessage->pipeline().pipes() )
     {
-        auto pipe = make_uptr( Pipe );
+        //auto pipe = make_uptr( Pipe );
+        auto pipe = make_sptr( Pipe );
 
         pipe->DockerDaemon( docker_daemon );
         //Logger::Log( "Rececived image is [%]" , item.executor() );
@@ -101,7 +104,7 @@ void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
         }
         Logger::Log("one pipe parsing from the msg");
         pipe->ShowAll();
-        AddPipe( std::move( pipe ) );
+        AddPipe( move_ptr( pipe ) );
     } // end of for ( auto item : orignalMessage->pipeline().pipes() )
 }
 
@@ -117,7 +120,7 @@ void Pipeline::Run()
 // @note         : exit code is 0 before the first pipe run.
 void Pipeline::RunNext( const int & lastExitCode )
 {
-    Logger::Log("Try run Next Pipe");
+    Logger::Log( "Try run Next Pipe" );
 
     // Abort is prior than any exception
     // abort will cause exit 137
@@ -132,11 +135,28 @@ void Pipeline::RunNext( const int & lastExitCode )
 
     else
     {
-        Logger::Log( "before move out a pipe" );
-        pipe_list_[ 0 ]->ShowAll();
+        if ( nullptr != current_pipe_ )
+        {
+            auto itr = pipe_list_.begin();
 
-        current_pipe_ = std::move( pipe_list_[ 0 ] );
-        pipe_list_.erase( pipe_list_.begin() );
+            while ( itr != pipe_list_.end( ) )
+            {
+                if ( ( *itr ).get( ) == current_pipe_.get( ) )
+                {
+                    itr = pipe_list_.erase( itr );
+                    Logger::Log( "Remove last pipe " );
+                    break;
+                }
+                else
+                {
+                    itr++;
+                }
+            }
+
+        }
+        current_pipe_ = *(pipe_list_.begin());
+        //current_pipe_ = std::move( pipe_list_[ 0 ] );
+        //pipe_list_.erase( pipe_list_.begin() );
         current_pipe_->Run();
     }
 }

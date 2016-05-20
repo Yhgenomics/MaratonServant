@@ -49,7 +49,8 @@ public:
 
     // Add one Pipe to pipeline
     // @pipe    : one Pipe need to be added.
-    void AddPipe( uptr<Pipe> pipe );
+    //void AddPipe( uptr<Pipe> pipe );
+    void AddPipe( sptr<Pipe> pipe );
 
     // Parse the pipeline informantion from a protobuf Message.
     // @orignalMessage : message from the Maraton Master
@@ -131,9 +132,11 @@ private:
     string runtime_Log_  ;
     string main_path_    ;
     bool   abort_mark_   ; // use the Setter to set, no direct set to this value.
-    uptr<Pipe> current_pipe_;
+    //uptr<Pipe> current_pipe_;
+    sptr<Pipe> current_pipe_;
 
-    vector<uptr<Pipe>>  pipe_list_;
+    //vector<uptr<Pipe>>  pipe_list_;
+    vector<sptr<Pipe>>  pipe_list_;
 
     friend Singleton<Pipeline>;
 
