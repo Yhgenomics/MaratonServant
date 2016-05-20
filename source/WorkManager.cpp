@@ -35,17 +35,7 @@ NS_SERVANT_BEGIN
 // Constructor
 WorkManager::WorkManager()
 {
-    log_sender_  = nullptr;
-    self_status_ = ServantStatus::kStandby;
-
-    std::stringstream strStream;
-
-    strStream << MRT::SystemInfo::CPUNum();
-    strStream >> core_;
-    strStream.clear();
-
-    strStream << (MRT::SystemInfo::MemoryFreeSize() / MEM_SIZE_FACTOR_MB );
-    strStream >> memory_;
+    Init();
 }
 
 // Add one pipeline from a message
@@ -69,22 +59,22 @@ void WorkManager::StartWork()
     Logger::Log( "Task ID [ % ] Subtask ID [ % ] Start." , main_task_id_ , subtask_id_ );
     self_status_ = ServantStatus::kWorking;
 
-    Logger::Log("Create Log Sender! begin");
-    log_sender_  = MRT::SyncWorker::Create( LOG_PERIOD ,
-                             [ this ] ( MRT::SyncWorker* te )
-                             {
-                                 Logger::Log( "Enter loop log sender" );
-                                 SendLogUpdate();
-                                 return false;
-                             } ,
-                             nullptr ,
-                             nullptr );
+    //Logger::Log("Create Log Sender! begin");
+    //log_sender_  = MRT::SyncWorker::Create( LOG_PERIOD ,
+    //                         [ this ] ( MRT::SyncWorker* te )
+    //                         {
+    //                             Logger::Log( "Enter loop log sender" );
+    //                             SendLogUpdate();
+    //                             return false;
+    //                         } ,
+    //                         nullptr ,
+    //                         nullptr );
 
-    Logger::Log( "Create Log Sender! end"    );
+    //Logger::Log( "Create Log Sender! end"    );
 
-    Logger::Log( "Report Self Status! begin" );
+    //Logger::Log( "Report Self Status! begin" );
     ReportSelfStatus();
-    Logger::Log( "Report Self Status! end"   );
+    //Logger::Log( "Report Self Status! end"   );
 
     Pipeline::Instance()->Run();
 }
@@ -123,6 +113,27 @@ void WorkManager::ReportSelfStatus()
 void WorkManager::SendLogUpdate()
 {
     Protocal::MessageHub::Instance()->SendLogUpdate( main_task_id_ , subtask_id_ );
+}
+
+// Destructor
+WorkManager::~WorkManager()
+{
+}
+
+// initialization
+void WorkManager::Init()
+{
+    log_sender_  = nullptr;
+    self_status_ = ServantStatus::kStandby;
+
+    std::stringstream strStream;
+
+    strStream << MRT::SystemInfo::CPUNum();
+    strStream >> core_;
+    strStream.clear();
+
+    strStream << (MRT::SystemInfo::MemoryFreeSize() / MEM_SIZE_FACTOR_MB );
+    strStream >> memory_;
 }
 
 NS_SERVANT_END

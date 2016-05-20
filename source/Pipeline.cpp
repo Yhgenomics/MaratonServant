@@ -120,6 +120,26 @@ void Pipeline::Run()
 // @note         : exit code is 0 before the first pipe run.
 void Pipeline::RunNext( const int & lastExitCode )
 {
+    // clean last pipe first
+    if ( nullptr != current_pipe_ )
+    {
+        auto itr = pipe_list_.begin();
+
+        while ( itr != pipe_list_.end() )
+        {
+            if ( ( *itr ).get() == current_pipe_.get() )
+            {
+                itr = pipe_list_.erase( itr );
+                Logger::Log( "Remove last pipe " );
+                break;
+            }
+            else
+            {
+                itr++;
+            }
+        }
+    }
+
     Logger::Log( "Try run Next Pipe" );
 
     // Abort is prior than any exception
@@ -135,25 +155,6 @@ void Pipeline::RunNext( const int & lastExitCode )
 
     else
     {
-        if ( nullptr != current_pipe_ )
-        {
-            auto itr = pipe_list_.begin();
-
-            while ( itr != pipe_list_.end( ) )
-            {
-                if ( ( *itr ).get( ) == current_pipe_.get( ) )
-                {
-                    itr = pipe_list_.erase( itr );
-                    Logger::Log( "Remove last pipe " );
-                    break;
-                }
-                else
-                {
-                    itr++;
-                }
-            }
-
-        }
         current_pipe_ = *(pipe_list_.begin());
         //current_pipe_ = std::move( pipe_list_[ 0 ] );
         //pipe_list_.erase( pipe_list_.begin() );

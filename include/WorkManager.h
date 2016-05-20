@@ -97,6 +97,12 @@ protected:
     // Constructor
     WorkManager();
 
+    // Desctructor
+    ~WorkManager();
+
+    // initialization
+    void Init();
+
 private:
 
     ServantStatus::Code self_status_ = ServantStatus::kUnknown;
