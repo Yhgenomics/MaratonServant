@@ -132,6 +132,9 @@ void Pipeline::RunNext( const int & lastExitCode )
 
     else
     {
+        Logger::Log( "before move out a pipe" );
+        pipe_list_[ 0 ]->ShowAll();
+
         current_pipe_ = std::move( pipe_list_[ 0 ] );
         pipe_list_.erase( pipe_list_.begin() );
         current_pipe_->Run();

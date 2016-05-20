@@ -103,10 +103,12 @@ public:
         {
             Logger::Log("one bind [%]",item);
         }
+
         for(auto item: environments_)
         {
             Logger::Log("one evn  [%]", item);
         }
+
         Logger::Log("snapshot end");
     }
 
