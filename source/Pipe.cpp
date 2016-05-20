@@ -60,7 +60,7 @@ void Pipe::AddPathBind( const string& localPath , const string& dockerPath )
 void Pipe::Run()
 {
     Logger::Log("Pipe Run ");
-    //ShowAll();
+    ShowAll();
     DockerHelper::Instance()->BindExitCodeHandler( PipeExit );
     DockerHelper::Instance()->Run( docker_daemon_ , docker_image_ , binds_ , environments_ );
 }

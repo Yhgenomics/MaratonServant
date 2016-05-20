@@ -48,6 +48,7 @@ void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
 {
     NeedAbort( false );// this will set the DockerHelper's abort mark
     pipe_list_.clear();
+
     // Refresh task info
     task_id_.clear();
     original_id_.clear();
@@ -64,7 +65,7 @@ void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
     system( ( mkdir_ + task_path_ ).c_str() );
 
     // Append to subtask list
-    std::ofstream subtaskFout( main_path_ + subtask_list_,std::ios::app);
+    std::ofstream subtaskFout( main_path_ + subtask_list_ , std::ios::app );
 
     subtaskFout << task_id_ <<  std::endl;
     subtaskFout.close();
@@ -85,9 +86,9 @@ void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
         auto pipe = make_uptr( Pipe );
 
         pipe->DockerDaemon( docker_daemon );
-        /*Logger::Log( "Rececived image is [%]" , item.executor() );*/
+        //Logger::Log( "Rececived image is [%]" , item.executor() );
         pipe->DockerImage( item.executor() );
-        /*Logger::Log( "Store image is [%]" , pipe->DockerImage() );*/
+        //Logger::Log( "Store image is [%]" , pipe->DockerImage() );
 
         pipe->AddPathBind( task_path_ , docker_work_ );
         pipe->AddPathBind( data_path_ , docker_data_ );
@@ -98,8 +99,8 @@ void Pipeline::ParseFromMessage( uptr<MessageTaskDeliver> orignalMessage )
         {
             pipe->AddEnvironment( param );
         }
-       /* Logger::Log("one pipe parsing from the msg");
-        pipe->ShowAll();*/
+        Logger::Log("one pipe parsing from the msg");
+        pipe->ShowAll();
         AddPipe( std::move( pipe ) );
     } // end of for ( auto item : orignalMessage->pipeline().pipes() )
 }

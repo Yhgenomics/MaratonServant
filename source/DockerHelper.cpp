@@ -102,6 +102,7 @@ size_t DockerHelper::Create()
 
     WebClient myWebClient;
     Logger::Log("DockerCreat Content is %",postJson.dump(4));
+
     myWebClient.Header( kDockerHeaderKey , kDockerHeaderValue );
     myWebClient.Post( GetCreateString( current_dest_ ) ,
                       postJson.dump() ,
@@ -292,33 +293,35 @@ size_t DockerHelper::Run( const string &dest ,
     }
     else
     {
-        //Logger::Log( "Docker Run begin" );
+        Logger::Log( "Docker Run begin" );
         is_run_mode_         = true;
         at_work_             = true;
-        //Logger::Log( "clear work" );
+        Logger::Log( "clear work" );
         current_dest_.clear();
         current_image_.clear();
         current_binds_.clear();
         current_environment_.clear();
         current_container_.clear();
 
-        //Logger::Log( "set dest!" );
+        Logger::Log( "set dest!" );
         current_dest_        = dest;
 
-        //Logger::Log( "set image!" );
+        Logger::Log( "set image!" );
         current_image_       = image;
 
-        //Logger::Log( "set binds" );
+        Logger::Log( "set binds" );
         current_binds_       = binds;
 
-        //Logger::Log( "set environment" );
+        Logger::Log( "set environment" );
         current_environment_ = environment;
 
         current_container_   = "";
         exit_code_           = ErrorCode::kDefaultExit;
 
-        //Logger::Log( "Docker input parsed OK" );
+        Logger::Log( "Docker input parsed OK" );
         WebClient myWebClient;
+        Logger::Log( "Before Post" );
+
         myWebClient.Post( GetPullString( current_dest_ , current_image_ ) ,
                           kEmptyString ,
                           [ this ] ( uptr<HTTPResponse> response )
@@ -343,8 +346,7 @@ size_t DockerHelper::Run( const string &dest ,
 
 // force exit
 size_t DockerHelper::ForcedExit( const int& exitCode )
-{   
-   
+{      
     Stop(); //ensure no ghost docker task
     Remove(); //keep clean of the docker
 
