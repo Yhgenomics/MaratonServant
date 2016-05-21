@@ -242,13 +242,9 @@ size_t DockerHelper::Remove()
     {
         Logger::Log( "Docker Remove current task's" );
         WebClient myWebClient;
-        myWebClient.Req( "DELETE", GetRemoveString( current_dest_ , current_container_ ) ,
-                         kEmptyString,
-                          [ this ] ( uptr<MRT::HTTPResponse> response )
-        {
-            Logger::Log( "Docker delete return" );
-        }
-        );
+        myWebClient.ReqSync( "DELETE", GetRemoveString( current_dest_ , current_container_ ) ,
+                             kEmptyString );
+
     }
 
     return 0;
@@ -265,13 +261,8 @@ size_t DockerHelper::Stop()
     {
         Logger::Log("Docker try stop current task");
         WebClient myWebClient;
-        myWebClient.Post( GetStopString( current_dest_ , current_container_ ) ,
-                          kEmptyString ,
-                          [  this ] ( uptr<MRT::HTTPResponse> response )
-        {
-            Logger::Log( "Docker stop return Statu : %" , response->Status() );
-        }
-        );
+        myWebClient.PostSync( GetStopString( current_dest_ , current_container_ ) ,
+                              kEmptyString );
     }
 
     return 0;
