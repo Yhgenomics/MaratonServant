@@ -63,7 +63,7 @@ public:
     // Handler map keep the element name and InforGetter in a 1:1 relationship
     std::map< string , InfoGetter > handler_map_;
 
-    bool AddAllHandler();
+    bool AddAllHandlers();
 
     // Add one handler to the SystemInfo
     // @element    : the name of the element.
@@ -80,7 +80,7 @@ public:
         }
 
         bool result;
-       
+
         // New handler
         if ( handler_map_.find( element ) == handler_map_.end() )
         {
@@ -98,12 +98,12 @@ public:
     }
 
 protected:
-    
+
     // Constructor
-    SystemInfoAgent();
+    SystemInfoAgent() {};
 
     // Desctructor
-    ~SystemInfoAgent();
+    ~SystemInfoAgent() {};
 
     // initialization
     void Init();
@@ -120,7 +120,7 @@ protected:
 
         if( !pipe )
         {
-            Logger::Error( "The following command cannot be processed: %" , string( command , strlen( command ) );
+            Logger::Error( "The following command cannot be processed: %" , string( command , strlen( command ) ) );
             return "";
         }
 
@@ -131,6 +131,9 @@ protected:
                 result += buffer;
             }
         }
+
+        // remove \n mark at the tail
+        if( '\n' == *result.rbegin() ) result.erase( result.end() - 1 );
         return result;
 
     }

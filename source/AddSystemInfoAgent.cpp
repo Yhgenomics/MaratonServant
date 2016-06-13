@@ -27,20 +27,21 @@ limitations under the License.
 #include "SystemInfoAgent.h"
 
 NS_SERVANT_BEGIN
-    bool SystemInfoAgent::AddAllHandler()
+    bool SystemInfoAgent::AddAllHandlers()
     {
 
-        AddHandler( "MEM_TOTAL"  , [ this ] () { return Query( R"(free -m | grep Mem | awk '{print $2}')"      ); } );
-        AddHandler( "MEM_UESED"  , [ this ] () { return Query( R"(free -m | grep cache: | awk '{print $3}')"   ); } );
+        Logger::Log("Add SystemInfoAgent ");
+        AddHandler( "MEM_TOTAL"  , [ this ] () { return GetCommandResult( R"(free -m | grep Mem | awk '{print $2}')"      ); } );
+        AddHandler( "MEM_UESED"  , [ this ] () { return GetCommandResult( R"(free -m | grep cache: | awk '{print $3}')"   ); } );
 
-        AddHandler( "CPU_NUM"    , [ this ] () { return Query( R"(cat /proc/cpuinfo| grep "processor"| wc -l)" ); } );
+        AddHandler( "CPU_NUM"    , [ this ] () { return GetCommandResult( R"(cat /proc/cpuinfo| grep "processor"| wc -l)" ); } );
         
-        AddHandler( "CPU_USER"   , [ this ] () { return Query( R"(top -n 1 | grep Cpu | awk '{print $2}')"     ); } );
-        AddHandler( "CPU_SYS"    , [ this ] () { return Query( R"(top -n 1 | grep Cpu | awk '{print $4}')"     ); } );
+        AddHandler( "CPU_USER"   , [ this ] () { return GetCommandResult( R"(top -n 1 | grep Cpu | awk '{print $2}')"     ); } );
+        AddHandler( "CPU_SYS"    , [ this ] () { return GetCommandResult( R"(top -n 1 | grep Cpu | awk '{print $4}')"     ); } );
 
-        AddHandler( "LOAD_1MIN"  , [ this ] () { return Query( R"(uptime | cut -d : -f 5 | cut -d , -f 1 | awk '{print $1}')" ); } );
-        AddHandler( "LOAD_5MIN"  , [ this ] () { return Query( R"(uptime | cut -d : -f 5 | cut -d , -f 2 | awk '{print $1}')" ); } );
-        AddHandler( "LOAD_15MIN" , [ this ] () { return Query( R"(uptime | cut -d : -f 5 | cut -d , -f 3 | awk '{print $1}')" ); } );
+        AddHandler( "LOAD_1MIN"  , [ this ] () { return GetCommandResult( R"(uptime | cut -d : -f 5 | cut -d , -f 1 | awk '{print $1}')" ); } );
+        AddHandler( "LOAD_5MIN"  , [ this ] () { return GetCommandResult( R"(uptime | cut -d : -f 5 | cut -d , -f 2 | awk '{print $1}')" ); } );
+        AddHandler( "LOAD_15MIN" , [ this ] () { return GetCommandResult( R"(uptime | cut -d : -f 5 | cut -d , -f 3 | awk '{print $1}')" ); } );
 
         return true;
     }

@@ -23,7 +23,7 @@ limitations under the License.
 * Date          : 2016/3/8
 * Modifed       : When      | Who       | What
 ***********************************************************************************/
-
+#include "SystemInfoAgent.h"
 #include "ServantGloable.h"
 #include "MasterConnector.h"
 #include "MessageHub.h"
@@ -42,13 +42,14 @@ using nlohmann::json;
 int main( int argc , char* argv[] )
 {
     Logger::Sys("build % %" , __DATE__ , __TIME__);
+    SystemInfoAgent::Instance()->AddAllHandlers();
     Protocal::MessageHub::Instance()->AddAllHandlers();
 
     std::string  ip   = string( argv[ 1 ] );
-    
+
     int port;
     std::stringstream portStream;
-    portStream << string( argv[2] ); 
+    portStream << string( argv[2] );
     portStream >> port;
 
     Pipeline::Instance()->DockerDaemon( string ( argv[ 3 ] ) );
@@ -56,7 +57,7 @@ int main( int argc , char* argv[] )
     while(true)
     {
         Logger::Log( "Try to connect to Master [ %:% ]" , ip , port );
-        
+
         Maraton::Instance()->Regist( make_uptr( MasterConnector , ip , port  ) );
         Maraton::Instance()->Run();
     }
