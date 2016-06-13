@@ -164,6 +164,7 @@
     <ClInclude Include="..\include\PipePatternHandlerSet.h" />
     <ClInclude Include="..\include\ServantGloable.h" />
     <ClInclude Include="..\include\StatusBook.h" />
+    <ClInclude Include="..\include\SystemInfoAgent.h" />
     <ClInclude Include="..\include\WorkManager.h" />
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +179,7 @@
     <ClCompile Include="..\include\message\MessageTaskLogsUpdate.pb.cc" />
     <ClCompile Include="..\include\message\MessageTaskUpdate.pb.cc" />
     <ClCompile Include="..\source\AddAllHandler.cpp" />
+    <ClCompile Include="..\source\AddSystemInfoAgent.cpp" />
     <ClCompile Include="..\source\DockerHelper.cpp" />
     <ClCompile Include="..\source\GeneralSession.cpp" />
     <ClCompile Include="..\source\MessageHub.cpp" />

@@ -26,6 +26,7 @@ limitations under the License.
 
 #include "MessageHub.h"
 #include "WorkManager.h"
+#include "SystemInfoAgent.h"
 #include "MessageTaskLogsUpdate.pb.h"
 #include "MRT.h"
 #include "json.hpp"
@@ -34,6 +35,7 @@ limitations under the License.
 
 using std::string;
 using nlohmann::json;
+using NS_SERVANT::SystemInfoAgent;
 
 namespace Protocal
 {
@@ -116,6 +118,18 @@ namespace Protocal
         {
             auto msg = make_uptr( MessageHeartBeat );
             msg->set_code( 161 );
+            
+            // Add system info for monitor
+
+            msg->set_memtotal  = SystemInfoAgent::Instance()->Query( "MEM_TOTAL"  );
+            msg->set_memuesed  = SystemInfoAgent::Instance()->Query( "MEM_UESED"  );
+            msg->set_cpunum    = SystemInfoAgent::Instance()->Query( "CPU_NUM"    );
+            msg->set_cpuuser   = SystemInfoAgent::Instance()->Query( "CPU_USER"   );
+            msg->set_cpusys    = SystemInfoAgent::Instance()->Query( "CPU_SYS"    );
+            msg->set_load1min  = SystemInfoAgent::Instance()->Query( "LOAD_1MIN"  );
+            msg->set_load5min  = SystemInfoAgent::Instance()->Query( "LOAD_5MIN"  );
+            msg->set_load15min = SystemInfoAgent::Instance()->Query( "LOAD_15MIN" );
+
             master_session_->SendOut( move_ptr( msg ) );
             return false;
         }

@@ -144,6 +144,9 @@
     <ClInclude Include="..\include\handler\MessageTaskAbortHandler.h">
       <Filter>MessageHandlers</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\SystemInfoAgent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\DockerHelper.cpp">
@@ -202,6 +205,9 @@
     </ClCompile>
     <ClCompile Include="..\include\message\MessageTaskAbort.pb.cc">
       <Filter>proto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\AddSystemInfoAgent.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
