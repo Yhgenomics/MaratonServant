@@ -36,8 +36,8 @@ NS_SERVANT_BEGIN
 
         AddHandler( "CPU_NUM"    , [ this ] () { return GetCommandResult( R"(cat /proc/cpuinfo| grep "processor"| wc -l)" ); } );
         
-        AddHandler( "CPU_USER"   , [ this ] () { return GetCommandResult( R"(top -n 1 | grep Cpu | awk '{print $2}')"     ); } );
-        AddHandler( "CPU_SYS"    , [ this ] () { return GetCommandResult( R"(top -n 1 | grep Cpu | awk '{print $4}')"     ); } );
+        AddHandler( "CPU_USER"   , [ this ] () { return GetCommandResult( R"(top -b -n 1 | grep Cpu | awk '{print $2}')"     ); } );
+        AddHandler( "CPU_SYS"    , [ this ] () { return GetCommandResult( R"(top -b -n 1 | grep Cpu | awk '{print $4}')"     ); } );
 
         AddHandler( "LOAD_1MIN"  , [ this ] () { return GetCommandResult( R"(uptime | cut -d : -f 5 | cut -d , -f 1 | awk '{print $1}')" ); } );
         AddHandler( "LOAD_5MIN"  , [ this ] () { return GetCommandResult( R"(uptime | cut -d : -f 5 | cut -d , -f 2 | awk '{print $1}')" ); } );
