@@ -94,6 +94,7 @@ public:
     void SendLogUpdate();
 
 protected:
+
     // Constructor
     WorkManager();
 
