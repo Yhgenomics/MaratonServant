@@ -121,14 +121,14 @@ namespace Protocal
             
             // Add system info for monitor
 
-            msg->set_memtotal  = SystemInfoAgent::Instance()->Query( "MEM_TOTAL"  );
-            msg->set_memuesed  = SystemInfoAgent::Instance()->Query( "MEM_UESED"  );
-            msg->set_cpunum    = SystemInfoAgent::Instance()->Query( "CPU_NUM"    );
-            msg->set_cpuuser   = SystemInfoAgent::Instance()->Query( "CPU_USER"   );
-            msg->set_cpusys    = SystemInfoAgent::Instance()->Query( "CPU_SYS"    );
-            msg->set_load1min  = SystemInfoAgent::Instance()->Query( "LOAD_1MIN"  );
-            msg->set_load5min  = SystemInfoAgent::Instance()->Query( "LOAD_5MIN"  );
-            msg->set_load15min = SystemInfoAgent::Instance()->Query( "LOAD_15MIN" );
+            msg->set_memtotal ( SystemInfoAgent::Instance()->Query( "MEM_TOTAL"  ) );
+            msg->set_memuesed ( SystemInfoAgent::Instance()->Query( "MEM_UESED"  ) );
+            msg->set_cpunum   ( SystemInfoAgent::Instance()->Query( "CPU_NUM"    ) );
+            msg->set_cpuuser  ( SystemInfoAgent::Instance()->Query( "CPU_USER"   ) );
+            msg->set_cpusys   ( SystemInfoAgent::Instance()->Query( "CPU_SYS"    ) );
+            msg->set_load1min ( SystemInfoAgent::Instance()->Query( "LOAD_1MIN"  ) );
+            msg->set_load5min ( SystemInfoAgent::Instance()->Query( "LOAD_5MIN"  ) );
+            msg->set_load15min( SystemInfoAgent::Instance()->Query( "LOAD_15MIN" ) );
 
             master_session_->SendOut( move_ptr( msg ) );
             return false;
